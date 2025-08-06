@@ -60,6 +60,20 @@ function readEnv(pathname: string): Record<string, string> {
   return dotenv.parse(fs.readFileSync(pathname, 'utf8'));
 }
 
+function hasClockOrTlsError(detail: string): boolean {
+  const normalized = detail.toLowerCase();
+  return (
+    normalized.includes('certificate is not yet valid') ||
+    normalized.includes('certificate has expired or is not yet valid') ||
+    normalized.includes('tls: failed to verify certificate')
+  );
+}
+
+function withClockHint(detail: string): string {
+  if (!hasClockOrTlsError(detail)) return detail;
+  return `${detail}\n  - TLS validation appears to be failing because the local system clock or timezone is out of sync; verify the machine date/time before retrying.`;
+}
+
 function isPlaceholder(value: string | undefined): boolean {
   if (!value) return true;
   return value.includes('tobemodified') || value === 'preview_secret';
@@ -187,7 +201,7 @@ function checkGitHubAuth(results: CheckResult[]): void {
     results,
     'WARN',
     'GitHub auth',
-    auth.stderr || 'gh auth status failed'
+    withClockHint(auth.stderr || 'gh auth status failed')
   );
 }
 
@@ -241,24 +255,31 @@ function checkVercel(results: CheckResult[]): void {
       results,
       'WARN',
       'Vercel auth',
-      whoami.stderr || 'Vercel CLI is not authenticated'
+      withClockHint(whoami.stderr || 'Vercel CLI is not authenticated')
     );
   }
 
-  const projectJson = path.join(repoRoot, 'next', '.vercel', 'project.json');
-  if (fs.existsSync(projectJson)) {
+  const vercelProjectPaths = [
+    path.join(repoRoot, '.vercel', 'project.json'),
+    path.join(repoRoot, 'next', '.vercel', 'project.json'),
+  ];
+  const projectJson = vercelProjectPaths.find((candidate) =>
+    fs.existsSync(candidate)
+  );
+
+  if (projectJson) {
     addResult(
       results,
       'PASS',
       'Vercel link',
-      'next/.vercel/project.json exists'
+      `${path.relative(repoRoot, projectJson)} exists`
     );
   } else {
     addResult(
       results,
       'WARN',
       'Vercel link',
-      'next/.vercel/project.json is missing; run vercel link in next/ if needed'
+      'No Vercel project link found at .vercel/project.json or next/.vercel/project.json; run vercel link or vercel pull if needed'
     );
   }
 }
@@ -281,7 +302,7 @@ function checkGitHubSecrets(results: CheckResult[]): void {
       results,
       'WARN',
       'GitHub secrets',
-      secrets.stderr || 'Unable to inspect repo secrets'
+      withClockHint(secrets.stderr || 'Unable to inspect repo secrets')
     );
     return;
   }

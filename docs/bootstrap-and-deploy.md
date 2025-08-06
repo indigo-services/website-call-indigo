@@ -39,6 +39,7 @@ It verifies:
 - `gh` auth
 - `ghp` availability
 - Vercel CLI and auth
+- Vercel project link at `.vercel/project.json` or `next/.vercel/project.json`
 - GitHub secret presence for deploy contracts
 
 Use strict mode only when you want every warning treated as blocking:
@@ -90,6 +91,7 @@ Expected local checks:
 
 - `vercel --version` or `npx vercel --version`
 - `vercel whoami`
+- Vercel project linked at repo root or under `next/`
 
 Expected GitHub secrets:
 
