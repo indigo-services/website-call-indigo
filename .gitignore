@@ -3,6 +3,7 @@ docs
 !docs/
 docs/*
 !docs/github-ghp-workflow.md
+!docs/bootstrap-and-deploy.md
 .DS_Store
 .vscode
 !.vscode/
@@ -15,6 +16,8 @@ docs/*
 .playwright-mcp
 visual-reports
 .claude/settings.local.json
+.env.local
+.env.*.local
 .pnp.*
 .yarn/*
 !.yarn/patches

@@ -1,0 +1,33 @@
+name: Validate Setup And Strapi
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install and bootstrap
+        run: yarn setup:ci
+
+      - name: Run doctor
+        run: yarn doctor
+
+      - name: Build Strapi
+        run: yarn check:strapi

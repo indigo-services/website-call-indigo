@@ -1,0 +1,52 @@
+name: Deploy Next To Vercel
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'next/**'
+      - '.github/workflows/deploy-next-vercel.yml'
+
+jobs:
+  deploy:
+    if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Bootstrap env files
+        run: |
+          yarn setup:next
+          yarn setup:env --non-interactive
+
+      - name: Pull Vercel project settings
+        working-directory: next
+        run: npx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+
+      - name: Build Next for Vercel
+        working-directory: next
+        run: npx vercel build --prod --token=$VERCEL_TOKEN
+
+      - name: Deploy Next to Vercel
+        working-directory: next
+        run: npx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN

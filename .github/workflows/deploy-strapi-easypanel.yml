@@ -1,0 +1,21 @@
+name: Deploy Strapi To EasyPanel
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'strapi/**'
+      - '.github/workflows/deploy-strapi-easypanel.yml'
+
+jobs:
+  deploy:
+    if: ${{ secrets.EASYPANEL_STRAPI_DEPLOY_WEBHOOK != '' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger EasyPanel deploy webhook
+        env:
+          EASYPANEL_STRAPI_DEPLOY_WEBHOOK: ${{ secrets.EASYPANEL_STRAPI_DEPLOY_WEBHOOK }}
+        run: curl --fail --show-error --silent -X POST "$EASYPANEL_STRAPI_DEPLOY_WEBHOOK"
