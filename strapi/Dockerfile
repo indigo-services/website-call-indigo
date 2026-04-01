@@ -17,7 +17,7 @@ COPY package.json yarn.lock ./
 
 RUN corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
-  && yarn install --network-timeout 100000 --ignore-engines
+  && yarn install --network-timeout 100000 --ignore-engines --ignore-scripts
 
 FROM deps AS build
 
