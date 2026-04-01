@@ -2,6 +2,7 @@
   "task.allowAutomaticTasks": "on",
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.enablePersistentSessions": true,
+<<<<<<< HEAD
   "workbench.browser.openLocalhostLinks": "always",
   "simpleBrowser.useIntegratedBrowser": true,
   "todo-tree.general.tags": [
@@ -53,14 +54,21 @@
       "background": "#6f42c1"
     }
   },
+=======
+  "workbench.browser.openLocalhostLinks": true,
+  "simpleBrowser.useIntegratedBrowser": true,
+>>>>>>> 20592b5 (chore: version ghp workspace workflow stack)
   "ghProjects.mainBranch": "main",
   "ghProjects.branchNamePattern": "{user}/{number}-{title}",
   "ghProjects.startWorkingStatus": "In progress",
   "ghProjects.doneStatus": "Done",
   "ghProjects.prOpenedStatus": "In progress",
   "ghProjects.prMergedStatus": "Done",
+<<<<<<< HEAD
   "ghProjects.defaultProjectOwner": "indigo-services",
   "ghProjects.defaultProjectNumber": 1,
   "caspianTaskmaster.repo": "indigo-launchops",
   "caspianTaskmaster.owner": "indigo-services"
+=======
+>>>>>>> 20592b5 (chore: version ghp workspace workflow stack)
 }

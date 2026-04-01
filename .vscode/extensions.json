@@ -1,6 +1,16 @@
 {
   "recommendations": [
     "bretwardjames.gh-projects",
+    "ms-vscode.vscode-typescript-next",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-playwright.playwright",
+    "caspiantools.caspian-taskmaster"
+  ]
+}
+{
+  "recommendations": [
+    "bretwardjames.gh-projects",
     "github.vscode-pull-request-github",
     "Gruntfuggly.todo-tree",
     "ms-vscode.vscode-typescript-next",

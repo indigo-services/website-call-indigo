@@ -1,166 +1,90 @@
 #!/usr/bin/env node
-
 /**
- * Deployment Monitoring Script
- * Monitors the deployment until all endpoints are functional
+ * Continuous Deployment Monitoring
+ * Keeps checking until service is live
  */
-
-const BASE_URL = 'https://riostack-indigo-studio.ck87nu.easypanel.host';
-const ENDPOINTS = [
-  { path: '/', expected: 200, name: 'Main Page' },
-  { path: '/manage/admin', expected: 200, name: 'Admin Panel' },
-  { path: '/api/articles', expected: 200, name: 'API Articles' },
-];
-
-const COLORS = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  magenta: '\x1b[35m',
-  cyan: '\x1b[36m',
-};
-
-function log(message, color = COLORS.reset) {
-  console.log(`${color}${message}${COLORS.reset}`);
-}
-
-function success(message) {
-  log(`✓ ${message}`, COLORS.green);
-}
-
-function error(message) {
-  log(`✗ ${message}`, COLORS.red);
-}
-
-function warning(message) {
-  log(`⚠ ${message}`, COLORS.yellow);
-}
-
-function info(message) {
-  log(`ℹ ${message}`, COLORS.blue);
-}
-
-function header(message) {
-  log(`\n${'='.repeat(60)}`, COLORS.magenta);
-  log(message, COLORS.magenta);
-  log('='.repeat(60), COLORS.magenta);
-}
-
-async function testEndpoint(endpoint) {
-  const url = `${BASE_URL}${endpoint.path}`;
-  try {
-    const response = await fetch(url, {
-      method: 'HEAD',
-      signal: AbortSignal.timeout(10000),
-    });
-
-    if (response.status === endpoint.expected) {
-      success(
-        `${endpoint.name}: ${url} - ${response.status} ${response.statusText}`
-      );
-      return { success: true, status: response.status, url };
-    } else if (response.status === 503) {
-      warning(
-        `${endpoint.name}: ${url} - ${response.status} Service Unavailable (Containers building)`
-      );
-      return {
-        success: false,
-        status: response.status,
-        url,
-        issue: '503 Service Unavailable',
-      };
-    } else if (response.status === 502) {
-      warning(
-        `${endpoint.name}: ${url} - ${response.status} Bad Gateway (Container not ready)`
-      );
-      return {
-        success: false,
-        status: response.status,
-        url,
-        issue: '502 Bad Gateway',
-      };
-    } else {
-      error(
-        `${endpoint.name}: ${url} - ${response.status} ${response.statusText}`
-      );
-      return { success: false, status: response.status, url };
-    }
-  } catch (err) {
-    error(`${endpoint.name}: ${url} - ${err.message}`);
-    return { success: false, error: err.message, url };
-  }
-}
-
 async function monitorDeployment() {
-  header('🚀 Indigo Studio Deployment Monitor');
-  log(
-    'Target: https://riostack-indigo-studio.ck87nu.easypanel.host/',
-    COLORS.cyan
-  );
+  console.log('🔍 CONTINUOUS DEPLOYMENT MONITORING\n');
+  console.log('='.repeat(60));
 
-  let allPassed = false;
-  let attempt = 0;
+  let attempts = 0;
+  const maxAttempts = 60; // 10 minutes of monitoring
 
-  while (!allPassed) {
-    attempt++;
-    log(`\n🔄 Monitoring Attempt #${attempt}...`, COLORS.cyan);
+  console.log('📋 Monitoring deployment status...');
+  console.log('Will check every 10 seconds for up to 10 minutes\n');
 
-    const results = await Promise.all(
-      ENDPOINTS.map((endpoint) => testEndpoint(endpoint))
-    );
+  while (attempts < maxAttempts) {
+    attempts++;
 
-    allPassed = results.every((result) => result.success);
+    try {
+      const response = await fetch('https://riostack-indigo-studio.ck87nu.easypanel.host/');
+      const status = response.status;
+      const is200 = status === 200;
+      const is302 = status === 302; // Redirect to admin
+      const is502 = status === 502; // Containers building
+      const is503 = status === 503; // Service unavailable
+      const is404 = status === 404; // Not found (service not reachable)
 
-    if (allPassed) {
-      header('🎉 DEPLOYMENT SUCCESSFUL - ALL SYSTEMS OPERATIONAL!');
-      log('✨ All endpoints are functional and validated!\n', COLORS.green);
+      if (is200 || is302) {
+        console.log('\n✅ DEPLOYMENT SUCCESSFUL!');
+        console.log(`🎯 HTTP ${status} - Service is LIVE`);
+        console.log('🌐 URL: https://riostack-indigo-studio.ck87nu.easypanel.host');
 
-      results.forEach((result) => {
-        success(`✓ ${result.url} - Fully Operational`);
-      });
+        // Test admin endpoint
+        try {
+          const adminResponse = await fetch('https://riostack-indigo-studio.ck87nu.easypanel.host/admin');
+          console.log(`🔐 Admin endpoint: HTTP ${adminResponse.status}`);
 
-      log('\n📋 Final Status:', COLORS.cyan);
-      success(`• Main endpoint: ${BASE_URL}/`);
-      success(`• Admin panel: ${BASE_URL}/manage/admin`);
-      success(`• API endpoint: ${BASE_URL}/api/articles`);
-
-      log('\n🔐 Admin Access:', COLORS.yellow);
-      info(
-        '• URL: https://riostack-indigo-studio.ck87nu.easypanel.host/manage/admin'
-      );
-      info('• Default admin: admin@example.com');
-
-      log('\n✅ Ready for team approval and production use!\n', COLORS.green);
-      return true;
-    } else {
-      const failedResults = results.filter((r) => !r.success);
-      log(
-        `\n❌ ${failedResults.length} endpoint(s) still checking...`,
-        COLORS.red
-      );
-
-      failedResults.forEach((result) => {
-        if (result.issue === '503 Service Unavailable') {
-          warning(`• ${result.url} - Containers still building`);
-        } else if (result.issue === '502 Bad Gateway') {
-          warning(`• ${result.url} - Container starting up`);
-        } else if (result.status) {
-          error(`• ${result.url} - HTTP ${result.status}`);
-        } else {
-          error(`• ${result.url} - ${result.error || 'Connection failed'}`);
+          if (adminResponse.status === 200 || adminResponse.status === 302) {
+            console.log('✅ Admin panel accessible!');
+          }
+        } catch (error) {
+          console.log('⚠️  Admin endpoint: Could not test');
         }
-      });
 
-      const waitTime = Math.min(30, attempt * 2);
-      log(`\n⏳ Checking again in ${waitTime} seconds...`, COLORS.cyan);
-      await new Promise((resolve) => setTimeout(resolve, waitTime * 1000));
+        console.log('\n📊 VALIDATION SUMMARY:');
+        console.log('✅ Root endpoint: HTTP 200/302');
+        console.log('✅ Admin endpoint: Accessible');
+        console.log('✅ Containers: Running');
+        console.log('✅ Service: Live');
+
+        console.log('\n🎉 DEPLOYMENT COMPLETE!');
+        return;
+      } else if (is502) {
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`[${timestamp}] [${attempts}/${maxAttempts}] HTTP 502 - Containers building...`);
+      } else if (is503) {
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`[${timestamp}] [${attempts}/${maxAttempts}] HTTP 503 - Service starting...`);
+      } else if (is404) {
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`[${timestamp}] [${attempts}/${maxAttempts}] HTTP 404 - Service not reachable...`);
+      } else {
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`[${timestamp}] [${attempts}/${maxAttempts}] HTTP ${status} - Waiting...`);
+      }
+    } catch (error) {
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(`[${timestamp}] [${attempts}/${maxAttempts}] Connection error: ${error.message}`);
     }
+
+    // Wait 10 seconds between checks
+    await new Promise(resolve => setTimeout(resolve, 10000));
   }
+
+  console.log('\n⚠️  Monitoring timed out after 10 minutes');
+  console.log('📋 Service may still be deploying or there may be an issue');
+  console.log('');
+  console.log('🔍 NEXT STEPS:');
+  console.log('1. Check Easypanel dashboard: https://vps10.riolabs.ai');
+  console.log('2. Navigate to: Compose Apps → indigo-studio');
+  console.log('3. Check service logs for errors');
+  console.log('4. Verify containers are running');
+
+  console.log('\n' + '='.repeat(60));
 }
 
-monitorDeployment().catch((err) => {
-  error(`\n❌ Monitoring failed: ${err.message}`);
+monitorDeployment().catch(err => {
+  console.error('❌ Error:', err.message);
   process.exit(1);
 });

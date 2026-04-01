@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 /**
  * Fix Easypanel Cache Issue
  * Clears stale docker-compose.yml cache and recreates service with correct configuration

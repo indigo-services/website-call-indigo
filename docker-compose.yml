@@ -1,5 +1,5 @@
 services:
-  indigo-studio:
+  indigo-strapi:
     build:
       context: .
       dockerfile: strapi/Dockerfile
