@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "bretwardjames.gh-projects",
+    "GitHub.vscode-pull-request-github",
     "ms-vscode.vscode-typescript-next",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",

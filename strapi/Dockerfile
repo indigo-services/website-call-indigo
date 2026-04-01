@@ -3,11 +3,15 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Install dependencies first
+RUN apk add --no-cache python3 make g++
+
 # Copy package files
-COPY package.json yarn.lock ./
+COPY package.json ./
+COPY yarn.lock* ./ 
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN yarn install --network-timeout 100000
 
 # Copy source code
 COPY . .
