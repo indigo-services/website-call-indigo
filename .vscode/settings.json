@@ -1,0 +1,13 @@
+{
+  "task.allowAutomaticTasks": "on",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.enablePersistentSessions": true,
+  "workbench.browser.openLocalhostLinks": true,
+  "simpleBrowser.useIntegratedBrowser": true,
+  "ghProjects.mainBranch": "main",
+  "ghProjects.branchNamePattern": "{user}/{number}-{title}",
+  "ghProjects.startWorkingStatus": "In progress",
+  "ghProjects.doneStatus": "Done",
+  "ghProjects.prOpenedStatus": "In progress",
+  "ghProjects.prMergedStatus": "Done",
+}

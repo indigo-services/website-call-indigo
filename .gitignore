@@ -1,7 +1,14 @@
 node_modules
 docs
+!docs/
+docs/*
+!docs/github-ghp-workflow.md
 .DS_Store
 .vscode
+!.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .env
 .claude/settings.local.json
 .pnp.*

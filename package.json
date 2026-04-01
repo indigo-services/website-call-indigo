@@ -7,6 +7,14 @@
     "prepare": "husky",
     "next": "yarn dev --prefix ../next/",
     "strapi": "yarn dev --prefix ../strapi/",
+    "ghp": "ghp",
+    "ghp:plan": "ghp plan",
+    "ghp:work": "ghp work",
+    "ghp:fields": "ghp fields",
+    "ghp:start": "ghp start",
+    "ghp:pr": "ghp pr",
+    "ghp:status": "ghp status",
+    "ghp:config:show": "ghp config --show -w",
     "setup:next": "cd next && yarn && node --loader ts-node/esm ../scripts/copy-env.mts ../next",
     "setup:strapi": "cd strapi && yarn && node --loader ts-node/esm ../scripts/copy-env.mts  ../strapi",
     "setup": "yarn && yarn setup:next && yarn setup:strapi",
@@ -26,6 +34,7 @@
     "wait-on": "^8.0.1"
   },
   "devDependencies": {
+    "@bretwardjames/ghp-cli": "0.18.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "dotenv": "^17.2.3",
     "husky": "^9.1.7",
