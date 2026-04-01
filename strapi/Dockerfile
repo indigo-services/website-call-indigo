@@ -1,4 +1,4 @@
-# Force cache invalidate - v2
+# Force cache invalidate - v3 - final fix
 FROM node:22-bookworm-slim
 
 # Install system dependencies
