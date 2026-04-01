@@ -18,13 +18,42 @@ function getLocale(request: NextRequest): string | undefined {
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const pathnameIsMissingLocale = i18n.locales.every(
-    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
+
+  if (pathname === '/' || pathname === '/approval-home') {
+    return;
+  }
+
+  // Check if any non-default locale is present in pathname
+  const nonDefaultLocales = i18n.locales.filter(
+    (locale) => locale !== i18n.defaultLocale
+  );
+  const hasNonDefaultLocale = nonDefaultLocales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  // Redirect if there is no locale
-  if (pathnameIsMissingLocale) {
-    const locale = getLocale(request);
+  // Check if default locale is in pathname
+  const hasDefaultLocale =
+    pathname.startsWith(`/${i18n.defaultLocale}/`) ||
+    pathname === `/${i18n.defaultLocale}`;
+
+  // If default locale is in pathname, remove it (e.g., /en/home -> /home)
+  if (hasDefaultLocale) {
+    const pathWithoutLocale = pathname.replace(
+      new RegExp(`^/${i18n.defaultLocale}(/|$)`),
+      '/'
+    );
+    return NextResponse.redirect(new URL(pathWithoutLocale, request.url));
+  }
+
+  // If non-default locale is present, keep it as is
+  if (hasNonDefaultLocale) {
+    return;
+  }
+
+  // If no locale in pathname and no non-default locale, check if we need to add one
+  const locale = getLocale(request);
+  if (locale && locale !== i18n.defaultLocale) {
+    // Non-default locale detected, add it to pathname
     return NextResponse.redirect(
       new URL(
         `/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}`,
@@ -32,6 +61,9 @@ export function proxy(request: NextRequest) {
       )
     );
   }
+
+  // Default locale - keep pathname as is (no prefix)
+  return;
 }
 
 export const config = {

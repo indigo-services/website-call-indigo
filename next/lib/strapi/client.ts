@@ -12,8 +12,45 @@ export class StrapiError extends Error {
   ) {
     super(message);
     this.name = 'StrapiError';
+    // Log detailed error info in development
+    if (process.env.ENVIRONMENT === 'development') {
+      console.error(`[StrapiError] ${message}`, { contentType, cause });
+    }
   }
 }
+
+/**
+ * Default fallback data for "global" single type
+ */
+export const DEFAULT_GLOBAL_DATA = {
+  id: 0,
+  documentId: 'default-global',
+  siteName: 'Indigo Studio',
+  siteDescription: 'Loading...',
+  favicon: null,
+  defaultOgImage: null,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  publishedAt: new Date().toISOString(),
+  seo: {
+    metaTitle: 'Indigo Studio',
+    metaDescription: 'Loading...',
+    metaImage: null,
+    cannonical: null,
+  },
+  navbar: {
+    id: 0,
+    documentId: 'default-navbar',
+    logo: null,
+    links: [],
+  },
+  footer: {
+    id: 0,
+    documentId: 'default-footer',
+    copyright: '© 2024 Indigo Studio',
+    links: [],
+  },
+};
 
 const createClient = (
   config?: Omit<Config, 'baseURL'>,
@@ -268,3 +305,44 @@ export function revalidateContent(
       break;
   }
 }
+
+/**
+ * Safe fetch for single type that returns null on error instead of throwing.
+ * Useful for optional content that may not exist yet in Strapi.
+ */
+export async function fetchSingleTypeOrNull<T = API.Document>(
+  singleTypeName: string,
+  options?: API.BaseQueryParams,
+  config?: Omit<Config, 'baseURL'>
+): Promise<T | null> {
+  try {
+    return await fetchSingleType<T>(singleTypeName, options, config);
+  } catch (error) {
+    console.warn(
+      `[Strapi] Could not fetch single type "${singleTypeName}", returning null`,
+      error instanceof Error ? error.message : error
+    );
+    return null;
+  }
+}
+
+/**
+ * Safe fetch for collection that returns empty array on error.
+ * Useful for optional collections that may not exist yet in Strapi.
+ */
+export async function fetchCollectionTypeOrEmpty<T = API.Document[]>(
+  collectionName: string,
+  options?: API.BaseQueryParams,
+  config?: Omit<Config, 'baseURL'>
+): Promise<T> {
+  try {
+    return await fetchCollectionType<T>(collectionName, options, config);
+  } catch (error) {
+    console.warn(
+      `[Strapi] Could not fetch collection "${collectionName}", returning empty array`,
+      error instanceof Error ? error.message : error
+    );
+    return [] as T;
+  }
+}
+
