@@ -21,7 +21,7 @@ COPY package.json yarn.lock ./
 RUN corepack enable && corepack prepare yarn@1.22.22 --activate
 
 # Install dependencies with proper flags
-RUN yarn install --network-timeout 100000 --ignore-engines --ignore-scripts --frozen-lockfile=false
+RUN yarn install --network-timeout 100000 --ignore-engines --ignore-scripts
 
 # Copy application files
 COPY . .
