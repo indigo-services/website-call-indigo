@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  strapi:
+    build:
+      context: ./strapi
+      dockerfile: Dockerfile
+    container_name: indigo-strapi
+    restart: unless-stopped
+    ports:
+      - "1337:1337"
+    environment:
+      # Basic Configuration
+      HOST: 0.0.0.0
+      PORT: 1337
+      NODE_ENV: production
+      DATABASE_CLIENT: sqlite
+      DATABASE_FILENAME: .tmp/data.db
+
+      # Security Keys
+      APP_KEYS: d3800189_ad55_41bf_a330_0e326d6873781,ae374b7b_2d06_4c99_9be0_08d6c0ed34622
+      API_TOKEN_SALT: 63a1c48c_c951_4bfe_831a_f34009a317c3
+      ADMIN_JWT_SECRET: 05130689_2be1_46cc_ad3b_ae1d02798660
+      TRANSFER_TOKEN_SALT: bbd36f19_e683_47cb_a477_acce1c4531c8
+      JWT_SECRET: 00df0dde_c4b6_412a_a239_c65963c7e02a
+      ADMIN_AUTH_SECRET: 05130689_2be1_46cc_ad3b_ae1d02798660
+      ADMIN_PATH: /manage/admin
+
+      # Client Configuration
+      CLIENT_URL: https://riostack-indigo-studio.ck87nu.easypanel.host
+      PREVIEW_SECRET: 300f6f44_f604_4fa0_8e9c_4110412dd41e
+
+      # CORS Configuration
+      URL: https://riostack-indigo-studio.ck87nu.easypanel.host
+      PUBLIC_URL: https://riostack-indigo-studio.ck87nu.easypanel.host
+
+    volumes:
+      # Persist SQLite database
+      - strapi_data:/app/.tmp
+      # Persist uploaded files
+      - strapi_uploads:/app/public/uploads
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:1337/', (r) => {process.exit(r.statusCode === 200 || r.statusCode === 302 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+    networks:
+      - indigo-network
+
+volumes:
+  strapi_data:
+    driver: local
+  strapi_uploads:
+    driver: local
+
+networks:
+  indigo-network:
+    driver: bridge
