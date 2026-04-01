@@ -22,7 +22,10 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Install and bootstrap
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Bootstrap env and app setup
         run: yarn setup:ci
 
       - name: Run doctor

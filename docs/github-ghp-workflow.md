@@ -40,7 +40,7 @@ Key repo-specific decisions:
 - `launchops` is the default project for `ghp plan`, `ghp work`, and `ghp add issue`
 - branch naming stays GitHub-user scoped: `{user}/{number}-{title}`
 - worktrees are created under `../.worktrees`
-- worktree setup uses `yarn setup`
+- worktree setup uses `yarn && yarn setup`
 - worktrees copy local env/link artifacts needed for development and preview checks:
   - `.env`
   - `.env.local`

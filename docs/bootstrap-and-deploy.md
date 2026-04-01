@@ -11,13 +11,14 @@ Local development is the primary workflow.
 Start from a fresh clone with:
 
 ```bash
+yarn
 yarn setup
 yarn dev
 ```
 
 `yarn setup` now:
 
-- installs dependencies
+- completes the guided repo bootstrap after the initial install
 - creates `next/.env` and `strapi/.env` from examples if missing
 - prompts for missing local URLs when useful
 - generates Strapi secrets automatically

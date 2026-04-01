@@ -14,7 +14,7 @@
     "next/.env.local",
     "strapi/.env"
   ],
-  "worktreeSetupCommand": "yarn setup",
+  "worktreeSetupCommand": "yarn && yarn setup",
   "worktreeAutoSetup": true,
   "parallelWork": {
     "openTerminal": false,
