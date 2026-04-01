@@ -12,7 +12,15 @@ try {
     git remote add $remoteName $remoteUrl
   }
 
-  git fetch $remoteName $branchName --depth=1 2>$null
+  $remoteBranch = git ls-remote --heads $remoteName $branchName
+  if ($LASTEXITCODE -ne 0) {
+    throw "Unable to inspect remote branch '$branchName' on '$remoteName'."
+  }
+
+  if ($remoteBranch) {
+    git fetch $remoteName $branchName --depth=1
+  }
+
   git subtree push --prefix next $remoteName $branchName
 }
 finally {
