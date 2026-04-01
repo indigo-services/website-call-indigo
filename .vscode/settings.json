@@ -11,5 +11,6 @@
   "ghProjects.prOpenedStatus": "In progress",
   "ghProjects.prMergedStatus": "Done",
   "caspianTaskmaster.repo": "indigo-launchops",
-  "caspianTaskmaster.owner": "indigo-services"
+  "caspianTaskmaster.owner": "indigo-services",
+  "vercelVSCode.accessToken": "vck_71sNbPgw8DTBWS77wRdb65XTh3q2WB7zLrnh5MJA2a0zkjiDir1VJvIR"
 }
