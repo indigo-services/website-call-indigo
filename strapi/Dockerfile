@@ -17,11 +17,13 @@ COPY package.json yarn.lock ./
 
 RUN corepack enable \
   && corepack prepare yarn@1.22.22 --activate \
-  && yarn install --frozen-lockfile
+  && yarn install --network-timeout 100000 --ignore-engines
 
 FROM deps AS build
 
 COPY . .
+
+ENV NODE_ENV=production
 
 RUN yarn build
 
@@ -42,12 +44,15 @@ WORKDIR /app
 
 COPY --from=build /app /app
 
-RUN mkdir -p /app/.tmp /app/public/uploads \
+RUN mkdir -p /app/.tmp /app/public/uploads /app/node_modules/.cache \
   && chown -R node:node /app
 
 USER node
 
 EXPOSE 1337
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:1337/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})" || exit 1
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["node", "node_modules/@strapi/strapi/bin/strapi.js", "start"]
