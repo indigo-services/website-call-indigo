@@ -12,14 +12,22 @@ function getLocale(request: NextRequest): string | undefined {
   const locales: Readonly<string[]> = i18n.locales;
   const languages = new Negotiator({ headers: negotiatorHeaders }).languages();
 
-  const locale = matchLocale(languages, locales, i18n.defaultLocale);
-  return locale;
+  try {
+    return matchLocale(languages, locales, i18n.defaultLocale);
+  } catch {
+    return i18n.defaultLocale;
+  }
 }
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  if (pathname === '/' || pathname === '/approval-home') {
+  if (
+    pathname === '/' ||
+    pathname === '/approval-home' ||
+    pathname === '/dashboard' ||
+    pathname.startsWith('/dashboard/')
+  ) {
     return;
   }
 

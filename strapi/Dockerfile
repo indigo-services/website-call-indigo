@@ -1,58 +1,53 @@
-# Build stage
-FROM node:18-alpine AS builder
+FROM node:22-bookworm-slim AS base
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    make \
+    g++ \
+    pkg-config \
+    sqlite3 \
+    tini \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Install dependencies first
-RUN apk add --no-cache python3 make g++
+FROM base AS deps
 
-# Copy package files
-COPY package.json ./
-COPY yarn.lock* ./ 
+COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN yarn install --network-timeout 100000
+RUN corepack enable \
+  && corepack prepare yarn@1.22.22 --activate \
+  && yarn install --frozen-lockfile
 
-# Copy source code
+FROM deps AS build
+
 COPY . .
 
-# Build Strapi
 RUN yarn build
 
-# Final stage
-FROM node:18-alpine
+FROM node:22-bookworm-slim AS runtime
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sqlite3 \
+    tini \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=1337
+ENV DATABASE_CLIENT=sqlite
+ENV DATABASE_FILENAME=.tmp/data.db
 
 WORKDIR /app
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+COPY --from=build /app /app
 
-# Create app user
-RUN addgroup -g 101 -S strapi && \
-    adduser -S -D -H -u 101 -h /app -s /sbin/nologin -G strapi -g strapi strapi
+RUN mkdir -p /app/.tmp /app/public/uploads \
+  && chown -R node:node /app
 
-# Copy from builder
-COPY --from=builder --chown=strapi:strapi /app/dist ./dist
-COPY --from=builder --chown=strapi:strapi /app/node_modules ./node_modules
-COPY --from=builder --chown=strapi:strapi /app/package.json ./package.json
-COPY --from=builder --chown=strapi:strapi /app/public ./public
-COPY --from=builder --chown=strapi:strapi /app/types ./types
-COPY --from=builder --chown=strapi:strapi /app/.strapi ./.strapi
-COPY --from=builder --chown=strapi:strapi /app/config ./config
-COPY --from=builder --chown=strapi:strapi /app/database ./database
+USER node
 
-# Switch to non-root user
-USER strapi
-
-# Expose Strapi port
 EXPOSE 1337
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:1337/admin', (r) => {if (r.statusCode !== 200) throw new Error('Health check failed')})"
-
-# Use dumb-init to handle signals properly
-ENTRYPOINT ["dumb-init", "--"]
-
-# Start Strapi
-CMD ["node", "dist/server.js"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["node", "node_modules/@strapi/strapi/bin/strapi.js", "start"]

@@ -34,6 +34,7 @@
     "deploy:preview": "vercel",
     "deploy:easypanel": "node --loader ts-node/esm ./scripts/deploy-easypanel.mts",
     "deploy:easypanel:api": "node --loader ts-node/esm ./scripts/deploy-easypanel-api.mts",
+    "deploy:next:github": "powershell -ExecutionPolicy Bypass -File ./scripts/push-next-website-call-indigo.ps1",
     "verify:endpoints:local": "node scripts/verify-endpoints.mjs http://localhost:3000",
     "verify:endpoints:prod": "node scripts/verify-endpoints.mjs",
     "report:visual": "node scripts/generate-visual-report.mjs http://localhost:3000",

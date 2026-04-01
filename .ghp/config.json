@@ -40,6 +40,15 @@
     "landing": {
       "project": "launchops",
       "slice": ["Repository=indigo-services/var1-home-landing"]
+    },
+    "launch-apps": {
+      "project": "launchops",
+      "slice": ["Repository=indigo-services/website-call-indigo"]
+    },
+    "launch-apps-open": {
+      "project": "launchops",
+      "slice": ["Repository=indigo-services/website-call-indigo"],
+      "status": ["Todo", "In progress"]
     }
   }
 }

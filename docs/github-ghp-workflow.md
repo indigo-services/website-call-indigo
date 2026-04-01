@@ -12,14 +12,18 @@ This repo uses GitHub as the source of truth for planning and PR delivery.
 - branch-to-issue linking
 - draft PR execution flow
 - parent PR coordination for narrow child slices
+- parent PR coordination for narrow child slices
 
 ## Canonical Surfaces
 
 - GitHub issue: scope, acceptance criteria, approvals, blockers
 - draft PR: implementation evidence, validation, rollout notes
 - parent PR: umbrella narrative, merge order, and child-slice index
+- parent PR: umbrella narrative, merge order, and child-slice index
 - `launchops` project: shared board and status tracking
 - local repo/worktree: execution only
+- VS Code: daily execution UI, review surface, and task runner
+- non-`ghp` repo standards: architecture, release gates, scripts, and active product specs
 - VS Code: daily execution UI, review surface, and task runner
 - non-`ghp` repo standards: architecture, release gates, scripts, and active product specs
 
@@ -37,6 +41,15 @@ Key repo-specific decisions:
 - automatic terminal agent launch is disabled so Windows, VS Code, Codex, and other providers can choose their own execution surface
 - GitHub branch naming stays deterministic and issue-scoped
 - rollout defaults should reuse existing preview or env surfaces before adding new flag tooling
+
+## Repo Boundaries
+
+Use this repo for studio, CMS, and workbench execution. Launch-facing frontend deployments can live in separate GitHub repos and still be tracked through the same `launchops` project.
+
+- `indigo-services/indigo-studio`: studio, Strapi, shared operating context, and local execution
+- `indigo-services/website-call-indigo`: separate launch frontend repo for Vercel Git deployment
+- Vercel launch apps should prefer direct Git linkage to the frontend repo they actually deploy from
+- keep cross-repo planning in `launchops`; keep implementation PRs inside the repo that owns the deployed app
 
 ## Non-GHP Ingest Rule
 
@@ -61,6 +74,8 @@ yarn ghp:fields
 yarn ghp:plan
 yarn ghp:plan studio
 yarn ghp:work
+yarn ghp:status
+yarn ghp:pr
 yarn ghp:status
 yarn ghp:pr
 ```
@@ -160,11 +175,88 @@ The intended editor loop is VS Code operating directly on the issue-linked workt
 - keep the active parent PR open in the editor while implementing the child slice in its own worktree
 - treat the parent PR as the conversation hub; child PRs should stay short and implementation-specific
 
+## Parent PR Model
+
+Use a parent PR when a capability is too large for one safe merge but should still read as one delivery track.
+
+- parent PR owns the top-level problem statement, rollout notes, and merge order
+- child PRs own one bounded write set and one deterministic validation set
+- child PRs can target the parent branch when stacked delivery is required
+- every child PR must link back to the parent PR and the canonical GitHub issue
+- merge the parent only after its child slices are merged or intentionally cut from scope
+
+Default rule: prefer one issue and one PR. Move to a parent-plus-child model only when it reduces review risk.
+
+## Proposal-First PRs
+
+When discovery is still active, open a draft PR as a proposal rather than waiting for a large implementation diff.
+
+- use the PR template to define write set, rollout mode, and validation plan up front
+- record which non-`ghp` surfaces were ingested before proposing any net-new system
+- compare competing approaches instead of presenting one default answer
+- keep proposal PRs documentation-heavy and code-light
+- convert proposal sections into implementation evidence as work lands
+
+## Proposal Competition
+
+For material work, require at least two credible approaches before committing build effort.
+
+- option scoring should optimize for low token burn, high success probability, and maximum reuse of maintained surfaces
+- default winner is the option that reuses the most existing repo, GitHub, VS Code, and Vercel capability while still satisfying the issue
+- only choose net-new platform work when reuse has been clearly exhausted
+
+Useful scoring questions:
+
+- which option depends on the fewest new moving parts
+- which option keeps validation cheapest
+- which option leaves the clearest artifacts for the next team
+- which option creates something genuinely reusable instead of just more process
+
+## Agent Review Standard
+
+Every proposal or implementation PR should survive one adversarial review pass.
+
+- challenge scope expansion
+- challenge unnecessary new tooling
+- challenge hidden runtime flags or rollout complexity
+- challenge anything that does not improve reuse, proof, or recovery
+- keep the strongest rejected option in the PR notes so future teams can revisit it without redoing the thinking
+
+## First-Principles Novelty Rule
+
+Build new code, workflow, or platform combinations only when all of the following are true:
+
+- the capability is not already available through maintained repo assets, GitHub, VS Code, Vercel, or existing dependencies
+- the combination is useful enough that future teams can build on it
+- the new surface has a clear owner, validation path, and rollback story
+
+If those conditions are not met, prefer reuse, documentation, or a narrower proposal over implementation.
+
+## Vercel Gating
+
+This repo should maximize existing rollout surfaces before adding a feature-flag system.
+
+- default review gate for frontend work is a draft PR plus Vercel preview deployment
+- if runtime gating is required, reuse an existing env or content switch already present in the repo
+- do not introduce a new flag service or flag SDK in a baseline slice unless there is a dedicated issue for that platform choice
+- if a new flag system is truly required later, capture it as a separate tracked decision and PR
+
+## VS Code DX
+
+The intended editor loop is VS Code operating directly on the issue-linked worktree.
+
+- use the workspace tasks for `ghp plan`, `ghp work`, `ghp start`, `ghp pr`, preview deploy, and validation
+- use the GitHub Pull Requests extension to review the parent PR and child PR threads without leaving the editor
+- keep the active parent PR open in the editor while implementing the child slice in its own worktree
+- treat the parent PR as the conversation hub; child PRs should stay short and implementation-specific
+
 ## Open Shortcuts
 
 - `yarn ghp:plan studio`
 - `yarn ghp:plan studio-open`
 - `yarn ghp:plan landing`
+- `yarn ghp:plan launch-apps`
+- `yarn ghp:plan launch-apps-open`
 
 These shortcuts keep the `launchops` board readable when multiple repos are sharing the same project.
 
@@ -175,6 +267,8 @@ These shortcuts keep the `launchops` board readable when multiple repos are shar
 3. Open a draft PR early.
 4. Validate locally before requesting review.
 5. Merge only after PR checks and issue acceptance criteria pass.
+6. If using stacked delivery, the parent PR should explain merge order explicitly.
+7. Keep rollout notes deterministic: preview URL, env gate, or no gate.
 6. If using stacked delivery, the parent PR should explain merge order explicitly.
 7. Keep rollout notes deterministic: preview URL, env gate, or no gate.
 
