@@ -315,3 +315,13 @@ Use these prefixes in issue comments and PR notes so parallel sessions can hand 
 - Do not mix `next/`, `strapi/`, and workflow/config changes in one PR unless the issue explicitly requires it.
 - Keep feature work off the contaminated legacy branch line.
 - Use repo-local `.ghp` settings as the shared baseline and personal user config only for local overrides.
+
+## Source Freeze
+
+Issue #7 freezes the current landing inputs at a fixed baseline so follow-up migration work does not drift.
+
+- Issue: https://github.com/indigo-services/indigo-studio/issues/7
+- Source shortcut: `.ghp/config.json` -> `indigo-services/var1-home-landing`
+- Current branch: `indigo-services/7-freeze-source-and-archive-current-landing`
+- Current snapshot asset: `LaunchPad.jpg`
+- Archive rule: do not retarget the source boundary without an explicit follow-up archive update.
