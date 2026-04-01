@@ -1,44 +1,53 @@
-FROM node:22-bookworm-slim
+FROM node:22-bookworm-slim AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
-    build-essential \
+    make \
+    g++ \
     pkg-config \
     sqlite3 \
-    libsqlite3-dev \
-    libpng-dev \
     tini \
-    autoconf \
-    automake \
-    libtool \
-    zlib1g-dev \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-COPY scripts ./scripts
+FROM base AS deps
 
-RUN corepack enable && corepack prepare yarn@4.13.0 --activate
-RUN yarn install --immutable
+COPY package.json yarn.lock ./
+
+RUN corepack enable \
+  && corepack prepare yarn@1.22.22 --activate \
+  && yarn install --frozen-lockfile
+
+FROM deps AS build
+
+COPY . .
+
+RUN yarn build
+
+FROM node:22-bookworm-slim AS runtime
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sqlite3 \
+    tini \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=1337
-ENV ADMIN_PATH=/manage/admin
+ENV DATABASE_CLIENT=sqlite
+ENV DATABASE_FILENAME=.tmp/data.db
 
-RUN yarn build
-RUN yarn rebuild better-sqlite3 || (cd node_modules/better-sqlite3 && npm run build-release)
+WORKDIR /app
 
-RUN mkdir -p /app/.tmp /app/public/uploads /app/node_modules/.cache \
+COPY --from=build /app /app
+
+RUN mkdir -p /app/.tmp /app/public/uploads \
   && chown -R node:node /app
 
 USER node
 
 EXPOSE 1337
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:1337/', (r) => {process.exit(r.statusCode === 200 || r.statusCode === 302 ? 0 : 1)})" || exit 1
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["node", "node_modules/@strapi/strapi/bin/strapi.js", "start"]
