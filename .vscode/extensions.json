@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "bretwardjames.gh-projects",
+    "ms-vscode.vscode-typescript-next",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-playwright.playwright"
+  ]
+}
