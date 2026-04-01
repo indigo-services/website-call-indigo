@@ -33,6 +33,14 @@ ENV PORT=1337
 ENV DATABASE_CLIENT=sqlite
 ENV DATABASE_FILENAME=.tmp/data.db
 
+# Set default security keys (should be overridden by Easypanel)
+ENV APP_KEYS=changeMeToRandomString1,changeMeToRandomString2,changeMeToRandomString3,changeMeToRandomString
+ENV API_TOKEN_SALT=changeMeToRandomString
+ENV ADMIN_JWT_SECRET=changeMeToRandomString
+ENV TRANSFER_TOKEN_SALT=changeMeToRandomString
+ENV JWT_SECRET=changeMeToRandomString
+ENV ADMIN_AUTH_SECRET=changeMeToRandomString
+
 # Build the application
 RUN yarn build
 
