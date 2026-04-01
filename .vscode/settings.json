@@ -4,12 +4,63 @@
   "terminal.integrated.enablePersistentSessions": true,
   "workbench.browser.openLocalhostLinks": "always",
   "simpleBrowser.useIntegratedBrowser": true,
+  "todo-tree.general.tags": [
+    "TODO",
+    "GH-ISSUE",
+    "DECISION",
+    "APPROVAL",
+    "BLOCKER",
+    "RECOMMENDATION",
+    "FOLLOW-UP"
+  ],
+  "todo-tree.tree.showScanModeButton": true,
+  "todo-tree.regex.regex": "(//|#|<!--|/\\*|\\*)\\s*($TAGS)(:|\\b)",
+  "todo-tree.highlights.customHighlight": {
+    "DECISION": {
+      "icon": "git-commit",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#0969da"
+    },
+    "APPROVAL": {
+      "icon": "pass",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#1a7f37"
+    },
+    "BLOCKER": {
+      "icon": "error",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#cf222e"
+    },
+    "RECOMMENDATION": {
+      "icon": "lightbulb",
+      "type": "line",
+      "foreground": "#24292f",
+      "background": "#fb8500"
+    },
+    "FOLLOW-UP": {
+      "icon": "history",
+      "type": "line",
+      "foreground": "#24292f",
+      "background": "#f2cc60"
+    },
+    "GH-ISSUE": {
+      "icon": "link-external",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#6f42c1"
+    }
+  },
   "ghProjects.mainBranch": "main",
   "ghProjects.branchNamePattern": "{user}/{number}-{title}",
   "ghProjects.startWorkingStatus": "In progress",
   "ghProjects.doneStatus": "Done",
   "ghProjects.prOpenedStatus": "In progress",
   "ghProjects.prMergedStatus": "Done",
+  "ghProjects.defaultProjectOwner": "indigo-services",
+  "ghProjects.defaultProjectNumber": 1,
   "caspianTaskmaster.repo": "indigo-launchops",
   "caspianTaskmaster.owner": "indigo-services"
 }

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Launchops Project Board
+    url: https://github.com/users/indigo-services/projects/1
+    about: View active work, status, and issue slices in the shared GitHub Project.
+  - name: GHP Workflow Guide
+    url: https://github.com/indigo-services/indigo-studio/blob/main/docs/github-ghp-workflow.md
+    about: Use the repo-local ghp and VS Code workflow before starting new work.

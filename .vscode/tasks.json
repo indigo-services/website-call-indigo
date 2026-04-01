@@ -1,0 +1,79 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Project: Open Launchops Board",
+      "type": "shell",
+      "command": "gh project view 1 --owner indigo-services --web",
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: List Studio Open Work",
+      "type": "shell",
+      "command": "yarn ghp:plan studio-open --list --all",
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: List Active Worktrees",
+      "type": "shell",
+      "command": "yarn ghp:work --list",
+      "problemMatcher": []
+    },
+    {
+      "label": "Issue: Open In Browser",
+      "type": "shell",
+      "command": "gh issue view ${input:issueNumber} --repo indigo-services/indigo-studio --web",
+      "problemMatcher": []
+    },
+    {
+      "label": "Issue: View In Terminal",
+      "type": "shell",
+      "command": "gh issue view ${input:issueNumber} --repo indigo-services/indigo-studio",
+      "problemMatcher": []
+    },
+    {
+      "label": "Issue: Start Parallel Worktree",
+      "type": "shell",
+      "command": "yarn ghp:start ${input:issueNumber} --parallel --keep-branch",
+      "problemMatcher": []
+    },
+    {
+      "label": "PR: Open In Browser",
+      "type": "shell",
+      "command": "gh pr view ${input:prNumber} --repo indigo-services/indigo-studio --web",
+      "problemMatcher": []
+    },
+    {
+      "label": "PR: List Open Queue",
+      "type": "shell",
+      "command": "gh pr list --repo indigo-services/indigo-studio --limit 20",
+      "problemMatcher": []
+    },
+    {
+      "label": "Workflow: Doctor",
+      "type": "shell",
+      "command": "yarn doctor",
+      "problemMatcher": []
+    },
+    {
+      "label": "Workflow: Strapi Build Check",
+      "type": "shell",
+      "command": "yarn check:strapi",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "issueNumber",
+      "type": "promptString",
+      "description": "GitHub issue number",
+      "default": "12"
+    },
+    {
+      "id": "prNumber",
+      "type": "promptString",
+      "description": "GitHub pull request number",
+      "default": "13"
+    }
+  ]
+}

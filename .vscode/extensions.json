@@ -1,7 +1,8 @@
 {
   "recommendations": [
     "bretwardjames.gh-projects",
-    "GitHub.vscode-pull-request-github",
+    "github.vscode-pull-request-github",
+    "Gruntfuggly.todo-tree",
     "ms-vscode.vscode-typescript-next",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",

@@ -27,6 +27,10 @@ This repo uses GitHub as the source of truth for planning and PR delivery.
 - VS Code: daily execution UI, review surface, and task runner
 - non-`ghp` repo standards: architecture, release gates, scripts, and active product specs
 
+Project URL:
+
+- `launchops`: https://github.com/users/indigo-services/projects/1
+
 ## Repo Defaults
 
 The committed workspace config lives in `.ghp/config.json`.
@@ -37,7 +41,13 @@ Key repo-specific decisions:
 - branch naming stays GitHub-user scoped: `{user}/{number}-{title}`
 - worktrees are created under `../.worktrees`
 - worktree setup uses `yarn setup`
-- worktrees copy `.env`, `next/.env`, and `strapi/.env`
+- worktrees copy local env/link artifacts needed for development and preview checks:
+  - `.env`
+  - `.env.local`
+  - `.vercel/project.json`
+  - `next/.env`
+  - `next/.env.local`
+  - `strapi/.env`
 - automatic terminal agent launch is disabled so Windows, VS Code, Codex, and other providers can choose their own execution surface
 - GitHub branch naming stays deterministic and issue-scoped
 - rollout defaults should reuse existing preview or env surfaces before adding new flag tooling
@@ -79,6 +89,26 @@ yarn ghp:pr
 yarn ghp:status
 yarn ghp:pr
 ```
+
+## VS Code Surface
+
+Use the committed workspace tasks to stay inside VS Code for the common flow:
+
+- `Project: Open Launchops Board`
+- `Project: List Studio Open Work`
+- `Project: List Active Worktrees`
+- `Issue: Open In Browser`
+- `Issue: Start Parallel Worktree`
+- `PR: Open In Browser`
+- `PR: List Open Queue`
+- `Workflow: Doctor`
+- `Workflow: Strapi Build Check`
+
+The workspace also recommends:
+
+- `bretwardjames.gh-projects`
+- `github.vscode-pull-request-github`
+- `Gruntfuggly.todo-tree`
 
 ## Start Work
 
@@ -271,6 +301,14 @@ These shortcuts keep the `launchops` board readable when multiple repos are shar
 7. Keep rollout notes deterministic: preview URL, env gate, or no gate.
 8. If using stacked delivery, the parent PR should explain merge order explicitly.
 9. Keep rollout notes deterministic: preview URL, env gate, or no gate.
+
+Use these prefixes in issue comments and PR notes so parallel sessions can hand off quickly:
+
+- `Decision:`
+- `Approval:`
+- `Blocker:`
+- `Recommendation:`
+- `FOLLOW-UP:`
 
 ## Monorepo Notes
 
