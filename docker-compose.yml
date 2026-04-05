@@ -3,7 +3,6 @@ services:
     build:
       context: ./strapi
       dockerfile: Dockerfile
-    container_name: indigo-studio-strapi
     restart: unless-stopped
     environment:
       # Basic Configuration
