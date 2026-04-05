@@ -1,14 +1,10 @@
-version: '3.8'
-
 services:
-  strapi:
+  indigo-strapi:
     build:
       context: ./strapi
       dockerfile: Dockerfile
-    container_name: indigo-strapi
+    container_name: indigo-studio-strapi
     restart: unless-stopped
-    ports:
-      - "1337:1337"
     environment:
       # Basic Configuration
       HOST: 0.0.0.0
