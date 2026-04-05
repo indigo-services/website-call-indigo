@@ -20,8 +20,8 @@ COPY package.json yarn.lock ./
 # Enable yarn and install dependencies
 RUN corepack enable && corepack prepare yarn@1.22.22 --activate
 
-# Install dependencies with proper flags
-RUN yarn install --network-timeout 100000 --ignore-engines --ignore-scripts
+# Install dependencies with proper flags (but don't ignore scripts for native modules)
+RUN yarn install --network-timeout 100000 --ignore-engines
 
 # Copy application files
 COPY . .
@@ -44,6 +44,9 @@ ENV ADMIN_PATH=/manage/admin
 
 # Build the application
 RUN yarn build
+
+# Rebuild better-sqlite3 native module for current architecture
+RUN yarn rebuild better-sqlite3 || (cd node_modules/better-sqlite3 && npm run build-release)
 
 # Create necessary directories and set permissions
 RUN mkdir -p /app/.tmp /app/public/uploads /app/node_modules/.cache \

@@ -6,28 +6,28 @@ services:
     restart: unless-stopped
     environment:
       # Basic Configuration
-      HOST: 0.0.0.0
-      PORT: 1337
-      NODE_ENV: production
-      DATABASE_CLIENT: sqlite
-      DATABASE_FILENAME: .tmp/data.db
+      HOST: ${HOST:-0.0.0.0}
+      PORT: ${PORT:-1337}
+      NODE_ENV: ${NODE_ENV:-production}
+      DATABASE_CLIENT: ${DATABASE_CLIENT:-sqlite}
+      DATABASE_FILENAME: ${DATABASE_FILENAME:-.tmp/data.db}
 
       # Security Keys
-      APP_KEYS: d3800189_ad55_41bf_a330_0e326d6873781,ae374b7b_2d06_4c99_9be0_08d6c0ed34622
-      API_TOKEN_SALT: 63a1c48c_c951_4bfe_831a_f34009a317c3
-      ADMIN_JWT_SECRET: 05130689_2be1_46cc_ad3b_ae1d02798660
-      TRANSFER_TOKEN_SALT: bbd36f19_e683_47cb_a477_acce1c4531c8
-      JWT_SECRET: 00df0dde_c4b6_412a_a239_c65963c7e02a
-      ADMIN_AUTH_SECRET: 05130689_2be1_46cc_ad3b_ae1d02798660
-      ADMIN_PATH: /manage/admin
+      APP_KEYS: ${APP_KEYS:-changeMeToRandomString1,changeMeToRandomString2}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:-changeMeToRandomString}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-changeMeToRandomString}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:-changeMeToRandomString}
+      JWT_SECRET: ${JWT_SECRET:-changeMeToRandomString}
+      ADMIN_AUTH_SECRET: ${ADMIN_AUTH_SECRET:-changeMeToRandomString}
+      ADMIN_PATH: ${ADMIN_PATH:-/admin}
 
       # Client Configuration
-      CLIENT_URL: https://riostack-indigo-studio.ck87nu.easypanel.host
-      PREVIEW_SECRET: 300f6f44_f604_4fa0_8e9c_4110412dd41e
+      CLIENT_URL: ${CLIENT_URL:-https://your-vercel-domain.example.com}
+      PREVIEW_SECRET: ${PREVIEW_SECRET:-changeMeToRandomString}
 
       # CORS Configuration
-      URL: https://riostack-indigo-studio.ck87nu.easypanel.host
-      PUBLIC_URL: https://riostack-indigo-studio.ck87nu.easypanel.host
+      URL: ${URL:-https://your-strapi-domain.example.com}
+      PUBLIC_URL: ${PUBLIC_URL:-https://your-strapi-domain.example.com}
 
     volumes:
       # Persist SQLite database
@@ -36,7 +36,13 @@ services:
       - strapi_uploads:/app/public/uploads
 
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:1337/', (r) => {process.exit(r.statusCode === 200 || r.statusCode === 302 ? 0 : 1)})"]
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').get('http://localhost:1337/', (r) => {process.exit(r.statusCode === 200 || r.statusCode === 302 ? 0 : 1)})",
+        ]
       interval: 30s
       timeout: 5s
       retries: 3

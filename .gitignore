@@ -20,3 +20,4 @@ docs/*
 !.yarn/versions
 .vercel
 .env*.local
+.playwright-mcp/

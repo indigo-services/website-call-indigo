@@ -1,0 +1,324 @@
+{
+  "description": "Portable env metadata for the open toolset. Covers user/global provider tokens plus the Strapi-on-Easypanel, frontend-on-Vercel deployment model.",
+  "files": {
+    ".env.local": {
+      "purpose": "Ignored local user/global provider tokens and repo-wide utility config"
+    },
+    ".env.easypanel.local": {
+      "purpose": "Ignored local Easypanel control-plane and Strapi runtime overrides"
+    },
+    ".env.production.local": {
+      "purpose": "Ignored local frontend/runtime URL overrides"
+    }
+  },
+  "vars": [
+    {
+      "key": "OPENAI_API_KEY",
+      "provider": "openai",
+      "scope": "global",
+      "description": "Optional user-level token for OpenAI-powered tooling and local automation. Can come from Windows user-level env vars or .env.local.",
+      "required": false,
+      "sensitive": true,
+      "targetFile": ".env.local",
+      "placeholder": "replace-with-openai-api-key"
+    },
+    {
+      "key": "ZAI_API_KEY",
+      "provider": "zai",
+      "scope": "global",
+      "description": "Z.AI API key for OpenAI-compatible clients and local tooling. Can come from Windows user-level env vars or .env.local.",
+      "required": false,
+      "sensitive": true,
+      "targetFile": ".env.local",
+      "placeholder": "replace-with-zai-api-key"
+    },
+    {
+      "key": "ZAI_OPENAI_BASE_URL",
+      "provider": "zai",
+      "scope": "global",
+      "description": "Z.AI OpenAI-compatible base URL for the general API endpoint. Safe to keep in tracked examples because it is not a secret.",
+      "required": false,
+      "sensitive": false,
+      "targetFile": ".env.local",
+      "default": "https://api.z.ai/api/paas/v4"
+    },
+    {
+      "key": "GITHUB_TOKEN",
+      "provider": "github",
+      "scope": "global",
+      "description": "Optional user-level token for GitHub API access, repo sync, and CI metadata.",
+      "required": false,
+      "sensitive": true,
+      "targetFile": ".env.local",
+      "placeholder": "replace-with-github-token"
+    },
+    {
+      "key": "GITHUB_REPOSITORY",
+      "provider": "github",
+      "scope": "global",
+      "description": "Default repository slug used by provider-aware scripts when the repo cannot be inferred.",
+      "required": false,
+      "sensitive": false,
+      "targetFile": ".env.local",
+      "default": "indigo-buildops/indigo-studio"
+    },
+    {
+      "key": "VERCEL_TOKEN",
+      "provider": "vercel",
+      "scope": "global",
+      "description": "Optional Vercel token for deployment, environment sync, and runtime inspection.",
+      "required": false,
+      "sensitive": true,
+      "targetFile": ".env.local",
+      "placeholder": "replace-with-vercel-token"
+    },
+    {
+      "key": "VERCEL_PROJECT_ID",
+      "provider": "vercel",
+      "scope": "global",
+      "description": "Project identifier for the frontend deployed on Vercel.",
+      "required": false,
+      "sensitive": false,
+      "targetFile": ".env.local",
+      "placeholder": "replace-with-vercel-project-id"
+    },
+    {
+      "key": "VERCEL_TEAM_ID",
+      "provider": "vercel",
+      "scope": "global",
+      "description": "Team identifier for Vercel organization-level access.",
+      "required": false,
+      "sensitive": false,
+      "targetFile": ".env.local",
+      "placeholder": "replace-with-vercel-team-id"
+    },
+    {
+      "key": "EASYPANEL_API",
+      "provider": "easypanel",
+      "scope": "control-plane",
+      "description": "Primary Easypanel API token used for TRPC control-plane operations.",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "replace-with-api-token"
+    },
+    {
+      "key": "EASYPANEL_API_URL",
+      "provider": "easypanel",
+      "scope": "control-plane",
+      "description": "Base URL for the self-hosted Easypanel API surface.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "https://vps10.riolabs.ai/api"
+    },
+    {
+      "key": "EASYPANEL_PROJECT_NAME",
+      "provider": "easypanel",
+      "scope": "control-plane",
+      "description": "Target Easypanel project that contains the Strapi service.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "riostack"
+    },
+    {
+      "key": "EASYPANEL_SERVICE_NAME",
+      "provider": "easypanel",
+      "scope": "control-plane",
+      "description": "Top-level Easypanel service name for the Strapi deployment target.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "indigo-studio"
+    },
+    {
+      "key": "EASYPANEL_SERVICE_TYPE",
+      "provider": "easypanel",
+      "scope": "control-plane",
+      "description": "Use compose for the current Strapi target; app remains supported for future adapters.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "compose"
+    },
+    {
+      "key": "EASYPANEL_STRAPI_CONTAINER",
+      "provider": "easypanel",
+      "scope": "compose",
+      "description": "Internal compose service name used for domain routing and health targeting.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "indigo-strapi"
+    },
+    {
+      "key": "EASYPANEL_ADMIN_PATH",
+      "provider": "strapi",
+      "scope": "runtime",
+      "description": "Desired public admin path for Strapi once the config is wired to honor it.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "/admin"
+    },
+    {
+      "key": "EASYPANEL_STRAPI_HEALTH_PATH",
+      "provider": "strapi",
+      "scope": "runtime",
+      "description": "Health probe path used by Easypanel and the local doctor/health utilities.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "/"
+    },
+    {
+      "key": "HOST",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "0.0.0.0"
+    },
+    {
+      "key": "PORT",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "1337"
+    },
+    {
+      "key": "DATABASE_CLIENT",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": "sqlite"
+    },
+    {
+      "key": "DATABASE_FILENAME",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "default": ".tmp/data.db"
+    },
+    {
+      "key": "APP_KEYS",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "comma-separated-random-values"
+    },
+    {
+      "key": "API_TOKEN_SALT",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "replace-with-random-secret"
+    },
+    {
+      "key": "ADMIN_JWT_SECRET",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "replace-with-random-secret"
+    },
+    {
+      "key": "TRANSFER_TOKEN_SALT",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "replace-with-random-secret"
+    },
+    {
+      "key": "JWT_SECRET",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "replace-with-random-secret"
+    },
+    {
+      "key": "ADMIN_AUTH_SECRET",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "replace-with-random-secret"
+    },
+    {
+      "key": "PREVIEW_SECRET",
+      "scope": "runtime",
+      "required": true,
+      "sensitive": true,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "replace-with-random-secret"
+    },
+    {
+      "key": "CLIENT_URL",
+      "provider": "strapi",
+      "scope": "runtime",
+      "description": "Public frontend origin used for preview and admin-origin checks.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "https://your-vercel-domain.example.com"
+    },
+    {
+      "key": "URL",
+      "provider": "strapi",
+      "scope": "runtime",
+      "description": "Public Strapi URL consumed by runtime and deployment automation.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "https://your-strapi-domain.example.com"
+    },
+    {
+      "key": "PUBLIC_URL",
+      "provider": "strapi",
+      "scope": "runtime",
+      "description": "Optional explicit public URL override for reverse-proxied Strapi deployments.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.easypanel.local",
+      "placeholder": "https://your-strapi-domain.example.com"
+    },
+    {
+      "key": "WEBSITE_URL",
+      "provider": "vercel",
+      "scope": "frontend",
+      "description": "Public Vercel frontend URL used by health checks and cross-service links.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.production.local",
+      "placeholder": "https://your-vercel-domain.example.com"
+    },
+    {
+      "key": "STRAPI_URL",
+      "provider": "strapi",
+      "scope": "frontend",
+      "description": "Public Strapi URL consumed by the frontend and toolset health checks.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.production.local",
+      "placeholder": "https://your-strapi-domain.example.com"
+    },
+    {
+      "key": "NEXT_PUBLIC_API_URL",
+      "provider": "strapi",
+      "scope": "frontend",
+      "description": "Frontend-safe Strapi URL exposed to the Next.js application.",
+      "required": true,
+      "sensitive": false,
+      "targetFile": ".env.production.local",
+      "placeholder": "https://your-strapi-domain.example.com"
+    }
+  ]
+}
