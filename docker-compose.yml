@@ -1,5 +1,5 @@
 services:
-  indigo-strapi:
+  indigo-studio:
     build:
       context: ./strapi
       dockerfile: Dockerfile
@@ -21,13 +21,13 @@ services:
       ADMIN_AUTH_SECRET: ${ADMIN_AUTH_SECRET:-changeMeToRandomString}
       ADMIN_PATH: ${ADMIN_PATH:-/admin}
 
-      # Client Configuration
-      CLIENT_URL: ${CLIENT_URL:-https://your-vercel-domain.example.com}
+      # Client Configuraswtion
+      CLIENT_URL: ${CLIENT_URL:-https://indigo-website-cms.vercel.app}
       PREVIEW_SECRET: ${PREVIEW_SECRET:-changeMeToRandomString}
 
       # CORS Configuration
-      URL: ${URL:-https://your-strapi-domain.example.com}
-      PUBLIC_URL: ${PUBLIC_URL:-https://your-strapi-domain.example.com}
+      URL: ${URL:-https://riostack-indigo-studio.ck87nu.easypanel.host}
+      PUBLIC_URL: ${PUBLIC_URL:-https://riostack-indigo-studio.ck87nu.easypanel.host}
 
     volumes:
       # Persist SQLite database
