@@ -18,6 +18,9 @@ const config: Config = {
         lightblack: '#1C1C1C',
         secondary: '#E6E6E6',
         muted: 'var(--neutral-200)',
+        primary: '#1e1b4b',
+        'primary-dark': '#0f172a',
+        accent: '#6366f1',
       },
       boxShadow: {
         derek: `0px 0px 0px 1px rgb(0 0 0 / 0.06),

@@ -4,12 +4,19 @@ FROM node:22-bookworm-slim
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
+    libpng-dev \
     make \
     g++ \
     pkg-config \
     sqlite3 \
     tini \
-  && rm -rf /var/lib/apt/lists/*
+    gcc \
+    build-base \
+    automake \
+    zlib-dev \
+    autoconfig \
+
+  && rm -rf /var/lib/apt/lists/*     
 
 # Set working directory
 WORKDIR /app

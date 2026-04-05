@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Typography, Flex, LinkButton } from '@strapi/design-system';
 import { 
-  Cast, 
   Database, 
   Image as ImageIcon, 
   Globe, 
@@ -27,15 +26,15 @@ const DemoWidget = () => {
           <Flex direction="column" alignItems="flex-start" gap={2}>
             <Box marginBottom={2}>
               <Typography variant="alpha" textColor="neutral800" as="h2">
-                Hosted Demo Environment
+                Indigo Studio Admin
               </Typography>
             </Box>
 
             <Typography variant="omega" textColor="neutral600">
-              Experience Strapi in a production-like setup. Explore the platform as a real team would use it.
+              This local CMS workspace is tuned for Indigo-branded content operations across marketing pages, launches, and reusable content blocks.
             </Typography>
             <Typography variant="omega" textColor="neutral600">
-              <strong>All paid features are unlocked</strong> in this demo so you can explore the full capabilities of Strapi. 
+              Use this admin as the brand-safe control plane while the public Next experience gets re-skinned around Indigo identity.
             </Typography>
           </Flex>
         </Box>
@@ -45,7 +44,7 @@ const DemoWidget = () => {
           <Flex direction="column" alignItems="flex-start" gap={5}>
             <Flex direction="column" alignItems="flex-start" gap={3}>
               <Typography variant="sigma" textColor="neutral600" textTransform="uppercase">
-                Core Features
+                Daily Operations
               </Typography>
               <Flex gap={2} wrap="wrap">
                 <LinkButton href="/admin/content-manager/" variant="secondary" startIcon={<Database fill="primary600" />}>
@@ -63,7 +62,7 @@ const DemoWidget = () => {
             <Flex direction="column" alignItems="flex-start" gap={3}>
               <Flex gap={2}>
                 <Typography variant="sigma" textColor="neutral600" textTransform="uppercase">
-                  Premium Features
+                  Publishing Controls
                 </Typography>
                 <Sparkle fill="primary600" width="12px" height="12px" />
               </Flex>
@@ -92,16 +91,15 @@ const DemoWidget = () => {
         <Flex gap={3}>
           <Lock fill="neutral500" width="16px" height="16px" />
           <Typography variant="omega" textColor="neutral600">
-            Content-Type Builder is disabled in production mode.{' '}
+            Treat this workspace as the Indigo CMS shell. Keep content models stable on shared environments and do schema changes locally first.{' '}
             <a 
-              href="https://github.com/strapi/LaunchPad" 
+              href="https://github.com/strapi/strapi" 
               target="_blank" 
               rel="noopener noreferrer" 
               style={{ color: '#4945ff', fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
             >
-              Install LaunchPad locally <ExternalLink width="12px" height="12px" />
-            </a>{' '}
-            to build from scratch.
+              Review Strapi docs <ExternalLink width="12px" height="12px" />
+            </a>{' '}before promoting CMS changes.
           </Typography>
         </Flex>
       </Box>

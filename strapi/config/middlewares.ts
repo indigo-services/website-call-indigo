@@ -1,4 +1,5 @@
 export default [
+  'global::admin-alias',
   'strapi::logger',
   'strapi::errors',
   'strapi::security',
