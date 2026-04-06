@@ -198,7 +198,7 @@ async function step3_createFreshService(action = 'create') {
           path: '/',
           port: 1337,
           internalProtocol: 'http',
-          service: 'indigo-strapi',
+          service: 'indigo-studio',
         },
       ],
     };
@@ -229,7 +229,7 @@ async function step3_createFreshService(action = 'create') {
       console.log(`Creating new service with inline docker-compose.yml:`);
       console.log(`  Context: . (repository root)`);
       console.log(`  Dockerfile: strapi/Dockerfile`);
-      console.log(`  Service: indigo-strapi`);
+      console.log(`  Service: indigo-studio`);
 
       const createPayload = {
         ...basePayload,
