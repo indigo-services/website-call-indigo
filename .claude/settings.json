@@ -17,7 +17,8 @@
       "Bash(curl -s \"https://vps10.riolabs.ai/api/openapi.json\")",
       "Bash(node scripts/check-docker-containers.mjs)",
       "Bash(node scripts/verify-compose-content.mjs)",
-      "Bash(docker system:*)"
+      "Bash(docker system:*)",
+      "Bash(curl -s -X POST \"https://vps10.riolabs.ai/api/projects/riostack/compose-services/indigo-studio/clear-cache\" -H \"Authorization: Bearer e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172\")"
     ],
     "additionalDirectories": [
       "\\tmp"
