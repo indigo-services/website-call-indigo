@@ -16,8 +16,11 @@
       "Bash(node scripts/ssh-cleanup-and-deploy.mjs)",
       "Bash(curl -s \"https://vps10.riolabs.ai/api/openapi.json\")",
       "Bash(node scripts/check-docker-containers.mjs)",
-      "Bash(node scripts/verify-compose-content.mjs)"
+      "Bash(node scripts/verify-compose-content.mjs)",
+      "Bash(docker system:*)"
     ],
-    "additionalDirectories": ["\\tmp"]
+    "additionalDirectories": [
+      "\\tmp"
+    ]
   }
 }
