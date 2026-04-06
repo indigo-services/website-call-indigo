@@ -4,7 +4,7 @@ services:
       context: ./strapi
       dockerfile: Dockerfile
     # Adding an image name helps Easypanel track the build
-    image: indigo-strapi:latest
+    image: indigo-studio:latest
     restart: unless-stopped
 
     # CRITICAL: Expose the port so Easypanel's proxy can route your domain to it
