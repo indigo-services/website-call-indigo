@@ -9,6 +9,18 @@ import {
   Rocket,
   Shield,
   Sparkle,
+import React from 'react';
+import { Box, Typography, Flex, LinkButton } from '@strapi/design-system';
+import { 
+  Database, 
+  Image as ImageIcon, 
+  Globe, 
+  Rocket, 
+  ManyWays, 
+  Shield, 
+  Lock, 
+  Sparkle, 
+  ExternalLink 
 } from '@strapi/icons';
 import React from 'react';
 

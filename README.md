@@ -4,6 +4,25 @@ Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministi
 
 ## Local Surfaces
 
+| Surface | URL | Purpose |
+| --- | --- | --- |
+| Public Preview | [http://localhost:3000/](http://localhost:3000/) | Indigo residential conversion landing |
+| DX Dashboard | [http://localhost:3000/dev](http://localhost:3000/dev) | Local start page for the stack |
+| Launch Demo | [http://localhost:3000/home-demo-01](http://localhost:3000/home-demo-01) | Archived LaunchPad demo for comparison |
+| CMS Admin | [http://localhost:1000/manage/admin](http://localhost:1000/manage/admin) | Canonical Strapi admin |
+| CMS Alias | [http://localhost:1000/build/superadmin](http://localhost:1000/build/superadmin) | Compatibility redirect to canonical admin |
+| API | [http://localhost:1000/api](http://localhost:1000/api) | Strapi REST API |
+| Storybook | [http://localhost:6006/](http://localhost:6006/) | Visual registry and component review |
+
+## Core Commands
+
+```powershell
+# Indigo Studio Platform
+
+Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministic local tooling and a release-oriented URL map.
+
+## Local Surfaces
+
 | Surface        | URL                                                                              | Purpose                                   |
 | -------------- | -------------------------------------------------------------------------------- | ----------------------------------------- |
 | Public Preview | [http://localhost:3000/](http://localhost:3000/)                                 | Indigo residential conversion landing     |
