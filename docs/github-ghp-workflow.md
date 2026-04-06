@@ -269,8 +269,8 @@ These shortcuts keep the `launchops` board readable when multiple repos are shar
 5. Merge only after PR checks and issue acceptance criteria pass.
 6. If using stacked delivery, the parent PR should explain merge order explicitly.
 7. Keep rollout notes deterministic: preview URL, env gate, or no gate.
-6. If using stacked delivery, the parent PR should explain merge order explicitly.
-7. Keep rollout notes deterministic: preview URL, env gate, or no gate.
+8. If using stacked delivery, the parent PR should explain merge order explicitly.
+9. Keep rollout notes deterministic: preview URL, env gate, or no gate.
 
 ## Monorepo Notes
 

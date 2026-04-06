@@ -55,11 +55,11 @@ Describe the bounded implementation plan for this slice.
 
 Do not present only one path for material work. Compare at least two serious options and prefer the one that reuses the most maintained surface area.
 
-| Option | What it reuses | Net-new build required | Token cost | Success odds | Why it wins or loses |
-|---|---|---|---|---|---|
-| A |  |  | low / medium / high | low / medium / high |  |
-| B |  |  | low / medium / high | low / medium / high |  |
-| C |  |  | low / medium / high | low / medium / high | optional |
+| Option | What it reuses | Net-new build required | Token cost          | Success odds        | Why it wins or loses |
+| ------ | -------------- | ---------------------- | ------------------- | ------------------- | -------------------- |
+| A      |                |                        | low / medium / high | low / medium / high |                      |
+| B      |                |                        | low / medium / high | low / medium / high |                      |
+| C      |                |                        | low / medium / high | low / medium / high | optional             |
 
 Selected option:
 

@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * Production Deployment Validation Script
  * Validates environment, builds, and performs pre-deployment checks
  */
-
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
@@ -63,17 +61,10 @@ function info(message: string) {
 
 function checkEnvironmentVariables(): void {
   log('\n--- Environment Variables ---', blueColor);
-  
-  const requiredVars = [
-    'NEXT_PUBLIC_API_URL',
-    'WEBSITE_URL',
-    'ENVIRONMENT',
-  ];
 
-  const productionVars = [
-    'JWT_SECRET',
-    'NEXTAUTH_SECRET',
-  ];
+  const requiredVars = ['NEXT_PUBLIC_API_URL', 'WEBSITE_URL', 'ENVIRONMENT'];
+
+  const productionVars = ['JWT_SECRET', 'NEXTAUTH_SECRET'];
 
   const isProd = process.env.ENVIRONMENT === 'production';
 
@@ -183,9 +174,14 @@ function checkDependencies(): void {
 
   try {
     execSync('node --version', { stdio: 'pipe' });
-    const nodeVersion = execSync('node --version', { encoding: 'utf-8' }).trim();
-    const majorVersion = parseInt(nodeVersion.split('.')[0].replace('v', ''), 10);
-    
+    const nodeVersion = execSync('node --version', {
+      encoding: 'utf-8',
+    }).trim();
+    const majorVersion = parseInt(
+      nodeVersion.split('.')[0].replace('v', ''),
+      10
+    );
+
     if (majorVersion >= 18) {
       success(`Node.js ${nodeVersion} (v18+)`);
       results.push({
@@ -220,7 +216,7 @@ function checkBuild(): void {
   // Check Next.js build
   try {
     info('Running Next.js build...');
-    execSync('cd next && yarn build 2>&1', { 
+    execSync('cd next && yarn build 2>&1', {
       stdio: 'pipe',
       timeout: 300000, // 5 minutes
     });
@@ -244,7 +240,7 @@ function checkBuild(): void {
   // Check Strapi build
   try {
     info('Running Strapi build...');
-    execSync('cd strapi && yarn build 2>&1', { 
+    execSync('cd strapi && yarn build 2>&1', {
       stdio: 'pipe',
       timeout: 300000,
     });
@@ -271,7 +267,7 @@ function checkLinting(): void {
 
   try {
     info('Running linter...');
-    execSync('yarn lint 2>&1', { 
+    execSync('yarn lint 2>&1', {
       stdio: 'pipe',
       timeout: 60000,
     });
@@ -315,7 +311,10 @@ function checkSecurity(): void {
         const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory() && !entry.name.startsWith('.')) {
           files.push(...findFiles(fullPath, extensions));
-        } else if (entry.isFile() && extensions.some((ext) => entry.name.endsWith(ext))) {
+        } else if (
+          entry.isFile() &&
+          extensions.some((ext) => entry.name.endsWith(ext))
+        ) {
           files.push(fullPath);
         }
       });
@@ -365,7 +364,7 @@ function checkSecurity(): void {
 
   // Check package dependencies for vulnerabilities
   try {
-    execSync('yarn audit --level moderate 2>&1', { 
+    execSync('yarn audit --level moderate 2>&1', {
       stdio: 'pipe',
       timeout: 60000,
     });
@@ -381,7 +380,7 @@ function checkSecurity(): void {
     results.push({
       name: 'Security: npm Audit',
       passed: false,
-      message: 'Vulnerabilities found - check \'yarn audit\' output',
+      message: "Vulnerabilities found - check 'yarn audit' output",
       critical: false,
     });
   }
@@ -408,7 +407,11 @@ function generateReport(): void {
   log('\n--- Detailed Results ---', blueColor);
   results.forEach((result) => {
     const status = result.passed ? '✓' : '✗';
-    const color = result.passed ? greenColor : result.critical ? redColor : yellowColor;
+    const color = result.passed
+      ? greenColor
+      : result.critical
+        ? redColor
+        : yellowColor;
     log(`${color}${status} ${result.name}: ${result.message}${resetColor}`);
   });
 
@@ -418,7 +421,9 @@ function generateReport(): void {
     success('✓ Ready for deployment!');
     process.exit(0);
   } else {
-    error(`✗ ${criticalFailed} critical issue(s) must be resolved before deployment`);
+    error(
+      `✗ ${criticalFailed} critical issue(s) must be resolved before deployment`
+    );
     process.exit(1);
   }
 }
@@ -428,17 +433,29 @@ async function main() {
   // Load environment variables first
   loadEnvironment();
 
-  log('\n╔═══════════════════════════════════════════════════════════╗', blueColor);
-  log('║   Production Deployment Validation Script                ║', blueColor);
-  log('║   Strapi + Next.js on Vercel                             ║', blueColor);
-  log('╚═══════════════════════════════════════════════════════════╝', blueColor);
+  log(
+    '\n╔═══════════════════════════════════════════════════════════╗',
+    blueColor
+  );
+  log(
+    '║   Production Deployment Validation Script                ║',
+    blueColor
+  );
+  log(
+    '║   Strapi + Next.js on Vercel                             ║',
+    blueColor
+  );
+  log(
+    '╚═══════════════════════════════════════════════════════════╝',
+    blueColor
+  );
 
   checkEnvironmentVariables();
   checkFiles();
   checkDependencies();
   checkLinting();
   checkSecurity();
-  
+
   // Build checks last as they take longest
   checkBuild();
 

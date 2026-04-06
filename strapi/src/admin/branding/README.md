@@ -54,8 +54,8 @@ Once final assets exist, wire them in `strapi/src/admin/app.tsx` like:
 
 ```ts
 import AuthLogo from './branding/generated/indigo-auth-logo.svg';
-import MenuLogo from './branding/generated/indigo-menu-logo.svg';
 import Favicon from './branding/generated/indigo-favicon.svg';
+import MenuLogo from './branding/generated/indigo-menu-logo.svg';
 
 export default {
   config: {

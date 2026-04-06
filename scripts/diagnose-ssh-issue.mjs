@@ -1,13 +1,11 @@
 #!/usr/bin/env node
-
 /**
  * Easypanel SSH Deployment Diagnostic Script
  * Run this to diagnose SSH/GitHub access issues for Easypanel deployment
  */
-
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 const COLORS = {
   reset: '\x1b[0m',
@@ -75,7 +73,9 @@ function checkFile(filePath, description) {
 function main() {
   header('Easypanel SSH Deployment Diagnostic');
 
-  console.log('\n📋 This script checks for common Easypanel SSH deployment issues\n');
+  console.log(
+    '\n📋 This script checks for common Easypanel SSH deployment issues\n'
+  );
 
   // Check 1: SSH Keys Exist
   header('1. Checking SSH Keys');
@@ -112,7 +112,9 @@ function main() {
 
     if (remoteUrl.includes('https://')) {
       warning('Using HTTPS. For Easypanel SSH, you need SSH format:');
-      info('git remote set-url origin git@github.com:indigo-services/indigo-studio.git');
+      info(
+        'git remote set-url origin git@github.com:indigo-services/indigo-studio.git'
+      );
     } else if (remoteUrl.includes('git@github.com')) {
       success('Git remote is properly configured for SSH');
     }
@@ -167,12 +169,16 @@ function main() {
 
   if (!foundKey) {
     warning('1. Generate SSH key for Easypanel');
-    info('   ssh-keygen -t ed25519 -C "easypanel@riostack" -f ~/.ssh/easypanel_deploy_key');
+    info(
+      '   ssh-keygen -t ed25519 -C "easypanel@riostack" -f ~/.ssh/easypanel_deploy_key'
+    );
   }
 
   if (gitRemote.success && gitRemote.output.includes('https://')) {
     warning('2. Switch Git remote to SSH');
-    info('   git remote set-url origin git@github.com:indigo-services/indigo-studio.git');
+    info(
+      '   git remote set-url origin git@github.com:indigo-services/indigo-studio.git'
+    );
   }
 
   warning('3. Add public key to GitHub Deploy Keys with write access');

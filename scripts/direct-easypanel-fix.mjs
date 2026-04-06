@@ -1,13 +1,11 @@
 #!/usr/bin/env node
-
 /**
  * Direct Easypanel Configuration Fix Script
  * This script will help fix the Easypanel configuration automatically
  */
-
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 const COLORS = {
   reset: '\x1b[0m',
@@ -58,17 +56,24 @@ QyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9QwAAAJjKCPLfygjy
 AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe
 vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==
 -----END OPENSSH PRIVATE KEY-----`,
-  sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack'
+  sshPublicKey:
+    'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack',
 };
 
 header('🔧 Easypanel Direct Configuration Fix');
 
 log('\n📋 Current Status:', COLORS.cyan);
-log('Deployment URL: https://riostack-indigo-studio.ck87nu.easypanel.host/', COLORS.cyan);
+log(
+  'Deployment URL: https://riostack-indigo-studio.ck87nu.easypanel.host/',
+  COLORS.cyan
+);
 log('Status: 502 Bad Gateway - Service not running', COLORS.red);
 
 log('\n🎯 Required Configuration Changes:', COLORS.yellow);
-log('1. Repository URL: git@github.com:indigo-services/indigo-studio.git', COLORS.cyan);
+log(
+  '1. Repository URL: git@github.com:indigo-services/indigo-studio.git',
+  COLORS.cyan
+);
 log('2. SSH Key: Complete private key (not truncated)', COLORS.cyan);
 log('3. GitHub Deploy Key: Add with write access', COLORS.cyan);
 

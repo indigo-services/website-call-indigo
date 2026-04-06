@@ -1,13 +1,11 @@
 #!/usr/bin/env node
-
 /**
  * Add Domain to Easypanel Service Script
  * This script attempts to add domain configuration to the indigo-studio service
  */
-
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 const COLORS = {
   reset: '\x1b[0m',
@@ -78,25 +76,35 @@ async function main() {
     const domainPayload = {
       projectName: 'riostack',
       serviceName: 'indigo-studio',
-      domains: [{
-        host: domainToAdd,
-        https: true,
-        port: 1337,
-        internalProtocol: 'http'
-      }]
+      domains: [
+        {
+          host: domainToAdd,
+          https: true,
+          port: 1337,
+          internalProtocol: 'http',
+        },
+      ],
     };
 
     log('\n📋 Domain Configuration Payload:', COLORS.cyan);
     log(JSON.stringify(domainPayload, null, 2), COLORS.cyan);
 
-    warning('⚠️ The existing Easypanel library does not have domain update functions.');
+    warning(
+      '⚠️ The existing Easypanel library does not have domain update functions.'
+    );
     warning('⚠️ Manual configuration required in Easypanel dashboard.');
 
     log('\n📝 Manual Steps Required:', COLORS.yellow);
     log('1. Access Easypanel dashboard', COLORS.cyan);
-    log('2. Navigate to Project: riostack → Service: indigo-studio', COLORS.cyan);
+    log(
+      '2. Navigate to Project: riostack → Service: indigo-studio',
+      COLORS.cyan
+    );
     log(`3. Add domain: ${domainToAdd}`, COLORS.cyan);
-    log('4. Configure reverse proxy to container: indigo-strapi:1337', COLORS.cyan);
+    log(
+      '4. Configure reverse proxy to container: indigo-strapi:1337',
+      COLORS.cyan
+    );
     log('5. Enable HTTPS and save configuration', COLORS.cyan);
 
     log('\n🔍 Why This is Needed:', COLORS.magenta);
@@ -111,14 +119,13 @@ async function main() {
     success('API endpoints: https://' + domainToAdd + '/api/*');
 
     log('\n' + '='.repeat(60) + '\n', COLORS.magenta);
-
   } catch (err) {
     error(`Error: ${err.message}`);
     process.exit(1);
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   error(`Script failed: ${err.message}`);
   process.exit(1);
 });

@@ -2,7 +2,8 @@ import DeploymentDashboard from '@/src/components/DeploymentDashboard';
 
 export const metadata = {
   title: 'Deployment Dashboard | Indigo Studio',
-  description: 'Production deployment readiness checklist and status monitoring',
+  description:
+    'Production deployment readiness checklist and status monitoring',
 };
 
 export default function DashboardPage() {

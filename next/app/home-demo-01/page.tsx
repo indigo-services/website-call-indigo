@@ -40,14 +40,13 @@ export default async function HomeDemoPage() {
     notFound();
   }
 
-  const localizedSlugs =
-    pageData.localizations?.reduce(
-      (acc: Record<string, string>, localization: any) => {
-        acc[localization.locale] = localization.slug;
-        return acc;
-      },
-      { en: '' }
-    ) ?? { en: '' };
+  const localizedSlugs = pageData.localizations?.reduce(
+    (acc: Record<string, string>, localization: any) => {
+      acc[localization.locale] = localization.slug;
+      return acc;
+    },
+    { en: '' }
+  ) ?? { en: '' };
 
   return (
     <>

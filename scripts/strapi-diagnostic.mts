@@ -16,7 +16,10 @@ interface ContentTypeResponse {
   error?: { message: string };
 }
 
-async function checkEndpoint(path: string, description: string): Promise<boolean> {
+async function checkEndpoint(
+  path: string,
+  description: string
+): Promise<boolean> {
   try {
     console.log(`\nChecking: ${description}`);
     console.log(`URL: ${API_URL}${path}`);
@@ -40,7 +43,8 @@ async function checkEndpoint(path: string, description: string): Promise<boolean
     }
 
     try {
-      const data = await response.json() as HealthResponse & ContentTypeResponse;
+      const data = (await response.json()) as HealthResponse &
+        ContentTypeResponse;
       if (data.error) {
         console.log(`Error: ${data.error.message}`);
         return false;

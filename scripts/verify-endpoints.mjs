@@ -5,9 +5,8 @@
  * Usage: node scripts/verify-endpoints.mjs [base-url]
  * Example: node scripts/verify-endpoints.mjs https://next-iv2p06q9v-indigo-projects.vercel.app
  */
-
-import https from 'https';
 import http from 'http';
+import https from 'https';
 
 const BASE_URL = process.argv[2] || 'http://localhost:3000';
 const ENDPOINTS = [
@@ -16,7 +15,11 @@ const ENDPOINTS = [
   { path: '/fr', name: 'Homepage (FR - Locale)', type: 'page' },
   { path: '/dashboard', name: 'Dashboard', type: 'page' },
   { path: '/api/health', name: 'Health Check API', type: 'json' },
-  { path: '/this-page-does-not-exist', name: '404 Error Handling', type: 'page' },
+  {
+    path: '/this-page-does-not-exist',
+    name: '404 Error Handling',
+    type: 'page',
+  },
 ];
 
 const results = [];
@@ -29,33 +32,35 @@ async function fetchEndpoint(url) {
     const protocol = url.startsWith('https') ? https : http;
     const startTime = Date.now();
 
-    protocol.get(url, { timeout: 10000 }, (res) => {
-      let data = '';
-      const headers = res.headers;
-      const statusCode = res.statusCode;
+    protocol
+      .get(url, { timeout: 10000 }, (res) => {
+        let data = '';
+        const headers = res.headers;
+        const statusCode = res.statusCode;
 
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
 
-      res.on('end', () => {
-        const duration = Date.now() - startTime;
+        res.on('end', () => {
+          const duration = Date.now() - startTime;
+          resolve({
+            success: true,
+            statusCode,
+            contentLength: data.length,
+            duration,
+            headers,
+            preview: data.substring(0, 200),
+          });
+        });
+      })
+      .on('error', (err) => {
         resolve({
-          success: true,
-          statusCode,
-          contentLength: data.length,
-          duration,
-          headers,
-          preview: data.substring(0, 200),
+          success: false,
+          error: err.message,
+          duration: Date.now() - startTime,
         });
       });
-    }).on('error', (err) => {
-      resolve({
-        success: false,
-        error: err.message,
-        duration: Date.now() - startTime,
-      });
-    });
   });
 }
 
@@ -63,10 +68,18 @@ async function fetchEndpoint(url) {
  * Main verification function
  */
 async function verifyEndpoints() {
-  console.log('╔════════════════════════════════════════════════════════════════╗');
-  console.log('║         Endpoint Verification & Screenshot Script              ║');
-  console.log('║                    April 1, 2026                               ║');
-  console.log('╚════════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '╔════════════════════════════════════════════════════════════════╗'
+  );
+  console.log(
+    '║         Endpoint Verification & Screenshot Script              ║'
+  );
+  console.log(
+    '║                    April 1, 2026                               ║'
+  );
+  console.log(
+    '╚════════════════════════════════════════════════════════════════╝\n'
+  );
   console.log(`Testing Base URL: ${BASE_URL}\n`);
   console.log('Testing endpoints...\n');
 
@@ -127,56 +140,82 @@ async function verifyEndpoints() {
  * Generate verification report
  */
 function generateReport(results) {
-  const successful = results.filter(r => r.success).length;
-  const failed = results.filter(r => !r.success).length;
-  const avgDuration = results.reduce((sum, r) => sum + r.duration, 0) / results.length;
-  const totalSize = results.filter(r => r.success).reduce((sum, r) => sum + (r.size || 0), 0);
+  const successful = results.filter((r) => r.success).length;
+  const failed = results.filter((r) => !r.success).length;
+  const avgDuration =
+    results.reduce((sum, r) => sum + r.duration, 0) / results.length;
+  const totalSize = results
+    .filter((r) => r.success)
+    .reduce((sum, r) => sum + (r.size || 0), 0);
 
-  console.log('╔════════════════════════════════════════════════════════════════╗');
-  console.log('║                    VERIFICATION REPORT                         ║');
-  console.log('╚════════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '╔════════════════════════════════════════════════════════════════╗'
+  );
+  console.log(
+    '║                    VERIFICATION REPORT                         ║'
+  );
+  console.log(
+    '╚════════════════════════════════════════════════════════════════╝\n'
+  );
 
   console.log(`Endpoints Tested:     ${results.length}`);
   console.log(`Successful:           ${successful} ✅`);
   console.log(`Failed:              ${failed} ❌`);
-  console.log(`Success Rate:        ${((successful / results.length) * 100).toFixed(1)}%`);
+  console.log(
+    `Success Rate:        ${((successful / results.length) * 100).toFixed(1)}%`
+  );
   console.log(`\nPerformance:`);
   console.log(`Average Duration:    ${avgDuration.toFixed(0)}ms`);
   console.log(`Total Page Size:     ${(totalSize / 1024).toFixed(2)}KB`);
   console.log(`\nEndpoint Summary:\n`);
 
-  const successfulResults = results.filter(r => r.success);
-  const failedResults = results.filter(r => !r.success);
+  const successfulResults = results.filter((r) => r.success);
+  const failedResults = results.filter((r) => !r.success);
 
   if (successfulResults.length > 0) {
     console.log('✅ PASSING ENDPOINTS:');
-    successfulResults.forEach(r => {
-      console.log(`   • ${r.endpoint.padEnd(30)} [${r.status}] ${r.duration}ms`);
+    successfulResults.forEach((r) => {
+      console.log(
+        `   • ${r.endpoint.padEnd(30)} [${r.status}] ${r.duration}ms`
+      );
     });
     console.log('');
   }
 
   if (failedResults.length > 0) {
     console.log('❌ FAILING ENDPOINTS:');
-    failedResults.forEach(r => {
+    failedResults.forEach((r) => {
       console.log(`   • ${r.endpoint.padEnd(30)} ${r.error}`);
     });
     console.log('');
   }
 
   // Deployment readiness
-  const isProduction = BASE_URL.includes('vercel.app') || BASE_URL.includes('.app');
+  const isProduction =
+    BASE_URL.includes('vercel.app') || BASE_URL.includes('.app');
   const isHealthy = successful === results.length;
 
-  console.log('╔════════════════════════════════════════════════════════════════╗');
+  console.log(
+    '╔════════════════════════════════════════════════════════════════╗'
+  );
   if (isHealthy) {
-    console.log('║                   ✅ DEPLOYMENT HEALTHY                        ║');
-    console.log('║                All endpoints responding correctly              ║');
+    console.log(
+      '║                   ✅ DEPLOYMENT HEALTHY                        ║'
+    );
+    console.log(
+      '║                All endpoints responding correctly              ║'
+    );
   } else {
-    console.log('║                   ⚠️ ISSUES DETECTED                          ║');
-    console.log('║          Review failing endpoints above                       ║');
+    console.log(
+      '║                   ⚠️ ISSUES DETECTED                          ║'
+    );
+    console.log(
+      '║          Review failing endpoints above                       ║'
+    );
   }
-  console.log('╚════════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '╚════════════════════════════════════════════════════════════════╝\n'
+  );
 
   if (isProduction) {
     console.log('Environment: PRODUCTION (Vercel)');
@@ -203,7 +242,7 @@ function generateReport(results) {
       avgDuration: avgDuration.toFixed(0) + 'ms',
       totalSize: (totalSize / 1024).toFixed(2) + 'KB',
     },
-    results: results.map(r => ({
+    results: results.map((r) => ({
       endpoint: r.endpoint,
       path: r.path,
       url: r.url,

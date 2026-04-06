@@ -4,23 +4,55 @@
  * Creates HTML report showing all endpoints with visual data
  * Usage: node scripts/generate-visual-report.mjs [base-url]
  */
-
-import https from 'https';
-import http from 'http';
 import fs from 'fs';
+import http from 'http';
+import https from 'https';
 import path from 'path';
 
 const BASE_URL = process.argv[2] || 'http://localhost:3000';
 const REPORT_DIR = './visual-reports';
-const REPORT_FILE = path.join(REPORT_DIR, `report-${new Date().toISOString().split('T')[0]}.html`);
+const REPORT_FILE = path.join(
+  REPORT_DIR,
+  `report-${new Date().toISOString().split('T')[0]}.html`
+);
 
 const ENDPOINTS = [
-  { path: '/', name: 'Homepage (EN - Default)', type: 'page', description: 'Main homepage at root path' },
-  { path: '/en', name: 'English Locale (Explicit)', type: 'page', description: 'Explicit English locale redirect' },
-  { path: '/fr', name: 'French Locale', type: 'page', description: 'French locale with /fr prefix' },
-  { path: '/dashboard', name: 'Dashboard', type: 'page', description: 'Deployment readiness dashboard' },
-  { path: '/api/health', name: 'Health Check API', type: 'json', description: 'API health status endpoint' },
-  { path: '/nonexistent', name: '404 Error Page', type: 'page', description: 'Error boundary test' },
+  {
+    path: '/',
+    name: 'Homepage (EN - Default)',
+    type: 'page',
+    description: 'Main homepage at root path',
+  },
+  {
+    path: '/en',
+    name: 'English Locale (Explicit)',
+    type: 'page',
+    description: 'Explicit English locale redirect',
+  },
+  {
+    path: '/fr',
+    name: 'French Locale',
+    type: 'page',
+    description: 'French locale with /fr prefix',
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    type: 'page',
+    description: 'Deployment readiness dashboard',
+  },
+  {
+    path: '/api/health',
+    name: 'Health Check API',
+    type: 'json',
+    description: 'API health status endpoint',
+  },
+  {
+    path: '/nonexistent',
+    name: '404 Error Page',
+    type: 'page',
+    description: 'Error boundary test',
+  },
 ];
 
 /**
@@ -31,33 +63,35 @@ async function fetchEndpoint(url) {
     const protocol = url.startsWith('https') ? https : http;
     const startTime = Date.now();
 
-    protocol.get(url, { timeout: 10000 }, (res) => {
-      let data = '';
-      const headers = res.headers;
-      const statusCode = res.statusCode;
+    protocol
+      .get(url, { timeout: 10000 }, (res) => {
+        let data = '';
+        const headers = res.headers;
+        const statusCode = res.statusCode;
 
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
 
-      res.on('end', () => {
-        const duration = Date.now() - startTime;
+        res.on('end', () => {
+          const duration = Date.now() - startTime;
+          resolve({
+            success: true,
+            statusCode,
+            headers,
+            body: data,
+            duration,
+            size: data.length,
+          });
+        });
+      })
+      .on('error', (err) => {
         resolve({
-          success: true,
-          statusCode,
-          headers,
-          body: data,
-          duration,
-          size: data.length,
+          success: false,
+          error: err.message,
+          duration: Date.now() - startTime,
         });
       });
-    }).on('error', (err) => {
-      resolve({
-        success: false,
-        error: err.message,
-        duration: Date.now() - startTime,
-      });
-    });
   });
 }
 
@@ -67,8 +101,10 @@ async function fetchEndpoint(url) {
 function extractPageInfo(html) {
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
   const h1Match = html.match(/<h1[^>]*>([^<]+)<\/h1>/i);
-  const descMatch = html.match(/<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i);
-  
+  const descMatch = html.match(
+    /<meta\s+name=["']description["']\s+content=["']([^"']+)["']/i
+  );
+
   return {
     title: titleMatch ? titleMatch[1] : 'N/A',
     heading: h1Match ? h1Match[1] : 'N/A',
@@ -94,20 +130,29 @@ async function generateReport() {
   for (const endpoint of ENDPOINTS) {
     const fullUrl = `${BASE_URL}${endpoint.path}`;
     console.log(`Testing: ${endpoint.name}`);
-    
+
     const result = await fetchEndpoint(fullUrl);
-    
+
     if (result.success) {
       passCount++;
-      const pageInfo = result.headers['content-type']?.includes('json') 
-        ? { title: 'JSON Response', heading: 'API Endpoint', description: 'Health check API' }
+      const pageInfo = result.headers['content-type']?.includes('json')
+        ? {
+            title: 'JSON Response',
+            heading: 'API Endpoint',
+            description: 'Health check API',
+          }
         : extractPageInfo(result.body);
-      
+
       results.push({
         endpoint,
         url: fullUrl,
         status: result.statusCode,
-        statusText: result.statusCode === 200 ? 'OK' : result.statusCode === 307 ? 'REDIRECT' : 'ERROR',
+        statusText:
+          result.statusCode === 200
+            ? 'OK'
+            : result.statusCode === 307
+              ? 'REDIRECT'
+              : 'ERROR',
         duration: result.duration,
         size: result.size,
         passed: true,
@@ -420,12 +465,16 @@ async function generateReport() {
       </div>
     </div>
 
-    ${passCount === ENDPOINTS.length 
-      ? '<div class="success-banner">✅ ALL ENDPOINTS PASSING - DEPLOYMENT HEALTHY</div>' 
-      : '<div class="fail-banner">⚠️ SOME ENDPOINTS FAILING - REVIEW BELOW</div>'}
+    ${
+      passCount === ENDPOINTS.length
+        ? '<div class="success-banner">✅ ALL ENDPOINTS PASSING - DEPLOYMENT HEALTHY</div>'
+        : '<div class="fail-banner">⚠️ SOME ENDPOINTS FAILING - REVIEW BELOW</div>'
+    }
 
     <div class="endpoint-grid">
-      ${results.map((result, idx) => `
+      ${results
+        .map(
+          (result, idx) => `
         <div class="endpoint-card ${result.passed ? 'passed' : 'failed'}">
           <div class="endpoint-header">
             <div class="endpoint-name">${idx + 1}. ${result.endpoint.name}</div>
@@ -434,7 +483,9 @@ async function generateReport() {
           <div class="endpoint-body">
             <div class="endpoint-url">${result.url}</div>
             
-            ${result.passed ? `
+            ${
+              result.passed
+                ? `
               <div class="status-badge ${result.status === 200 ? 'pass' : result.status === 307 ? 'redirect' : 'error'}">
                 ${result.status} ${result.statusText}
               </div>
@@ -450,7 +501,9 @@ async function generateReport() {
                 </div>
               </div>
 
-              ${result.pageInfo ? `
+              ${
+                result.pageInfo
+                  ? `
                 <div class="page-info">
                   <div class="label">Page Title</div>
                   <div class="value">${result.pageInfo.title}</div>
@@ -459,22 +512,32 @@ async function generateReport() {
                   <div class="label" style="margin-top: 8px;">Content Type</div>
                   <div class="value">${result.contentType || 'N/A'}</div>
                 </div>
-              ` : ''}
+              `
+                  : ''
+              }
 
-              ${result.preview ? `
+              ${
+                result.preview
+                  ? `
                 <div class="content-preview">
                   ${result.preview}...
                 </div>
-              ` : ''}
-            ` : `
+              `
+                  : ''
+              }
+            `
+                : `
               <div class="status-badge error">ERROR</div>
               <div class="error-message">
                 <strong>Error:</strong> ${result.error}
               </div>
-            `}
+            `
+            }
           </div>
         </div>
-      `).join('')}
+      `
+        )
+        .join('')}
     </div>
 
     <footer>
@@ -498,7 +561,9 @@ async function generateReport() {
   console.log(`Total Endpoints:   ${ENDPOINTS.length}`);
   console.log(`Passing:           ${passCount} ✅`);
   console.log(`Failing:           ${failCount} ❌`);
-  console.log(`Success Rate:      ${((passCount / ENDPOINTS.length) * 100).toFixed(1)}%`);
+  console.log(
+    `Success Rate:      ${((passCount / ENDPOINTS.length) * 100).toFixed(1)}%`
+  );
   console.log('='.repeat(60) + '\n');
 
   return { reportFile: REPORT_FILE, passCount, failCount };

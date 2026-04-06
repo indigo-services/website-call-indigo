@@ -4,18 +4,25 @@
  * Validates Strapi readiness for VPS deployment
  * Usage: node scripts/validate-strapi-build.mjs
  */
-
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 
 const STRAPI_DIR = './strapi';
 const CHECKS = [];
 
-console.log('╔════════════════════════════════════════════════════════════════╗');
-console.log('║         Strapi Build & VPS Deployment Validation              ║');
-console.log('║                    April 1, 2026                              ║');
-console.log('╚════════════════════════════════════════════════════════════════╝\n');
+console.log(
+  '╔════════════════════════════════════════════════════════════════╗'
+);
+console.log(
+  '║         Strapi Build & VPS Deployment Validation              ║'
+);
+console.log(
+  '║                    April 1, 2026                              ║'
+);
+console.log(
+  '╚════════════════════════════════════════════════════════════════╝\n'
+);
 
 /**
  * Check file/directory existence
@@ -34,15 +41,18 @@ function checkFileExists(filePath, description) {
  */
 function validateDockerfile() {
   console.log('\n--- Docker Configuration ---');
-  
+
   if (!checkFileExists('Dockerfile', 'Dockerfile')) {
     console.log('   ⚠️  Dockerfile missing - container cannot be built');
     return false;
   }
 
   try {
-    const dockerfile = fs.readFileSync(path.join(STRAPI_DIR, 'Dockerfile'), 'utf-8');
-    
+    const dockerfile = fs.readFileSync(
+      path.join(STRAPI_DIR, 'Dockerfile'),
+      'utf-8'
+    );
+
     // Check for key patterns
     const checks = [
       { pattern: /FROM node:\d+/, name: 'FROM instruction' },
@@ -55,7 +65,7 @@ function validateDockerfile() {
     ];
 
     let dockerfileValid = true;
-    checks.forEach(check => {
+    checks.forEach((check) => {
       if (check.pattern.test(dockerfile)) {
         console.log(`✅ ${check.name}`);
         CHECKS.push({ name: `Dockerfile: ${check.name}`, passed: true });
@@ -79,24 +89,14 @@ function validateDockerfile() {
  */
 function validateStrapiStructure() {
   console.log('\n--- Strapi Directory Structure ---');
-  
-  const requiredDirs = [
-    'config',
-    'src',
-    'types',
-    'database',
-    'public',
-  ];
 
-  const requiredFiles = [
-    'package.json',
-    'tsconfig.json',
-    '.env.example',
-  ];
+  const requiredDirs = ['config', 'src', 'types', 'database', 'public'];
+
+  const requiredFiles = ['package.json', 'tsconfig.json', '.env.example'];
 
   let structureValid = true;
 
-  requiredDirs.forEach(dir => {
+  requiredDirs.forEach((dir) => {
     if (checkFileExists(dir, `Directory: ${dir}`)) {
       // Check not empty
       const fullPath = path.join(STRAPI_DIR, dir);
@@ -109,7 +109,7 @@ function validateStrapiStructure() {
     }
   });
 
-  requiredFiles.forEach(file => {
+  requiredFiles.forEach((file) => {
     if (!checkFileExists(file, `File: ${file}`)) {
       structureValid = false;
     }
@@ -138,15 +138,22 @@ function validateBuildConfig() {
     ];
 
     let configValid = true;
-    checks.forEach(check => {
+    checks.forEach((check) => {
       if (packageJson[check.key]) {
         if (check.key === 'scripts') {
           const buildScript = packageJson.scripts.build ? '✅' : '❌';
-          console.log(`✅ ${check.label}: ${Object.keys(packageJson.scripts).join(', ')}`);
-          CHECKS.push({ name: `Build script`, passed: !!packageJson.scripts.build });
+          console.log(
+            `✅ ${check.label}: ${Object.keys(packageJson.scripts).join(', ')}`
+          );
+          CHECKS.push({
+            name: `Build script`,
+            passed: !!packageJson.scripts.build,
+          });
           if (!packageJson.scripts.build) configValid = false;
         } else if (check.key === 'dependencies') {
-          console.log(`✅ ${check.label}: ${Object.keys(packageJson.dependencies).length} packages`);
+          console.log(
+            `✅ ${check.label}: ${Object.keys(packageJson.dependencies).length} packages`
+          );
           CHECKS.push({ name: `Dependencies`, passed: true });
         } else {
           console.log(`✅ ${check.label}: ${packageJson[check.key]}`);
@@ -174,10 +181,15 @@ function validateEnvironment() {
   console.log('\n--- Environment Configuration ---');
 
   const envStatus = checkFileExists('.env.example', 'Example env file');
-  
+
   try {
-    const envExample = fs.readFileSync(path.join(STRAPI_DIR, '.env.example'), 'utf-8');
-    const envVars = envExample.split('\n').filter(line => line && !line.startsWith('#'));
+    const envExample = fs.readFileSync(
+      path.join(STRAPI_DIR, '.env.example'),
+      'utf-8'
+    );
+    const envVars = envExample
+      .split('\n')
+      .filter((line) => line && !line.startsWith('#'));
     console.log(`   └─ Defines ${envVars.length} environment variables`);
   } catch (err) {
     console.log(`   └─ Could not parse .env.example`);
@@ -220,7 +232,9 @@ function validateDockerSetup() {
 
   try {
     execSync('docker --version', { stdio: 'pipe' });
-    const dockerVersion = execSync('docker --version', { encoding: 'utf-8' }).trim();
+    const dockerVersion = execSync('docker --version', {
+      encoding: 'utf-8',
+    }).trim();
     console.log(`✅ Docker installed: ${dockerVersion}`);
     CHECKS.push({ name: 'Docker installed', passed: true });
 
@@ -236,7 +250,9 @@ function validateDockerSetup() {
     return true;
   } catch (err) {
     console.log(`❌ Docker not installed or not in PATH`);
-    console.log(`   Install from: https://www.docker.com/products/docker-desktop`);
+    console.log(
+      `   Install from: https://www.docker.com/products/docker-desktop`
+    );
     CHECKS.push({ name: 'Docker installed', passed: false });
     return false;
   }
@@ -246,23 +262,33 @@ function validateDockerSetup() {
  * Generate final report
  */
 function generateReport() {
-  const passed = CHECKS.filter(c => c.passed).length;
+  const passed = CHECKS.filter((c) => c.passed).length;
   const total = CHECKS.length;
   const percentage = ((passed / total) * 100).toFixed(1);
 
-  console.log('\n╔════════════════════════════════════════════════════════════════╗');
-  console.log('║                    VALIDATION REPORT                          ║');
-  console.log('╚════════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '\n╔════════════════════════════════════════════════════════════════╗'
+  );
+  console.log(
+    '║                    VALIDATION REPORT                          ║'
+  );
+  console.log(
+    '╚════════════════════════════════════════════════════════════════╝\n'
+  );
 
   console.log(`Checks Passed:     ${passed}/${total}`);
   console.log(`Success Rate:      ${percentage}%`);
-  console.log(`\nStatus:            ${percentage === '100.0' ? '✅ READY FOR DEPLOYMENT' : '⚠️  NEEDS ATTENTION'}`);
+  console.log(
+    `\nStatus:            ${percentage === '100.0' ? '✅ READY FOR DEPLOYMENT' : '⚠️  NEEDS ATTENTION'}`
+  );
 
   // VPS Deployment readiness
   console.log('\n--- VPS Deployment Readiness ---');
-  const dockerfileOk = CHECKS.some(c => c.name === 'Dockerfile' && c.passed);
-  const structureOk = CHECKS.filter(c => c.name.startsWith('Directory:') || c.name.startsWith('File:')).every(c => c.passed);
-  const buildOk = CHECKS.some(c => c.name === 'Build script' && c.passed);
+  const dockerfileOk = CHECKS.some((c) => c.name === 'Dockerfile' && c.passed);
+  const structureOk = CHECKS.filter(
+    (c) => c.name.startsWith('Directory:') || c.name.startsWith('File:')
+  ).every((c) => c.passed);
+  const buildOk = CHECKS.some((c) => c.name === 'Build script' && c.passed);
 
   if (dockerfileOk && structureOk && buildOk) {
     console.log('✅ Strapi is ready for Docker deployment on VPS');
@@ -278,7 +304,9 @@ function generateReport() {
     if (!buildOk) console.log('   - Configure build scripts');
   }
 
-  console.log('\n═══════════════════════════════════════════════════════════════\n');
+  console.log(
+    '\n═══════════════════════════════════════════════════════════════\n'
+  );
 
   // Return exit code
   return percentage === '100.0' ? 0 : 1;

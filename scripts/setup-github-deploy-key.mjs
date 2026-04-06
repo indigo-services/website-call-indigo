@@ -1,13 +1,11 @@
 #!/usr/bin/env node
-
 /**
  * GitHub Deploy Key Setup Script
  * Automatically adds the deploy key to GitHub repository
  */
-
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 const COLORS = {
   reset: '\x1b[0m',
@@ -54,7 +52,10 @@ log('\nThis script will help you add the deploy key to GitHub.\n');
 info('Step 1: Add Deploy Key to GitHub');
 log('Please follow these steps:\n', COLORS.yellow);
 
-log('1. Go to: https://github.com/indigo-services/indigo-studio/settings/keys', COLORS.cyan);
+log(
+  '1. Go to: https://github.com/indigo-services/indigo-studio/settings/keys',
+  COLORS.cyan
+);
 log('2. Click "Add deploy key"', COLORS.cyan);
 log('3. Title: "Easypanel Production"', COLORS.cyan);
 log('4. Key: (copy the key below)', COLORS.cyan);
@@ -67,17 +68,32 @@ log('\n' + PUBLIC_KEY + '\n\n', COLORS.green);
 info('Step 2: Update Easypanel Configuration');
 log('After adding the deploy key, update Easypanel:\n', COLORS.yellow);
 
-log('Repository URL: git@github.com:indigo-services/indigo-studio.git', COLORS.cyan);
+log(
+  'Repository URL: git@github.com:indigo-services/indigo-studio.git',
+  COLORS.cyan
+);
 log('Branch: main', COLORS.cyan);
 log('Build Path: /', COLORS.cyan);
 log('Docker Compose File: docker-compose.yml', COLORS.cyan);
 
 log('\nSSH Key (private): Copy this entire block:', COLORS.cyan);
 log('\n-----BEGIN OPENSSH PRIVATE KEY-----', COLORS.green);
-log('b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW', COLORS.green);
-log('QyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9QwAAAJjKCPLfygjy', COLORS.green);
-log('3wAAAAtzc2gtZWQyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9Qw', COLORS.green);
-log('AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe', COLORS.green);
+log(
+  'b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW',
+  COLORS.green
+);
+log(
+  'QyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9QwAAAJjKCPLfygjy',
+  COLORS.green
+);
+log(
+  '3wAAAAtzc2gtZWQyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9Qw',
+  COLORS.green
+);
+log(
+  'AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe',
+  COLORS.green
+);
 log('vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==', COLORS.green);
 log('-----END OPENSSH PRIVATE KEY-----\n', COLORS.green);
 

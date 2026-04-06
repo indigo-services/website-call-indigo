@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * CI/CD Pipeline Status Script
  * Provides real-time CI/CD status for deployment readiness
  */
-
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -40,9 +38,13 @@ function displayStatus(name: string, status: string, details?: string) {
 }
 
 function main() {
-  console.log('\n╔════════════════════════════════════════════════════════════╗');
+  console.log(
+    '\n╔════════════════════════════════════════════════════════════╗'
+  );
   console.log('║   CI/CD Pipeline Status Report                             ║');
-  console.log('╚════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '╚════════════════════════════════════════════════════════════╝\n'
+  );
 
   // Check for common CI configuration files
   const hasCIConfig = {
@@ -54,7 +56,10 @@ function main() {
 
   console.log('CI/CD Configuration:');
   Object.entries(hasCIConfig).forEach(([provider, exists]) => {
-    displayStatus(provider.toUpperCase(), exists ? 'configured' : 'not-configured');
+    displayStatus(
+      provider.toUpperCase(),
+      exists ? 'configured' : 'not-configured'
+    );
   });
 
   // Check for deployment files
@@ -66,7 +71,10 @@ function main() {
   };
 
   Object.entries(hasDeployConfig).forEach(([provider, exists]) => {
-    displayStatus(provider.toUpperCase(), exists ? 'configured' : 'not-configured');
+    displayStatus(
+      provider.toUpperCase(),
+      exists ? 'configured' : 'not-configured'
+    );
   });
 
   // Check environment files

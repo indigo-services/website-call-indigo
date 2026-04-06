@@ -21,7 +21,7 @@ async function checkEndpoint(
   timeout = 5000
 ): Promise<HealthCheckResult> {
   const startTime = Date.now();
-  
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -74,9 +74,9 @@ async function checkEndpoint(
 
 function formatStatus(status: string): string {
   const colors = {
-    healthy: '\x1b[32m',    // Green
-    unhealthy: '\x1b[31m',  // Red
-    warning: '\x1b[33m',    // Yellow
+    healthy: '\x1b[32m', // Green
+    unhealthy: '\x1b[31m', // Red
+    warning: '\x1b[33m', // Yellow
     reset: '\x1b[0m',
   };
 
@@ -103,9 +103,7 @@ async function main() {
   console.log(`\nChecking services...\n`);
 
   // Check Strapi
-  results.push(
-    await checkEndpoint('Strapi API', `${apiUrl}/health`, 5000)
-  );
+  results.push(await checkEndpoint('Strapi API', `${apiUrl}/health`, 5000));
 
   // Check Next.js
   results.push(
@@ -113,17 +111,19 @@ async function main() {
   );
 
   // Check Strapi Admin
-  results.push(
-    await checkEndpoint('Strapi Admin', `${apiUrl}/admin`, 5000)
-  );
+  results.push(await checkEndpoint('Strapi Admin', `${apiUrl}/admin`, 5000));
 
   // Print results
   let allHealthy = true;
   results.forEach((result) => {
     const statusStr = formatStatus(result.status);
-    const responseTime = result.responseTime ? ` (${result.responseTime}ms)` : '';
-    console.log(`${statusStr}  ${result.service.padEnd(20)} ${result.message}${responseTime}`);
-    
+    const responseTime = result.responseTime
+      ? ` (${result.responseTime}ms)`
+      : '';
+    console.log(
+      `${statusStr}  ${result.service.padEnd(20)} ${result.message}${responseTime}`
+    );
+
     if (result.status !== 'healthy') {
       allHealthy = false;
     }
@@ -131,9 +131,9 @@ async function main() {
 
   // Summary
   console.log('\n' + '─'.repeat(50));
-  const summary = allHealthy ? 
-    `✓ All services healthy` : 
-    `✗ Some services need attention`;
+  const summary = allHealthy
+    ? `✓ All services healthy`
+    : `✗ Some services need attention`;
   const color = allHealthy ? '\x1b[32m' : '\x1b[31m';
   console.log(`${color}${summary}\x1b[0m\n`);
 

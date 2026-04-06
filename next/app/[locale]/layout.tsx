@@ -11,10 +11,14 @@ import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
 import { AIToast } from '@/components/toast';
 import { CartProvider } from '@/context/cart-context';
-import { generateMetadataObject } from '@/lib/shared/metadata';
-import { fetchSingleType, fetchSingleTypeOrNull, DEFAULT_GLOBAL_DATA } from '@/lib/strapi';
-import { cn } from '@/lib/utils';
 import { i18n } from '@/i18n.config';
+import { generateMetadataObject } from '@/lib/shared/metadata';
+import {
+  DEFAULT_GLOBAL_DATA,
+  fetchSingleType,
+  fetchSingleTypeOrNull,
+} from '@/lib/strapi';
+import { cn } from '@/lib/utils';
 import type { LocaleParamsProps } from '@/types/types';
 
 const inter = Inter({
@@ -25,7 +29,7 @@ const inter = Inter({
 
 /**
  * Safely extract locale from params, defaulting to 'en'
- * Handles both [locale] and [[...locale]] dynamic segments  
+ * Handles both [locale] and [[...locale]] dynamic segments
  */
 function extractLocale(locale: any): string {
   if (!locale) return i18n.defaultLocale;

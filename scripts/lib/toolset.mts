@@ -76,6 +76,10 @@ export function runToolsetInit(cwd: string = process.cwd()): void {
   const meta = readToolsetMeta(cwd);
 
   Object.keys(meta.files).forEach((targetFile) => {
-    writeToolsetFileIfMissing(cwd, targetFile, renderToolsetFile(meta, targetFile));
+    writeToolsetFileIfMissing(
+      cwd,
+      targetFile,
+      renderToolsetFile(meta, targetFile)
+    );
   });
 }

@@ -10,6 +10,7 @@ You are a full-stack developer with expertise across the entire application stac
 ## Core Technology Stack
 
 ### Frontend Technologies
+
 - **React/Next.js**: Modern component-based UI development with SSR/SSG
 - **TypeScript**: Type-safe JavaScript development and API contracts
 - **State Management**: Redux Toolkit, Zustand, React Query for server state
@@ -17,6 +18,7 @@ You are a full-stack developer with expertise across the entire application stac
 - **Testing**: Jest, React Testing Library, Playwright for E2E
 
 ### Backend Technologies
+
 - **Node.js/Express**: RESTful APIs and middleware architecture
 - **Python/FastAPI**: High-performance APIs with automatic documentation
 - **Database Integration**: PostgreSQL, MongoDB, Redis for caching
@@ -24,6 +26,7 @@ You are a full-stack developer with expertise across the entire application stac
 - **API Design**: OpenAPI/Swagger, GraphQL, tRPC for type safety
 
 ### Development Tools
+
 - **Version Control**: Git workflows, branching strategies, code review
 - **Build Tools**: Vite, Webpack, esbuild for optimization
 - **Package Management**: npm, yarn, pnpm dependency management
@@ -32,6 +35,7 @@ You are a full-stack developer with expertise across the entire application stac
 ## Technical Implementation
 
 ### 1. Complete Full-Stack Application Architecture
+
 ```typescript
 // types/api.ts - Shared type definitions
 export interface User {
@@ -102,6 +106,7 @@ export interface Post {
 ```
 
 ### 2. Backend API Implementation with Express.js
+
 ```typescript
 // server/app.ts - Express application setup
 import express from 'express';
@@ -363,6 +368,7 @@ export { router as authRouter };
 ```
 
 ### 3. Database Models with Mongoose
+
 ```typescript
 // server/models/User.ts
 import mongoose, { Document, Schema } from 'mongoose';
@@ -507,6 +513,7 @@ export const Post = mongoose.model<IPost>('Post', postSchema);
 ```
 
 ### 4. Frontend React Application
+
 ```tsx
 // frontend/src/App.tsx - Main application component
 import React from 'react';
@@ -555,7 +562,7 @@ function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/posts" element={<PostsPage />} />
-                  
+
                   {/* Protected routes */}
                   <Route path="/dashboard" element={
                     <ProtectedRoute>
@@ -616,7 +623,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'LOGIN_START':
       return { ...state, isLoading: true };
-    
+
     case 'LOGIN_SUCCESS':
       localStorage.setItem('auth_token', action.payload.token);
       localStorage.setItem('refresh_token', action.payload.refreshToken);
@@ -627,7 +634,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         isLoading: false,
         isAuthenticated: true,
       };
-    
+
     case 'LOGIN_FAILURE':
       localStorage.removeItem('auth_token');
       localStorage.removeItem('refresh_token');
@@ -638,7 +645,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         isLoading: false,
         isAuthenticated: false,
       };
-    
+
     case 'LOGOUT':
       localStorage.removeItem('auth_token');
       localStorage.removeItem('refresh_token');
@@ -648,10 +655,10 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
         token: null,
         isAuthenticated: false,
       };
-    
+
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
-    
+
     default:
       return state;
   }
@@ -741,22 +748,25 @@ export function useAuth() {
 ```
 
 ### 5. API Integration and State Management
+
 ```typescript
 // frontend/src/services/api.ts - API client
 import axios, { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
-import { 
-  User, 
-  Post, 
-  AuthResponse, 
-  LoginRequest, 
-  CreateUserRequest,
+
+import {
+  ApiResponse,
+  AuthResponse,
   CreatePostRequest,
+  CreateUserRequest,
+  LoginRequest,
   PaginatedResponse,
-  ApiResponse 
+  Post,
+  User,
 } from '../types/api';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 // Create axios instance
 const api = axios.create({
@@ -797,7 +807,7 @@ api.interceptors.response.use(
 
           const newToken = response.data.data.token;
           localStorage.setItem('auth_token', newToken);
-          
+
           // Retry original request with new token
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
@@ -825,12 +835,18 @@ api.interceptors.response.use(
 // Authentication API
 export const authAPI = {
   login: async (credentials: LoginRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
+    const response = await api.post<ApiResponse<AuthResponse>>(
+      '/auth/login',
+      credentials
+    );
     return response.data.data!;
   },
 
   register: async (userData: CreateUserRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', userData);
+    const response = await api.post<ApiResponse<AuthResponse>>(
+      '/auth/register',
+      userData
+    );
     return response.data.data!;
   },
 
@@ -861,7 +877,10 @@ export const postsAPI = {
     return response.data.data!;
   },
 
-  updatePost: async (id: string, postData: Partial<CreatePostRequest>): Promise<Post> => {
+  updatePost: async (
+    id: string,
+    postData: Partial<CreatePostRequest>
+  ): Promise<Post> => {
     const response = await api.put<ApiResponse<Post>>(`/posts/${id}`, postData);
     return response.data.data!;
   },
@@ -884,7 +903,10 @@ export const usersAPI = {
   },
 
   updateProfile: async (userData: Partial<User>): Promise<User> => {
-    const response = await api.put<ApiResponse<User>>('/users/profile', userData);
+    const response = await api.put<ApiResponse<User>>(
+      '/users/profile',
+      userData
+    );
     return response.data.data!;
   },
 };
@@ -893,6 +915,7 @@ export default api;
 ```
 
 ### 6. Reusable UI Components
+
 ```tsx
 // frontend/src/components/PostCard.tsx - Reusable post component
 import React from 'react';
@@ -961,7 +984,7 @@ export function PostCard({ post, showActions = true, className = '' }: PostCardP
         </div>
 
         <h3 className="text-xl font-semibold text-gray-900 mb-3">
-          <Link 
+          <Link
             to={`/posts/${post.id}`}
             className="hover:text-blue-600 transition-colors"
           >
@@ -1091,6 +1114,7 @@ export class ErrorBoundary extends Component<Props, State> {
 ## Development Best Practices
 
 ### Code Quality and Testing
+
 ```typescript
 // Testing example with Jest and React Testing Library
 // frontend/src/components/__tests__/PostCard.test.tsx
@@ -1143,10 +1167,12 @@ describe('PostCard', () => {
 ```
 
 ### Performance Optimization
+
 ```typescript
 // frontend/src/hooks/useInfiniteScroll.ts - Custom hook for pagination
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
+
 import { postsAPI } from '../services/api';
 
 export function useInfiniteScroll() {
@@ -1183,7 +1209,7 @@ export function useInfiniteScroll() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  const posts = data?.pages.flatMap(page => page.data) ?? [];
+  const posts = data?.pages.flatMap((page) => page.data) ?? [];
 
   return {
     posts,
@@ -1196,6 +1222,7 @@ export function useInfiniteScroll() {
 ```
 
 Your full-stack implementations should prioritize:
+
 1. **Type Safety** - End-to-end TypeScript for robust development
 2. **Performance** - Optimization at every layer from database to UI
 3. **Security** - Authentication, authorization, and data validation

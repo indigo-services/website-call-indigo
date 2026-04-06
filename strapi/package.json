@@ -36,7 +36,7 @@
     "name": "Jaden Black"
   },
   "strapi": {
-    "uuid": "LAUNCHPAD"
+    "uuid": "LAUNCHPAD-LOCAL-757b25ae-fe59-49eb-ad22-4a9e25f0f370"
   },
   "engines": {
     "node": ">=18.0.0 <=22.x.x",

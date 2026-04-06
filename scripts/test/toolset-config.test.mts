@@ -1,7 +1,7 @@
-import assert from 'node:assert/strict';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import assert from 'node:assert/strict';
 
 import { loadPortableConfig } from '../lib/easypanel.mjs';
 import {
@@ -119,7 +119,10 @@ const cases: TestCase[] = [
 
       assert.equal(fs.existsSync(path.join(cwd, '.env.local')), true);
       assert.equal(fs.existsSync(path.join(cwd, '.env.easypanel.local')), true);
-      assert.equal(fs.existsSync(path.join(cwd, '.env.production.local')), true);
+      assert.equal(
+        fs.existsSync(path.join(cwd, '.env.production.local')),
+        true
+      );
     },
   },
 ];

@@ -1,17 +1,15 @@
 #!/usr/bin/env node
-
 /**
  * Continuous Deployment Validation Script
  * Loops until all deployment endpoints are fully functional
  */
-
 import { execSync } from 'child_process';
 
 const BASE_URL = 'https://riostack-indigo-studio.ck87nu.easypanel.host';
 const ENDPOINTS = [
   { path: '/', expected: 200, name: 'Main Page' },
   { path: '/manage/admin', expected: 200, name: 'Admin Panel' },
-  { path: '/api/articles', expected: 200, name: 'API Articles' }
+  { path: '/api/articles', expected: 200, name: 'API Articles' },
 ];
 
 const COLORS = {
@@ -55,17 +53,28 @@ async function testEndpoint(endpoint) {
   try {
     const response = await fetch(url, {
       method: 'HEAD',
-      signal: AbortSignal.timeout(10000) // 10 second timeout
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     if (response.status === endpoint.expected) {
-      success(`${endpoint.name}: ${url} - ${response.status} ${response.statusText}`);
+      success(
+        `${endpoint.name}: ${url} - ${response.status} ${response.statusText}`
+      );
       return { success: true, status: response.status, url };
     } else if (response.status === 502) {
-      warning(`${endpoint.name}: ${url} - ${response.status} Bad Gateway (Service not ready)`);
-      return { success: false, status: response.status, url, issue: '502 Bad Gateway' };
+      warning(
+        `${endpoint.name}: ${url} - ${response.status} Bad Gateway (Service not ready)`
+      );
+      return {
+        success: false,
+        status: response.status,
+        url,
+        issue: '502 Bad Gateway',
+      };
     } else {
-      error(`${endpoint.name}: ${url} - ${response.status} ${response.statusText}`);
+      error(
+        `${endpoint.name}: ${url} - ${response.status} ${response.statusText}`
+      );
       return { success: false, status: response.status, url };
     }
   } catch (err) {
@@ -85,16 +94,16 @@ async function validateDeployment() {
     log(`\n🔄 Attempt #${attempt} - Testing all endpoints...`, COLORS.cyan);
 
     const results = await Promise.all(
-      ENDPOINTS.map(endpoint => testEndpoint(endpoint))
+      ENDPOINTS.map((endpoint) => testEndpoint(endpoint))
     );
 
-    allPassed = results.every(result => result.success);
+    allPassed = results.every((result) => result.success);
 
     if (allPassed) {
       header('✅ DEPLOYMENT SUCCESSFUL!');
       log('🎉 All endpoints are functional and validated!\n', COLORS.green);
 
-      results.forEach(result => {
+      results.forEach((result) => {
         success(`✓ ${result.url} - Working perfectly`);
       });
 
@@ -109,10 +118,13 @@ async function validateDeployment() {
 
       return true;
     } else {
-      const failedResults = results.filter(r => !r.success);
+      const failedResults = results.filter((r) => !r.success);
 
-      log(`\n❌ ${failedResults.length} endpoint(s) still failing:`, COLORS.red);
-      failedResults.forEach(result => {
+      log(
+        `\n❌ ${failedResults.length} endpoint(s) still failing:`,
+        COLORS.red
+      );
+      failedResults.forEach((result) => {
         if (result.issue === '502 Bad Gateway') {
           warning(`• ${result.url} - Service not running yet`);
         } else if (result.status) {
@@ -133,13 +145,13 @@ async function validateDeployment() {
       log(`\n⏳ Waiting ${waitTime} seconds before retry...`, COLORS.cyan);
       log('   (Press Ctrl+C to stop validation)\n');
 
-      await new Promise(resolve => setTimeout(resolve, waitTime * 1000));
+      await new Promise((resolve) => setTimeout(resolve, waitTime * 1000));
     }
   }
 }
 
 // Run validation
-validateDeployment().catch(err => {
+validateDeployment().catch((err) => {
   error(`\n❌ Validation script failed: ${err.message}`);
   process.exit(1);
 });

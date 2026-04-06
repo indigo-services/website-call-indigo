@@ -1,5 +1,3 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
 import {
   ArrowRight,
   BookOpen,
@@ -11,6 +9,8 @@ import {
   ShieldCheck,
   SquareTerminal,
 } from 'lucide-react';
+import type { Metadata } from 'next';
+import Link from 'next/link';
 
 const surfaces = [
   {
@@ -95,10 +95,7 @@ function SurfaceCard({
   }
 
   return (
-    <Link
-      href={href}
-      className={className}
-    >
+    <Link href={href} className={className}>
       {content}
     </Link>
   );
@@ -190,7 +187,10 @@ export default function DevPage() {
                   'Registry-ready components stay Indigo-owned.',
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3">
-                    <ShieldCheck size={18} className="mt-0.5 text-emerald-300" />
+                    <ShieldCheck
+                      size={18}
+                      className="mt-0.5 text-emerald-300"
+                    />
                     <span className="text-sm text-slate-200">{item}</span>
                   </div>
                 ))}
@@ -201,8 +201,8 @@ export default function DevPage() {
                   Next step
                 </p>
                 <p className="mt-2 text-sm leading-6 text-white/90">
-                  Add branded Storybook stories for the public preview blocks and
-                  lift the most reusable sections into the visual registry.
+                  Add branded Storybook stories for the public preview blocks
+                  and lift the most reusable sections into the visual registry.
                 </p>
                 <a
                   href="https://storybook.js.org/docs"

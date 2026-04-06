@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 interface DeploymentStatus {
   service: string;
@@ -19,7 +19,9 @@ interface CheckItem {
 }
 
 const Dashboard: React.FC = () => {
-  const [deploymentStatus, setDeploymentStatus] = useState<DeploymentStatus[]>([]);
+  const [deploymentStatus, setDeploymentStatus] = useState<DeploymentStatus[]>(
+    []
+  );
   const [checklist, setChecklist] = useState<CheckItem[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('deployment-checklist');
@@ -27,46 +29,173 @@ const Dashboard: React.FC = () => {
     }
     return [
       // Environment & Build
-      { id: 'env-vars', category: 'Environment', name: 'Environment variables defined', checked: false, critical: true },
-      { id: 'build-success', category: 'Environment', name: 'Build succeeds locally', checked: false, critical: true },
-      { id: 'no-warnings', category: 'Environment', name: 'No build warnings', checked: false, critical: true },
+      {
+        id: 'env-vars',
+        category: 'Environment',
+        name: 'Environment variables defined',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'build-success',
+        category: 'Environment',
+        name: 'Build succeeds locally',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'no-warnings',
+        category: 'Environment',
+        name: 'No build warnings',
+        checked: false,
+        critical: true,
+      },
 
       // Code Quality
-      { id: 'lint', category: 'Code Quality', name: 'Linting passes', checked: false, critical: false },
-      { id: 'format', category: 'Code Quality', name: 'Code formatted', checked: false, critical: false },
-      { id: 'types', category: 'Code Quality', name: 'No TypeScript errors', checked: false, critical: false },
+      {
+        id: 'lint',
+        category: 'Code Quality',
+        name: 'Linting passes',
+        checked: false,
+        critical: false,
+      },
+      {
+        id: 'format',
+        category: 'Code Quality',
+        name: 'Code formatted',
+        checked: false,
+        critical: false,
+      },
+      {
+        id: 'types',
+        category: 'Code Quality',
+        name: 'No TypeScript errors',
+        checked: false,
+        critical: false,
+      },
 
       // Performance
-      { id: 'bundle-size', category: 'Performance', name: 'Bundle size optimal', checked: false, critical: false },
-      { id: 'web-vitals', category: 'Performance', name: 'Core Web Vitals met', checked: false, critical: false },
-      { id: 'images-opt', category: 'Performance', name: 'Images optimized', checked: false, critical: false },
+      {
+        id: 'bundle-size',
+        category: 'Performance',
+        name: 'Bundle size optimal',
+        checked: false,
+        critical: false,
+      },
+      {
+        id: 'web-vitals',
+        category: 'Performance',
+        name: 'Core Web Vitals met',
+        checked: false,
+        critical: false,
+      },
+      {
+        id: 'images-opt',
+        category: 'Performance',
+        name: 'Images optimized',
+        checked: false,
+        critical: false,
+      },
 
       // Security
-      { id: 'no-secrets', category: 'Security', name: 'No hardcoded secrets', checked: false, critical: true },
-      { id: 'headers', category: 'Security', name: 'Security headers set', checked: false, critical: true },
-      { id: 'https', category: 'Security', name: 'HTTPS enabled', checked: false, critical: true },
+      {
+        id: 'no-secrets',
+        category: 'Security',
+        name: 'No hardcoded secrets',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'headers',
+        category: 'Security',
+        name: 'Security headers set',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'https',
+        category: 'Security',
+        name: 'HTTPS enabled',
+        checked: false,
+        critical: true,
+      },
 
       // Strapi
-      { id: 'strapi-build', category: 'Strapi', name: 'Strapi builds successfully', checked: false, critical: true },
-      { id: 'strapi-db', category: 'Strapi', name: 'Database migrations done', checked: false, critical: true },
-      { id: 'strapi-api', category: 'Strapi', name: 'API permissions configured', checked: false, critical: true },
+      {
+        id: 'strapi-build',
+        category: 'Strapi',
+        name: 'Strapi builds successfully',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'strapi-db',
+        category: 'Strapi',
+        name: 'Database migrations done',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'strapi-api',
+        category: 'Strapi',
+        name: 'API permissions configured',
+        checked: false,
+        critical: true,
+      },
 
       // Vercel
-      { id: 'vercel-config', category: 'Vercel', name: 'vercel.json configured', checked: false, critical: true },
-      { id: 'vercel-env', category: 'Vercel', name: 'Environment vars in Vercel', checked: false, critical: true },
-      { id: 'vercel-domains', category: 'Vercel', name: 'Domains configured', checked: false, critical: true },
+      {
+        id: 'vercel-config',
+        category: 'Vercel',
+        name: 'vercel.json configured',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'vercel-env',
+        category: 'Vercel',
+        name: 'Environment vars in Vercel',
+        checked: false,
+        critical: true,
+      },
+      {
+        id: 'vercel-domains',
+        category: 'Vercel',
+        name: 'Domains configured',
+        checked: false,
+        critical: true,
+      },
 
       // Post-Deploy
-      { id: 'post-test', category: 'Post-Deploy', name: 'Features tested on preview', checked: false, critical: false },
-      { id: 'perf-bench', category: 'Post-Deploy', name: 'Performance benchmarked', checked: false, critical: false },
-      { id: 'monitoring', category: 'Post-Deploy', name: 'Monitoring enabled', checked: false, critical: false },
+      {
+        id: 'post-test',
+        category: 'Post-Deploy',
+        name: 'Features tested on preview',
+        checked: false,
+        critical: false,
+      },
+      {
+        id: 'perf-bench',
+        category: 'Post-Deploy',
+        name: 'Performance benchmarked',
+        checked: false,
+        critical: false,
+      },
+      {
+        id: 'monitoring',
+        category: 'Post-Deploy',
+        name: 'Monitoring enabled',
+        checked: false,
+        critical: false,
+      },
     ];
   });
 
   const checkDeploymentStatus = async () => {
     try {
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:1337';
-      const webUrl = process.env.REACT_APP_WEBSITE_URL || 'http://localhost:3000';
+      const webUrl =
+        process.env.REACT_APP_WEBSITE_URL || 'http://localhost:3000';
 
       const statuses: DeploymentStatus[] = [
         { service: 'Strapi API', status: 'unknown' },
@@ -79,11 +208,14 @@ const Dashboard: React.FC = () => {
         try {
           let url = '';
           if (status.service === 'Strapi API') url = `${apiUrl}/health`;
-          else if (status.service === 'Next.js App') url = `${webUrl}/api/health`;
+          else if (status.service === 'Next.js App')
+            url = `${webUrl}/api/health`;
           else if (status.service === 'Strapi Admin') url = `${apiUrl}/admin`;
 
           const start = Date.now();
-          const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
+          const response = await fetch(url, {
+            signal: AbortSignal.timeout(5000),
+          });
           const responseTime = Date.now() - start;
 
           if (response.ok) {
@@ -97,7 +229,8 @@ const Dashboard: React.FC = () => {
           }
         } catch (err) {
           status.status = 'unhealthy';
-          status.message = err instanceof Error ? err.message : 'Connection failed';
+          status.message =
+            err instanceof Error ? err.message : 'Connection failed';
         }
       }
 
@@ -108,7 +241,7 @@ const Dashboard: React.FC = () => {
   };
 
   const toggleCheckItem = (id: string) => {
-    const updated = checklist.map(item =>
+    const updated = checklist.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
     setChecklist(updated);
@@ -116,24 +249,30 @@ const Dashboard: React.FC = () => {
   };
 
   const resetChecklist = () => {
-    setChecklist(checklist.map(item => ({ ...item, checked: false })));
+    setChecklist(checklist.map((item) => ({ ...item, checked: false })));
     localStorage.removeItem('deployment-checklist');
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'healthy': return '🟢';
-      case 'unhealthy': return '🔴';
-      case 'warning': return '🟡';
-      default: return '⚪';
+      case 'healthy':
+        return '🟢';
+      case 'unhealthy':
+        return '🔴';
+      case 'warning':
+        return '🟡';
+      default:
+        return '⚪';
     }
   };
 
-  const categories = Array.from(new Set(checklist.map(item => item.category)));
-  
+  const categories = Array.from(
+    new Set(checklist.map((item) => item.category))
+  );
+
   const getCategoryProgress = (category: string) => {
-    const items = checklist.filter(item => item.category === category);
-    const checked = items.filter(item => item.checked);
+    const items = checklist.filter((item) => item.category === category);
+    const checked = items.filter((item) => item.checked);
     return { checked: checked.length, total: items.length };
   };
 
@@ -143,13 +282,22 @@ const Dashboard: React.FC = () => {
   }, []);
 
   // Compute prodReady from current checklist
-  const criticalItems = checklist.filter(item => item.critical);
-  const criticalChecked = criticalItems.filter(item => item.checked);
-  const prodReady = criticalItems.length > 0 && criticalItems.length === criticalChecked.length;
+  const criticalItems = checklist.filter((item) => item.critical);
+  const criticalChecked = criticalItems.filter((item) => item.checked);
+  const prodReady =
+    criticalItems.length > 0 && criticalItems.length === criticalChecked.length;
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
-      <style>{`
+    <div
+      style={{
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+        padding: '20px',
+        maxWidth: '900px',
+        margin: '0 auto',
+      }}
+    >
+      <style>
+        {`
         * { box-sizing: border-box; }
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { margin: 0 0 10px 0; font-size: 28px; color: #1e293b; }
@@ -269,9 +417,11 @@ const Dashboard: React.FC = () => {
 
       {/* Service Status */}
       <div className="status-box">
-        {deploymentStatus.map(status => (
+        {deploymentStatus.map((status) => (
           <div key={status.service} className={`status-card ${status.status}`}>
-            <h3>{getStatusIcon(status.status)} {status.service}</h3>
+            <h3>
+              {getStatusIcon(status.status)} {status.service}
+            </h3>
             <p>{status.message}</p>
             {status.responseTime && <p>Response: {status.responseTime}ms</p>}
           </div>
@@ -284,12 +434,12 @@ const Dashboard: React.FC = () => {
         <p>
           {prodReady
             ? 'All critical checks passed. You can proceed with deployment.'
-            : `Complete ${checklist.filter(i => i.critical && !i.checked).length} critical items to deploy`}
+            : `Complete ${checklist.filter((i) => i.critical && !i.checked).length} critical items to deploy`}
         </p>
       </div>
 
       {/* Checklist by Category */}
-      {categories.map(category => {
+      {categories.map((category) => {
         const progress = getCategoryProgress(category);
         return (
           <div key={category} className="checklist-section">
@@ -301,8 +451,8 @@ const Dashboard: React.FC = () => {
             </h3>
             <div className="checkbox-group">
               {checklist
-                .filter(item => item.category === category)
-                .map(item => (
+                .filter((item) => item.category === category)
+                .map((item) => (
                   <label
                     key={item.id}
                     className={`checkbox-item ${item.critical ? 'critical' : ''}`}
@@ -322,16 +472,10 @@ const Dashboard: React.FC = () => {
 
       {/* Actions */}
       <div className="actions">
-        <button
-          className="btn-primary"
-          onClick={checkDeploymentStatus}
-        >
+        <button className="btn-primary" onClick={checkDeploymentStatus}>
           🔄 Refresh Status
         </button>
-        <button
-          className="btn-secondary"
-          onClick={resetChecklist}
-        >
+        <button className="btn-secondary" onClick={resetChecklist}>
           ↻ Reset Checklist
         </button>
       </div>
