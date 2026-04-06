@@ -9,9 +9,9 @@ docs/*
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
-.env
-.env.production
-.env.local
+.env*
+!.env.example
+!.env.*.example
 .playwright-mcp
 visual-reports
 .claude/settings.local.json

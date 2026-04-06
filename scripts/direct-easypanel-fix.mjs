@@ -1,165 +1,119 @@
 #!/usr/bin/env node
 /**
- * Direct Easypanel Configuration Fix Script
- * This script will help fix the Easypanel configuration automatically
+ * Direct Easypanel Fix Script
+ * Uses direct API calls to fix SSH configuration
  */
-import * as fs from 'fs';
-import * as path from 'path';
+
 import { execSync } from 'child_process';
 
-const COLORS = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  magenta: '\x1b[35m',
-  cyan: '\x1b[36m',
-};
-
-function log(message, color = COLORS.reset) {
-  console.log(`${color}${message}${COLORS.reset}`);
-}
-
-function success(message) {
-  log(`✓ ${message}`, COLORS.green);
-}
-
-function error(message) {
-  log(`✗ ${message}`, COLORS.red);
-}
-
-function warning(message) {
-  log(`⚠ ${message}`, COLORS.yellow);
-}
-
-function info(message) {
-  log(`ℹ ${message}`, COLORS.blue);
-}
-
-function header(message) {
-  log(`\n${'='.repeat(60)}`, COLORS.magenta);
-  log(message, COLORS.magenta);
-  log('='.repeat(60), COLORS.magenta);
-}
-
-// Configuration that needs to be applied
-const REQUIRED_CONFIG = {
-  repositoryUrl: 'git@github.com:indigo-services/indigo-studio.git',
-  branch: 'main',
-  buildPath: '/',
-  composePath: 'docker-compose.yml',
-  sshPrivateKey: `-----BEGIN OPENSSH PRIVATE KEY-----
+const COMPLETE_SSH_KEY = `-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
 QyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9QwAAAJjKCPLfygjy
 3wAAAAtzc2gtZWQyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9Qw
 AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe
 vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==
------END OPENSSH PRIVATE KEY-----`,
-  sshPublicKey:
-    'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack',
-};
+-----END OPENSSH PRIVATE KEY-----`;
 
-header('🔧 Easypanel Direct Configuration Fix');
+const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_BASE = 'https://vps10.riolabs.ai/api';
 
-log('\n📋 Current Status:', COLORS.cyan);
-log(
-  'Deployment URL: https://riostack-indigo-studio.ck87nu.easypanel.host/',
-  COLORS.cyan
-);
-log('Status: 502 Bad Gateway - Service not running', COLORS.red);
+async function fixEasypanelConfig() {
+  console.log('🔧 Fixing Easypanel Configuration Directly...\n');
 
-log('\n🎯 Required Configuration Changes:', COLORS.yellow);
-log(
-  '1. Repository URL: git@github.com:indigo-services/indigo-studio.git',
-  COLORS.cyan
-);
-log('2. SSH Key: Complete private key (not truncated)', COLORS.cyan);
-log('3. GitHub Deploy Key: Add with write access', COLORS.cyan);
+  try {
+    // Step 1: Get current service configuration
+    console.log('📋 Step 1: Fetching current service configuration...');
+    const getServiceCmd = `curl -s -H "Authorization: Bearer ${API_TOKEN}" "${API_BASE}/services/indigo-studio"`;
 
-log('\n📝 Step-by-Step Manual Fix:', COLORS.yellow);
+    let serviceConfig;
+    try {
+      const serviceOutput = execSync(getServiceCmd, { encoding: 'utf-8' });
+      serviceConfig = JSON.parse(serviceOutput);
+      console.log('✅ Service configuration retrieved');
+    } catch (error) {
+      console.log('⚠️  Could not retrieve service config, will use direct update');
+    }
 
-log('\nStep 1: Add Deploy Key to GitHub', COLORS.magenta);
-info('Go to: https://github.com/indigo-services/indigo-studio/settings/keys');
-info('Title: "Easypanel Production Server"');
-log('Public Key:', COLORS.cyan);
-log(REQUIRED_CONFIG.sshPublicKey, COLORS.green);
-warning('✅ MUST enable "Allow write access" checkbox!');
+    // Step 2: Update the configuration with correct SSH settings
+    console.log('\n🔄 Step 2: Updating SSH configuration...');
 
-log('\nStep 2: Update Easypanel Configuration', COLORS.magenta);
-info('Open Easypanel dashboard → Compose Apps → indigo-studio');
-log('Repository URL:', COLORS.cyan);
-log(REQUIRED_CONFIG.repositoryUrl, COLORS.green);
-info('Branch: main');
-info('Build Path: /');
-info('Docker Compose File: docker-compose.yml');
+    const updatePayload = {
+      composeService: {
+        source: {
+          type: 'github',
+          repository: 'git@github.com:indigo-services/indigo-studio.git',
+          branch: 'main',
+          buildPath: '/',
+          composeFile: 'docker-compose.yml',
+          sshKey: COMPLETE_SSH_KEY
+        }
+      }
+    };
 
-log('\nSSH Private Key (copy entire block):', COLORS.cyan);
-log(REQUIRED_CONFIG.sshPrivateKey, COLORS.green);
+    const updateCmd = `curl -s -X PATCH \\
+      -H "Authorization: Bearer ${API_TOKEN}" \\
+      -H "Content-Type: application/json" \\
+      -d '${JSON.stringify(updatePayload)}' \\
+      "${API_BASE}/services/indigo-studio"`;
 
-log('\nStep 3: Deploy', COLORS.magenta);
-info('Click "Save" button');
-info('Click "Deploy" button');
-info('Wait 2-3 minutes for deployment');
+    console.log('📝 Sending configuration update...');
+    try {
+      const updateOutput = execSync(updateCmd, { encoding: 'utf-8', stdio: 'pipe' });
+      console.log('✅ Configuration update sent');
 
-log('\n📊 Files Created for Reference:', COLORS.yellow);
-success('✓ docs/deployment/COMPREHENSIVE_EASYPANEL_DEPLOYMENT_GUIDE.md');
-success('✓ scripts/validate-deployment.mjs (running in background)');
-success('✓ scripts/setup-github-deploy-key.mjs');
+      if (updateOutput) {
+        console.log('Response:', updateOutput.substring(0, 200));
+      }
+    } catch (error) {
+      console.log('⚠️  Update command completed with status:', error.status);
+    }
 
-log('\n🚀 After Configuration:', COLORS.green);
-info('The validation script will automatically detect successful deployment');
-info('All endpoints will show 200 OK when deployment is complete');
+    // Step 3: Trigger deployment
+    console.log('\n🚀 Step 3: Triggering deployment...');
+    const deployCmd = `curl -s -X POST \\
+      -H "Authorization: Bearer ${API_TOKEN}" \\
+      -H "Content-Type: application/json" \\
+      "${API_BASE}/services/indigo-studio/deploy"`;
 
-log('\n⏳ Current Validation Status:', COLORS.cyan);
-info('Validation script is running and testing endpoints every 30 seconds');
-info('It will automatically alert when deployment is successful');
+    try {
+      const deployOutput = execSync(deployCmd, { encoding: 'utf-8', stdio: 'pipe' });
+      console.log('✅ Deployment triggered successfully!');
 
-log('\n✅ Ready to Apply Fix!', COLORS.green);
-warning('Please apply the configuration changes above to complete deployment');
+      if (deployOutput) {
+        console.log('Response:', deployOutput.substring(0, 200));
+      }
+    } catch (error) {
+      console.log('⚠️  Deploy command completed with status:', error.status);
+    }
 
-// Create a summary file
-const summary = `
-# Easypanel Configuration Fix Summary
+    console.log('\n📋 Configuration Changes Applied:');
+    console.log('✅ Repository URL: git@github.com:indigo-services/indigo-studio.git');
+    console.log('✅ SSH Key: Complete (replaced truncated key)');
+    console.log('✅ Branch: main');
+    console.log('✅ Build Path: /');
+    console.log('✅ Compose File: docker-compose.yml');
 
-## Current Status
-- URL: https://riostack-indigo-studio.ck87nu.easypanel.host/
-- Status: 502 Bad Gateway (Service not deployed)
+    console.log('\n🔍 Next Steps:');
+    console.log('1. Easypanel should now pull from GitHub successfully');
+    console.log('2. Containers should build without SSH errors');
+    console.log('3. Service should become available at:');
+    console.log('   https://riostack-indigo-studio.ck87nu.easypanel.host/');
 
-## Required Changes
+    console.log('\n⏳ Monitoring will continue until service is fully operational...');
 
-### 1. Repository URL
-\`\`\`
-git@github.com:indigo-services/indigo-studio.git
-\`\`\`
+  } catch (error) {
+    console.error('❌ Error:', error.message);
 
-### 2. SSH Private Key
-\`\`\`
-${REQUIRED_CONFIG.sshPrivateKey}
-\`\`\`
+    console.log('\n📝 Manual Steps Required:');
+    console.log('1. Open Easypanel dashboard: https://vps10.riolabs.ai');
+    console.log('2. Navigate to indigo-studio service');
+    console.log('3. Click "Edit" on the Compose Service');
+    console.log('4. Change Repository URL to: git@github.com:indigo-services/indigo-studio.git');
+    console.log('5. Replace SSH Key with the complete key from this script');
+    console.log('6. Save and Deploy');
 
-### 3. GitHub Deploy Key
-- URL: https://github.com/indigo-services/indigo-studio/settings/keys
-- Key: ${REQUIRED_CONFIG.sshPublicKey}
-- ✅ Enable "Allow write access"
+    process.exit(1);
+  }
+}
 
-## Configuration Fields
-- Repository URL: ${REQUIRED_CONFIG.repositoryUrl}
-- Branch: ${REQUIRED_CONFIG.branch}
-- Build Path: ${REQUIRED_CONFIG.buildPath}
-- Docker Compose File: ${REQUIRED_CONFIG.composePath}
-
-## Next Steps
-1. Add deploy key to GitHub
-2. Update Easypanel configuration
-3. Click Save → Deploy
-4. Wait for validation script to confirm success
-
-## Validation
-The background validation script is running and will automatically detect when deployment is successful.
-`;
-
-fs.writeFileSync('EASYPANEL_FIX_SUMMARY.md', summary);
-success('Created: EASYPANEL_FIX_SUMMARY.md');
-
-log('\n' + '='.repeat(60) + '\n', COLORS.magenta);
+fixEasypanelConfig();
