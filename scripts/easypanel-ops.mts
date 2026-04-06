@@ -818,12 +818,22 @@ function runRecommend(config: EasypanelRuntimeConfig): number {
   return 0;
 }
 
-function runValidationAndBuild(): void {
+function runValidationAndBuild(config: EasypanelRuntimeConfig): void {
+  if (config.serviceType === 'compose') {
+    info(
+      'Validating Docker Compose for the Strapi service target (frontend deploy is handled separately on Vercel)'
+    );
+    execSync('docker compose -f docker-compose.yml config', {
+      stdio: 'pipe',
+    });
+
+    info('Building Strapi');
+    execSync('cd strapi && yarn build', { stdio: 'inherit' });
+    return;
+  }
+
   info('Running production validation');
   execSync('yarn validate:prod', { stdio: 'inherit' });
-
-  info('Building Next.js');
-  execSync('cd next && yarn build', { stdio: 'inherit' });
 
   info('Building Strapi');
   execSync('cd strapi && yarn build', { stdio: 'inherit' });
@@ -928,7 +938,7 @@ async function runBootstrap(
     'Create or update the target Easypanel Strapi service'
   );
 
-  runValidationAndBuild();
+  runValidationAndBuild(config);
 
   const synced =
     config.serviceType === 'compose'

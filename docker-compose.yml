@@ -1,5 +1,5 @@
 services:
-  indigo-studio:
+  indigo-strapi:
     build:
       context: ./strapi
       dockerfile: Dockerfile
@@ -21,7 +21,7 @@ services:
       ADMIN_AUTH_SECRET: ${ADMIN_AUTH_SECRET:-changeMeToRandomString}
       ADMIN_PATH: ${ADMIN_PATH:-/admin}
 
-      # Client Configuraswtion
+      # Client Configuration
       CLIENT_URL: ${CLIENT_URL:-https://indigo-website-cms.vercel.app}
       PREVIEW_SECRET: ${PREVIEW_SECRET:-changeMeToRandomString}
 
