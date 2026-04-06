@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { execSync } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import { loadPortableConfig } from './lib/easypanel.mjs';
 
@@ -22,6 +24,115 @@ function error(message: string) {
 
 function info(message: string) {
   log(`ℹ ${message}`, blueColor);
+}
+
+interface ComposeBuildPaths {
+  composePath: string;
+  context: string;
+  dockerfile: string;
+  contextPath: string;
+  dockerfilePath: string;
+}
+
+function parseComposeBuildPaths(
+  composeContent: string,
+  serviceName: string
+): { context: string; dockerfile: string } {
+  const lines = composeContent.split(/\r?\n/);
+  let inServices = false;
+  let inTargetService = false;
+  let inBuildBlock = false;
+  let context = '';
+  let dockerfile = 'Dockerfile';
+
+  for (const line of lines) {
+    if (!inServices) {
+      if (/^services:\s*$/.test(line)) {
+        inServices = true;
+      }
+      continue;
+    }
+
+    const serviceMatch = line.match(/^  ([^:\s]+):\s*$/);
+    if (serviceMatch) {
+      inTargetService = serviceMatch[1] === serviceName;
+      inBuildBlock = false;
+      continue;
+    }
+
+    if (!inTargetService) {
+      continue;
+    }
+
+    if (/^    build:\s*$/.test(line)) {
+      inBuildBlock = true;
+      continue;
+    }
+
+    if (/^    [^ ]/.test(line)) {
+      inBuildBlock = false;
+    }
+
+    if (!inBuildBlock) {
+      continue;
+    }
+
+    const contextMatch = line.match(/^      context:\s*(.+?)\s*$/);
+    if (contextMatch) {
+      context = contextMatch[1];
+      continue;
+    }
+
+    const dockerfileMatch = line.match(/^      dockerfile:\s*(.+?)\s*$/);
+    if (dockerfileMatch) {
+      dockerfile = dockerfileMatch[1];
+    }
+  }
+
+  if (!context) {
+    throw new Error(
+      `Could not resolve build.context for service ${serviceName} in docker-compose.yml`
+    );
+  }
+
+  return { context, dockerfile };
+}
+
+function validateComposeBuildPaths(): ComposeBuildPaths {
+  const config = loadPortableConfig();
+  const composePath = path.resolve(config.cwd, config.composeFile);
+
+  if (!fs.existsSync(composePath)) {
+    throw new Error(`Compose file not found: ${composePath}`);
+  }
+
+  const { context, dockerfile } = parseComposeBuildPaths(
+    fs.readFileSync(composePath, 'utf-8'),
+    config.strapiContainerName
+  );
+  const composeDir = path.dirname(composePath);
+  const contextPath = path.resolve(composeDir, context);
+  const dockerfilePath = path.resolve(contextPath, dockerfile);
+
+  if (!fs.existsSync(contextPath)) {
+    throw new Error(
+      `Compose build.context resolves to a missing path: ${context} -> ${contextPath}`
+    );
+  }
+
+  if (!fs.existsSync(dockerfilePath)) {
+    throw new Error(
+      `Compose dockerfile resolves to a missing path: ${dockerfile} -> ${dockerfilePath}`
+    );
+  }
+
+  return {
+    composePath,
+    context,
+    dockerfile,
+    contextPath,
+    dockerfilePath,
+  };
 }
 
 async function checkValidation(): Promise<boolean> {
@@ -59,6 +170,18 @@ async function handleDeployment(): Promise<void> {
   info(`API Base: ${config.apiBaseUrl}`);
   info(`Target service: ${config.serviceName} (${config.serviceType})`);
 
+  if (config.serviceType === 'compose') {
+    info('\nValidating compose build paths...');
+    const composePaths = validateComposeBuildPaths();
+    success(`Compose file: ${composePaths.composePath}`);
+    success(
+      `Build context: ${composePaths.context} -> ${composePaths.contextPath}`
+    );
+    success(
+      `Dockerfile: ${composePaths.dockerfile} -> ${composePaths.dockerfilePath}`
+    );
+  }
+
   info('\nBuilding Next.js...');
   execSync('cd next && yarn build', { stdio: 'inherit' });
   success('Next.js build complete');
@@ -67,31 +190,18 @@ async function handleDeployment(): Promise<void> {
   execSync('cd strapi && yarn build', { stdio: 'inherit' });
   success('Strapi build complete');
 
+  info('\nSyncing Easypanel source and triggering deploy...');
+  execSync('node --loader ts-node/esm ./scripts/easypanel-ops.mts bootstrap-deploy', {
+    stdio: 'inherit',
+  });
+  success('Easypanel bootstrap and deploy trigger completed');
+
   log('\n' + '='.repeat(60), blueColor);
-  info('Deployment plan');
+  info('Follow-up verification');
   log('='.repeat(60) + '\n', blueColor);
-
-  success('1. Local builds are clean');
-  log('   next -> deployed on Vercel');
-  log(`   strapi -> ${config.strapiPath}\n`);
-
-  success('2. Portable config surface is ready');
-  log('   .env.example');
-  log('   .env.easypanel.example');
-  log('   .env.production');
-  log('   strapi/easypanel.env\n');
-
-  success('3. Recommended preflight commands');
-  log('   yarn easypanel:doctor');
-  log('   yarn easypanel:recommend');
-  log('   yarn easypanel:status\n');
-
-  success('4. Automated bootstrap and deploy');
-  log('   yarn deploy:easypanel:api\n');
-
-  success('5. Post-deploy verification');
-  log('   yarn easypanel:health');
-  log('   yarn easypanel:cron\n');
+  log('yarn easypanel:status');
+  log('yarn easypanel:health');
+  log('Open the Easypanel deployment logs until the container is healthy.\n');
 }
 
 handleDeployment().catch((err) => {

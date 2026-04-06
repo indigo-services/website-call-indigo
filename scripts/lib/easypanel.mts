@@ -20,6 +20,8 @@ export interface EasypanelRuntimeConfig {
   githubOwner: string;
   githubRepo: string;
   githubRef: string;
+  composeRootPath: string;
+  composeFile: string;
   nextPath: string;
   strapiPath: string;
   nextDomain: string;
@@ -84,7 +86,7 @@ export interface EasypanelCreateServicePayload {
 
 const DEFAULT_API_URL = 'https://vps10.riolabs.ai/api';
 const DEFAULT_SERVICE = 'indigo-studio';
-const DEFAULT_STRAPI_CONTAINER = 'indigo-studio';
+const DEFAULT_STRAPI_CONTAINER = 'indigo-strapi';
 const DEFAULT_ADMIN_PATH = '/admin';
 
 function stripWrappingQuotes(value: string): string {
@@ -245,6 +247,10 @@ export function loadPortableConfig(
     githubRef:
       pickFirst(mergedValues, 'EASYPANEL_GITHUB_REF', 'GITHUB_BRANCH') ||
       'main',
+    composeRootPath:
+      pickFirst(mergedValues, 'EASYPANEL_COMPOSE_ROOT_PATH') || '/',
+    composeFile:
+      pickFirst(mergedValues, 'EASYPANEL_COMPOSE_FILE') || 'docker-compose.yml',
     nextPath: pickFirst(mergedValues, 'EASYPANEL_NEXT_PATH') || '/next',
     strapiPath: pickFirst(mergedValues, 'EASYPANEL_STRAPI_PATH') || '/strapi',
     nextDomain,
@@ -564,6 +570,17 @@ export class EasypanelClient {
     content: string;
   }): Promise<unknown> {
     return this.trpcPost('services.compose.updateSourceInline', payload);
+  }
+
+  async updateComposeSourceGit(payload: {
+    projectName: string;
+    serviceName: string;
+    repo: string;
+    ref: string;
+    rootPath: string;
+    composeFile: string;
+  }): Promise<unknown> {
+    return this.trpcPost('services.compose.updateSourceGit', payload);
   }
 
   async createComposeService(payload: {

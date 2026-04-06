@@ -5,7 +5,7 @@
  * This script attempts to stop containers and clean up before redeploying
  */
 
-const { execSync } = require('child_process');
+import fs from 'fs';
 
 const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
@@ -71,7 +71,6 @@ async function tryStopService() {
 async function tryUpdateComposeWithRestartDirective() {
   console.log('\n=== Trying to update compose with restart directive ===');
 
-  const fs = require('fs');
   const composeContent = fs.readFileSync('docker-compose.yml', 'utf-8');
 
   console.log('Current compose content length:', composeContent.length);

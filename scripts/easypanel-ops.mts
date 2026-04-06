@@ -126,14 +126,12 @@ function ensureRuntimeConfig(config: EasypanelRuntimeConfig): string[] {
 function ensureBootstrapConfig(config: EasypanelRuntimeConfig): string[] {
   const missing = ensureRuntimeConfig(config);
 
-  if (config.serviceType === 'app') {
-    if (!config.githubOwner) {
-      missing.push('EASYPANEL_GITHUB_OWNER or owner/repo GITHUB_REPOSITORY');
-    }
+  if (!config.githubOwner) {
+    missing.push('EASYPANEL_GITHUB_OWNER or owner/repo GITHUB_REPOSITORY');
+  }
 
-    if (!config.githubRepo) {
-      missing.push('EASYPANEL_GITHUB_REPO or owner/repo GITHUB_REPOSITORY');
-    }
+  if (!config.githubRepo) {
+    missing.push('EASYPANEL_GITHUB_REPO or owner/repo GITHUB_REPOSITORY');
   }
 
   return missing;
@@ -246,7 +244,13 @@ function buildAppPayload(
 function buildComposePayload(config: EasypanelRuntimeConfig): {
   projectName: string;
   serviceName: string;
-  source: { type: 'inline'; content: string };
+  source: {
+    type: 'git';
+    repo: string;
+    ref: string;
+    rootPath: string;
+    composeFile: string;
+  };
   env: string;
   createDotEnv: boolean;
   domains: Array<{
@@ -258,7 +262,6 @@ function buildComposePayload(config: EasypanelRuntimeConfig): {
     service: string;
   }>;
 } {
-  const composeContent = readFile('docker-compose.yml');
   const domains = config.strapiDomain
     ? [
         {
@@ -276,8 +279,11 @@ function buildComposePayload(config: EasypanelRuntimeConfig): {
     projectName: config.projectName,
     serviceName: config.serviceName,
     source: {
-      type: 'inline',
-      content: composeContent,
+      type: 'git',
+      repo: `git@github.com:${config.githubOwner}/${config.githubRepo}.git`,
+      ref: config.githubRef,
+      rootPath: config.composeRootPath,
+      composeFile: config.composeFile,
     },
     env: buildStrapiEnvironment(config),
     createDotEnv: false,
@@ -913,10 +919,13 @@ async function syncComposeService(
     return { serviceName: payload.serviceName, created: true };
   }
 
-  await client.updateComposeSourceInline({
+  await client.updateComposeSourceGit({
     projectName: payload.projectName,
     serviceName: payload.serviceName,
-    content: payload.source.content,
+    repo: payload.source.repo,
+    ref: payload.source.ref,
+    rootPath: payload.source.rootPath,
+    composeFile: payload.source.composeFile,
   });
   await client.updateComposeEnv({
     projectName: payload.projectName,

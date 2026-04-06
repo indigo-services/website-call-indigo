@@ -11,7 +11,12 @@
       "Bash(curl -s -X DELETE \"https://vps10.riolabs.ai/api/compose-services/indigo-studio\" -H \"Authorization: Bearer e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172\")",
       "Bash(curl -s -X POST \"https://vps10.riolabs.ai/api/projects/riostack/services/indigo-studio/stop\" -H \"Authorization: Bearer e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172\")",
       "Bash(node scripts/fix-easypanel-cache.mjs)",
-      "Bash(node scripts/diagnose-easypanel.mjs)"
+      "Bash(node scripts/diagnose-easypanel.mjs)",
+      "Bash(node scripts/fix-exit-17.mjs)",
+      "Bash(node scripts/ssh-cleanup-and-deploy.mjs)",
+      "Bash(curl -s \"https://vps10.riolabs.ai/api/openapi.json\")",
+      "Bash(node scripts/check-docker-containers.mjs)",
+      "Bash(node scripts/verify-compose-content.mjs)"
     ],
     "additionalDirectories": [
       "\\tmp"

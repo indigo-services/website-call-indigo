@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 COPY package.json yarn.lock ./
+COPY scripts ./scripts
 
 RUN corepack enable && corepack prepare yarn@4.13.0 --activate
 RUN yarn install --immutable
