@@ -1,8 +1,8 @@
 services:
   indigo-studio:
     build:
-      context: ./strapi
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: strapi/Dockerfile
     # Adding an image name helps Easypanel track the build
     image: indigo-studio:latest
     restart: unless-stopped
