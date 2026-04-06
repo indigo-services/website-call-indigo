@@ -1,7 +1,7 @@
 services:
   indigo-strapi:
     build:
-      context: .
+      context: ./strapi
       dockerfile: Dockerfile
     # Adding an image name helps Easypanel track the build
     image: indigo-strapi:latest
