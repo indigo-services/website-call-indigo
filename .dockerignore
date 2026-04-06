@@ -1,1 +1,16 @@
+env
+.env.local
+.tmp
+.strapi
+build
+dist
 node_modules
+coverage
+exports
+logs
+*.log
+*.sqlite
+*.sqlite3
+debug-*.log
+run-*.log
+public/uploads
