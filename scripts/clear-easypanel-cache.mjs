@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-
 /**
  * Clear Easypanel Cache and Force Fresh Deployment
  * Fixes the cached build path issue
  */
-
 import { execSync } from 'child_process';
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const SERVICE_NAME = 'indigo-studio';
 
@@ -17,8 +16,12 @@ async function clearCacheAndRedeploy() {
 
   console.log('\n❌ IDENTIFIED ISSUE:');
   console.log('Easypanel is using cached build configuration');
-  console.log('Old path: /etc/easypanel/projects/riostack/indigo-studio/code/strapi');
-  console.log('New path should use build context: . with dockerfile: strapi/Dockerfile');
+  console.log(
+    'Old path: /etc/easypanel/projects/riostack/indigo-studio/code/strapi'
+  );
+  console.log(
+    'New path should use build context: . with dockerfile: strapi/Dockerfile'
+  );
 
   console.log('\n🔧 SOLUTION: Force cache clear and redeploy');
 
@@ -37,7 +40,7 @@ async function clearCacheAndRedeploy() {
   }
 
   // Wait a moment
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   // Step 2: Trigger fresh deployment
   console.log('\n🚀 Step 2: Triggering fresh deployment with clean cache...');
@@ -86,7 +89,7 @@ async function clearCacheAndRedeploy() {
   console.log('\n' + '='.repeat(60));
 }
 
-clearCacheAndRedeploy().catch(err => {
+clearCacheAndRedeploy().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

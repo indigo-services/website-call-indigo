@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * SSH Cleanup and Deploy
  * Connects to the Easypanel server via SSH to clean up stale containers and redeploy
  */
-
 import { execSync } from 'child_process';
 
 const SERVER = 'root@vps10.riolabs.ai';
@@ -13,11 +11,14 @@ const SERVICE_NAME = 'indigo-studio';
 
 async function sshCommand(command) {
   try {
-    const result = execSync(`ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${SERVER} "${command}"`, {
-      encoding: 'utf-8',
-      stdio: 'pipe',
-      timeout: 30000,
-    });
+    const result = execSync(
+      `ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 ${SERVER} "${command}"`,
+      {
+        encoding: 'utf-8',
+        stdio: 'pipe',
+        timeout: 30000,
+      }
+    );
     return { success: true, output: result };
   } catch (error) {
     return { success: false, error: error.message, output: error.stdout || '' };
@@ -48,7 +49,9 @@ async function main() {
 
   // Step 2: Check current containers
   console.log('=== Step 2: Checking Current Docker Containers ===');
-  const containersResult = await sshCommand('docker ps -a --filter "name=indigo" --format "table {{.Names}}\t{{.Status}}\t{{.State}}"');
+  const containersResult = await sshCommand(
+    'docker ps -a --filter "name=indigo" --format "table {{.Names}}\t{{.Status}}\t{{.State}}"'
+  );
   console.log(containersResult.output || 'No indigo containers found\n');
 
   // Step 3: Stop and remove containers
@@ -58,17 +61,23 @@ async function main() {
   console.log('Project path:', projectPath);
 
   // Change to project directory and run docker compose down
-  const downResult = await sshCommand(`cd ${projectPath} && docker compose down --volumes --remove-orphans 2>&1 || echo "Already down or no compose file"`);
+  const downResult = await sshCommand(
+    `cd ${projectPath} && docker compose down --volumes --remove-orphans 2>&1 || echo "Already down or no compose file"`
+  );
   console.log(downResult.output);
 
   // Step 4: Remove any dangling images
   console.log('\n=== Step 4: Cleaning Up Docker Resources ===');
-  const pruneResult = await sshCommand('docker image prune -f && docker container prune -f');
+  const pruneResult = await sshCommand(
+    'docker image prune -f && docker container prune -f'
+  );
   console.log(pruneResult.output);
 
   // Step 5: Check the compose file on the server
   console.log('\n=== Step 5: Checking Compose File on Server ===');
-  const composeCheckResult = await sshCommand(`cat ${projectPath}/docker-compose.yml`);
+  const composeCheckResult = await sshCommand(
+    `cat ${projectPath}/docker-compose.yml`
+  );
   if (composeCheckResult.success) {
     console.log('✓ Compose file exists');
     console.log('Content preview:');
@@ -87,7 +96,8 @@ async function main() {
   console.log('\n=== Step 7: Triggering Deployment ===');
   console.log('Now triggering deployment via Easypanel API...');
 
-  const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+  const API_TOKEN =
+    'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
   const API_BASE = 'https://vps10.riolabs.ai/api';
 
   const deployEndpoint = `${API_BASE}/trpc/services.compose.deployService`;
@@ -96,7 +106,7 @@ async function main() {
       projectName: PROJECT_NAME,
       serviceName: SERVICE_NAME,
       forceRebuild: true,
-    }
+    },
   };
 
   try {
@@ -123,7 +133,7 @@ async function main() {
   console.log(`4. Check containers: ssh ${SERVER} "docker ps"`);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });

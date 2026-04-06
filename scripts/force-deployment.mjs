@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-
 /**
  * Force Easypanel Deployment
  * Ensures deployment is actually triggered
  */
-
 import { execSync } from 'child_process';
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const SERVICE_NAME = 'indigo-studio';
 
@@ -37,7 +36,7 @@ async function forceDeployment() {
     console.log('⚠️  Enable command completed');
   }
 
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   // Step 2: Start the service
   console.log('\nStep 2: Starting service...');
@@ -53,7 +52,7 @@ async function forceDeployment() {
     console.log('⚠️  Start command completed');
   }
 
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   // Step 3: Deploy the service
   console.log('\nStep 3: Deploying service...');
@@ -86,7 +85,9 @@ async function forceDeployment() {
   console.log('\n⏳ IF MANUAL DEPLOYMENT NEEDED:');
   console.log('1. Click "Edit" on the service');
   console.log('2. Verify settings:');
-  console.log('   - Repository: git@github.com:indigo-services/indigo-studio.git');
+  console.log(
+    '   - Repository: git@github.com:indigo-services/indigo-studio.git'
+  );
   console.log('   - Branch: main');
   console.log('   - Build Path: /');
   console.log('   - Compose File: docker-compose.yml');
@@ -100,7 +101,7 @@ async function forceDeployment() {
   console.log('\n' + '='.repeat(60));
 }
 
-forceDeployment().catch(err => {
+forceDeployment().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

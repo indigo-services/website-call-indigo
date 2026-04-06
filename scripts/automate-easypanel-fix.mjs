@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * Automate Easypanel UI Fix using Playwright
  * Clears cached configuration and triggers fresh deployment
  */
-
 import { chromium } from 'playwright';
 
 const EASYPANEL_URL = 'https://vps10.riolabs.ai';
@@ -52,8 +50,14 @@ async function main() {
     if (currentUrl.includes('/login')) {
       console.log('\n=== Step 2: Logging in ===');
       // Fill in login form
-      await page.fill('input[name="email"], input[type="email"]', 'admin@riolabs.ai');
-      await page.fill('input[name="password"], input[type="password"]', PASSWORD);
+      await page.fill(
+        'input[name="email"], input[type="email"]',
+        'admin@riolabs.ai'
+      );
+      await page.fill(
+        'input[name="password"], input[type="password"]',
+        PASSWORD
+      );
 
       // Click login button
       await page.click('button[type="submit"]');
@@ -65,7 +69,9 @@ async function main() {
 
     // Step 2: Navigate to project
     console.log('\n=== Step 3: Navigating to Project ===');
-    await page.goto(`${EASYPANEL_URL}/project/${PROJECT_NAME}`, { waitUntil: 'networkidle' });
+    await page.goto(`${EASYPANEL_URL}/project/${PROJECT_NAME}`, {
+      waitUntil: 'networkidle',
+    });
     console.log('✓ Loaded project page');
 
     // Step 3: Find and click on the service
@@ -73,13 +79,15 @@ async function main() {
 
     // Look for the service in the list
     const serviceSelector = `text="${SERVICE_NAME}"`;
-    const serviceExists = await page.locator(serviceSelector).count() > 0;
+    const serviceExists = (await page.locator(serviceSelector).count()) > 0;
 
     if (!serviceExists) {
       console.log(`⚠ Service "${SERVICE_NAME}" not found in the list`);
       console.log('Available services:');
-      const services = await page.locator('[class*="service"], [class*="compose"]').allTextContents();
-      services.forEach(s => console.log('  -', s.trim()));
+      const services = await page
+        .locator('[class*="service"], [class*="compose"]')
+        .allTextContents();
+      services.forEach((s) => console.log('  -', s.trim()));
     } else {
       console.log(`✓ Found service "${SERVICE_NAME}"`);
 
@@ -118,7 +126,7 @@ async function main() {
       console.log('⚠ Could not find Edit button');
       console.log('Available buttons:');
       const buttons = await page.locator('button').allTextContents();
-      buttons.forEach(b => console.log('  -', b.trim()));
+      buttons.forEach((b) => console.log('  -', b.trim()));
     } else {
       await page.waitForTimeout(2000);
       console.log('✓ Clicked Edit button');
@@ -136,7 +144,10 @@ async function main() {
       ];
 
       // Take a screenshot for debugging
-      await page.screenshot({ path: 'easypanel-edit-page.png', fullPage: true });
+      await page.screenshot({
+        path: 'easypanel-edit-page.png',
+        fullPage: true,
+      });
       console.log('📸 Saved screenshot: easypanel-edit-page.png');
 
       // Try to find source configuration section
@@ -150,7 +161,10 @@ async function main() {
       }
 
       // Step 6: Look for docker-compose.yml configuration
-      if (pageContent.includes('docker-compose') || pageContent.includes('compose')) {
+      if (
+        pageContent.includes('docker-compose') ||
+        pageContent.includes('compose')
+      ) {
         console.log('✓ Found compose configuration on page');
       }
 
@@ -163,7 +177,11 @@ async function main() {
       console.log('\n=== Step 7: Configuring GitHub Source ===');
 
       // Try to find and click GitHub tab/button
-      const githubTab = await page.locator('button:has-text("GitHub"), label:has-text("GitHub"), [role="tab"]:has-text("GitHub")').first();
+      const githubTab = await page
+        .locator(
+          'button:has-text("GitHub"), label:has-text("GitHub"), [role="tab"]:has-text("GitHub")'
+        )
+        .first();
       const githubTabCount = await githubTab.count();
 
       if (githubTabCount > 0) {
@@ -174,36 +192,50 @@ async function main() {
         await page.waitForTimeout(1000);
 
         // Repository input
-        const repoInput = await page.locator('input[name*="repo"], input[placeholder*="repo"], input[placeholder*="repository"]').first();
-        if (await repoInput.count() > 0) {
+        const repoInput = await page
+          .locator(
+            'input[name*="repo"], input[placeholder*="repo"], input[placeholder*="repository"]'
+          )
+          .first();
+        if ((await repoInput.count()) > 0) {
           await repoInput.fill('indigo-services/indigo-studio');
           console.log('✓ Set repository');
         }
 
         // Branch input
-        const branchInput = await page.locator('input[name*="branch"], input[placeholder*="branch"]').first();
-        if (await branchInput.count() > 0) {
+        const branchInput = await page
+          .locator('input[name*="branch"], input[placeholder*="branch"]')
+          .first();
+        if ((await branchInput.count()) > 0) {
           await branchInput.fill('main');
           console.log('✓ Set branch');
         }
 
         // Path input
-        const pathInput = await page.locator('input[name*="path"], input[placeholder*="path"]').first();
-        if (await pathInput.count() > 0) {
+        const pathInput = await page
+          .locator('input[name*="path"], input[placeholder*="path"]')
+          .first();
+        if ((await pathInput.count()) > 0) {
           await pathInput.fill('/');
           console.log('✓ Set path');
         }
 
         // SSH key textarea
-        const sshTextarea = await page.locator('textarea[name*="ssh"], textarea[placeholder*="SSH"], textarea[placeholder*="key"]').first();
-        if (await sshTextarea.count() > 0) {
+        const sshTextarea = await page
+          .locator(
+            'textarea[name*="ssh"], textarea[placeholder*="SSH"], textarea[placeholder*="key"]'
+          )
+          .first();
+        if ((await sshTextarea.count()) > 0) {
           await sshTextarea.fill(SSH_KEY);
           console.log('✓ Set SSH key');
         }
 
         // Click Save
-        const saveButton = await page.locator('button:has-text("Save"), button[type="submit"]').first();
-        if (await saveButton.count() > 0) {
+        const saveButton = await page
+          .locator('button:has-text("Save"), button[type="submit"]')
+          .first();
+        if ((await saveButton.count()) > 0) {
           await saveButton.click();
           console.log('✓ Clicked Save');
           await page.waitForTimeout(3000);
@@ -216,15 +248,19 @@ async function main() {
       console.log('\n=== Step 8: Triggering Deployment ===');
 
       // Go back to service details
-      await page.goto(`${EASYPANEL_URL}/project/${PROJECT_NAME}`, { waitUntil: 'networkidle' });
+      await page.goto(`${EASYPANEL_URL}/project/${PROJECT_NAME}`, {
+        waitUntil: 'networkidle',
+      });
 
       // Click on service
       await page.click(serviceSelector);
       await page.waitForLoadState('networkidle');
 
       // Look for Deploy button
-      const deployButton = await page.locator('button:has-text("Deploy"), button:has-text("Redeploy")').first();
-      if (await deployButton.count() > 0) {
+      const deployButton = await page
+        .locator('button:has-text("Deploy"), button:has-text("Redeploy")')
+        .first();
+      if ((await deployButton.count()) > 0) {
         await deployButton.click();
         console.log('✓ Clicked Deploy button');
       } else {
@@ -233,7 +269,10 @@ async function main() {
     }
 
     // Take final screenshot
-    await page.screenshot({ path: 'easypanel-final-state.png', fullPage: true });
+    await page.screenshot({
+      path: 'easypanel-final-state.png',
+      fullPage: true,
+    });
     console.log('📸 Saved final screenshot: easypanel-final-state.png');
 
     console.log('\n╔════════════════════════════════════════════════════════╗');
@@ -246,9 +285,10 @@ async function main() {
     console.log('3. Service logs for any errors');
 
     // Wait for user to see what happened
-    console.log('\nPress Ctrl+C to exit (browser will stay open for 30 seconds)');
+    console.log(
+      '\nPress Ctrl+C to exit (browser will stay open for 30 seconds)'
+    );
     await page.waitForTimeout(30000);
-
   } catch (error) {
     console.error('❌ Error:', error.message);
     console.error('Stack:', error.stack);
@@ -265,7 +305,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Fatal error:', err);
   process.exit(1);
 });

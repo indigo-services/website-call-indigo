@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * Complete Service Recreation
  * Uses Easypanel's production methods to fully clear cache and recreate
  */
-
 import { execSync } from 'child_process';
 
 async function recreateService() {
@@ -28,7 +26,8 @@ async function recreateService() {
 
   console.log('\n📋 Step 2: Deleting existing service...');
   // Use the Easypanel API directly to delete
-  const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+  const API_TOKEN =
+    'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
   const API_BASE = 'https://vps10.riolabs.ai/api';
 
   try {
@@ -43,12 +42,15 @@ async function recreateService() {
   }
 
   console.log('\n📋 Step 3: Waiting for deletion to process...');
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   console.log('✅ Wait complete');
 
   console.log('\n📋 Step 4: Creating fresh service with inline content...');
   try {
-    execSync('yarn easypanel:bootstrap', { encoding: 'utf-8', stdio: 'inherit' });
+    execSync('yarn easypanel:bootstrap', {
+      encoding: 'utf-8',
+      stdio: 'inherit',
+    });
     console.log('✅ Fresh service created with inline content');
   } catch (error) {
     console.log('❌ Bootstrap failed:', error.message);
@@ -56,7 +58,7 @@ async function recreateService() {
   }
 
   console.log('\n📋 Step 5: Deploying fresh service...');
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
   try {
     execSync('yarn easypanel:deploy', { encoding: 'utf-8', stdio: 'inherit' });
@@ -86,7 +88,7 @@ async function recreateService() {
   console.log('\n' + '='.repeat(60));
 }
 
-recreateService().catch(err => {
+recreateService().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

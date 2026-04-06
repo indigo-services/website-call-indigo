@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * Easypanel API Configuration Script
  * Uses Easypanel API to fix SSH key and repository configuration
  */
-
 import { execSync } from 'child_process';
 
 const EASYPANEL_API_URL = 'https://vps10.riolabs.ai/api';
@@ -34,33 +32,39 @@ async function updateEasypanelConfig() {
         branch: 'main',
         path: '/',
         composePath: 'docker-compose.yml',
-        sshKey: COMPLETE_SSH_KEY
-      }
+        sshKey: COMPLETE_SSH_KEY,
+      },
     };
 
     console.log('📋 Configuration Payload:');
     console.log(JSON.stringify(updatePayload, null, 2));
 
     // Make API call to update service
-    const response = await fetch(`${EASYPANEL_API_URL}/trpc/services.compose.updateSource`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${EASYPANEL_API_TOKEN}`
-      },
-      body: JSON.stringify(updatePayload)
-    });
+    const response = await fetch(
+      `${EASYPANEL_API_URL}/trpc/services.compose.updateSource`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${EASYPANEL_API_TOKEN}`,
+        },
+        body: JSON.stringify(updatePayload),
+      }
+    );
 
     if (response.ok) {
       const result = await response.json();
       console.log('✅ Configuration updated successfully!');
       console.log('Response:', result);
     } else {
-      console.error('❌ API call failed:', response.status, response.statusText);
+      console.error(
+        '❌ API call failed:',
+        response.status,
+        response.statusText
+      );
       const error = await response.text();
       console.error('Error details:', error);
     }
-
   } catch (error) {
     console.error('❌ Error updating configuration:', error.message);
     process.exit(1);

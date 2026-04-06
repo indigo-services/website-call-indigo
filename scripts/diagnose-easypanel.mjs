@@ -5,7 +5,8 @@
  * Check service configuration and try to understand the deployment failure
  */
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const PROJECT_NAME = 'riostack';
 const SERVICE_NAME = 'indigo-studio';
@@ -23,7 +24,7 @@ async function trpcGetRequest(operation, input = {}) {
   const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${API_TOKEN}`,
     },
   });
 
@@ -52,7 +53,7 @@ async function trpcPostRequest(operation, input = {}) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${API_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ json: input }),
@@ -127,7 +128,7 @@ async function main() {
       projectName: PROJECT_NAME,
     });
 
-    const target = project.services.find(s => s.name === SERVICE_NAME);
+    const target = project.services.find((s) => s.name === SERVICE_NAME);
     if (target) {
       console.log('Found service:', SERVICE_NAME);
       console.log('Type:', target.type);
@@ -137,7 +138,10 @@ async function main() {
         console.log('Build config:', JSON.stringify(target.build, null, 2));
       }
       if (target.source && target.source.type === 'github') {
-        console.log('GitHub repo:', `${target.source.owner}/${target.source.repo}`);
+        console.log(
+          'GitHub repo:',
+          `${target.source.owner}/${target.source.repo}`
+        );
         console.log('Branch:', target.source.ref);
         console.log('Path:', target.source.path);
       }
@@ -154,13 +158,17 @@ async function main() {
   console.log('2. Service already exists with conflicting configuration');
   console.log('3. File not found (build context or dockerfile issue)');
   console.log('\nThe deployment command shows:');
-  console.log('docker compose -f /etc/easypanel/projects/riostack/indigo-studio/code/docker-compose.yml');
-  console.log('              -f /etc/easypanel/projects/riostack/indigo-studio/code/docker-compose.override.yml');
+  console.log(
+    'docker compose -f /etc/easypanel/projects/riostack/indigo-studio/code/docker-compose.yml'
+  );
+  console.log(
+    '              -f /etc/easypanel/projects/riostack/indigo-studio/code/docker-compose.override.yml'
+  );
   console.log('              -p riostack_indigo-studio up --build -d');
   console.log('\nThe override file might be causing conflicts!');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });

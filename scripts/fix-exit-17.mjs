@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-
 /**
  * Fix Docker Compose Exit Code 17
  * This script attempts to stop containers and clean up before redeploying
  */
-
 import fs from 'fs';
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const PROJECT_NAME = 'riostack';
 const SERVICE_NAME = 'indigo-studio';
@@ -19,7 +18,7 @@ async function trpcPostRequest(operation, input = {}) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${API_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ json: input }),
@@ -52,12 +51,15 @@ async function tryStopService() {
   console.log('\nOption 1: Using docker compose down via API...');
   try {
     // Try to get compose issues - this might give us more info
-    const response = await fetch(`${API_BASE}/trpc/services.compose.getIssues?input=${encodeURIComponent(JSON.stringify({ json: { projectName: PROJECT_NAME, serviceName: SERVICE_NAME } }))}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${API_TOKEN}`,
-      },
-    });
+    const response = await fetch(
+      `${API_BASE}/trpc/services.compose.getIssues?input=${encodeURIComponent(JSON.stringify({ json: { projectName: PROJECT_NAME, serviceName: SERVICE_NAME } }))}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -78,7 +80,9 @@ async function tryUpdateComposeWithRestartDirective() {
 
   // Check if there's a container_name directive that might cause issues
   if (composeContent.includes('container_name:')) {
-    console.log('⚠ Found container_name directive - this can cause exit code 17!');
+    console.log(
+      '⚠ Found container_name directive - this can cause exit code 17!'
+    );
   }
 
   // Check if there are any conflicting networks or volumes
@@ -124,14 +128,16 @@ async function main() {
   console.log(`  ssh root@vps10.riolabs.ai`);
   console.log('');
   console.log('Then run these commands:');
-  console.log(`  cd /etc/easypanel/projects/${PROJECT_NAME}/${SERVICE_NAME}/code`);
+  console.log(
+    `  cd /etc/easypanel/projects/${PROJECT_NAME}/${SERVICE_NAME}/code`
+  );
   console.log('  docker compose down --volumes --remove-orphans');
   console.log('  docker system prune -f');
   console.log('');
   console.log('Then try deploying again via Easypanel UI or API.');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });

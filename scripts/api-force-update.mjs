@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-
 /**
  * Force update via API - try different approaches
  */
-
 import fs from 'fs';
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const PROJECT_NAME = 'riostack';
 const SERVICE_NAME = 'indigo-studio';
@@ -14,14 +13,14 @@ const SERVICE_NAME = 'indigo-studio';
 // Read environment files
 const loadEnv = () => {
   const envContent = fs.readFileSync('.env.easypanel', 'utf-8');
-  const lines = envContent.split('\n').filter(line => {
+  const lines = envContent.split('\n').filter((line) => {
     const trimmed = line.trim();
     return trimmed && !trimmed.startsWith('#') && trimmed.includes('=');
   });
 
   // Also add values from main .env
   const mainEnvContent = fs.readFileSync('.env', 'utf-8');
-  const mainLines = mainEnvContent.split('\n').filter(line => {
+  const mainLines = mainEnvContent.split('\n').filter((line) => {
     const trimmed = line.trim();
     return trimmed && !trimmed.startsWith('#') && trimmed.includes('=');
   });
@@ -36,7 +35,7 @@ async function trpcPostRequest(operation, input) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${API_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ json: input }),
@@ -67,11 +66,14 @@ async function main() {
   console.log('Sending new docker-compose.yml content...');
 
   try {
-    const updateResult = await trpcPostRequest('services.compose.updateSourceInline', {
-      projectName: PROJECT_NAME,
-      serviceName: SERVICE_NAME,
-      content: composeContent,
-    });
+    const updateResult = await trpcPostRequest(
+      'services.compose.updateSourceInline',
+      {
+        projectName: PROJECT_NAME,
+        serviceName: SERVICE_NAME,
+        content: composeContent,
+      }
+    );
     console.log('✓ Source updated');
     console.log('Response:', JSON.stringify(updateResult).substring(0, 200));
   } catch (error) {
@@ -96,36 +98,49 @@ async function main() {
   console.log('\n=== Step 3: Update Domains ===');
 
   try {
-    const domainResult = await trpcPostRequest('services.compose.updateDomains', {
-      projectName: PROJECT_NAME,
-      serviceName: SERVICE_NAME,
-      domains: [{
-        host: 'riostack-indigo-studio.ck87nu.easypanel.host',
-        https: true,
-        path: '/',
-        port: 1337,
-        internalProtocol: 'http',
-        service: 'indigo-strapi',
-      }],
-    });
+    const domainResult = await trpcPostRequest(
+      'services.compose.updateDomains',
+      {
+        projectName: PROJECT_NAME,
+        serviceName: SERVICE_NAME,
+        domains: [
+          {
+            host: 'riostack-indigo-studio.ck87nu.easypanel.host',
+            https: true,
+            path: '/',
+            port: 1337,
+            internalProtocol: 'http',
+            service: 'indigo-strapi',
+          },
+        ],
+      }
+    );
     console.log('✓ Domains updated');
   } catch (error) {
-    console.error('✗ Failed to update domains (endpoint may not exist):', error.message);
+    console.error(
+      '✗ Failed to update domains (endpoint may not exist):',
+      error.message
+    );
   }
 
   console.log('\n=== Step 4: Deploy ===');
 
   try {
-    const deployResult = await trpcPostRequest('services.compose.deployService', {
-      projectName: PROJECT_NAME,
-      serviceName: SERVICE_NAME,
-      forceRebuild: true,
-    });
+    const deployResult = await trpcPostRequest(
+      'services.compose.deployService',
+      {
+        projectName: PROJECT_NAME,
+        serviceName: SERVICE_NAME,
+        forceRebuild: true,
+      }
+    );
     console.log('✓ Deployment triggered');
   } catch (error) {
     console.error('✗ Deployment failed:', error.message);
     console.error('\nThis is the expected exit code 17 error.');
-    console.error('The issue is likely on the server side with stale Docker resources.');
+    console.error(
+      'The issue is likely on the server side with stale Docker resources.'
+    );
   }
 
   console.log('\n╔════════════════════════════════════════════════════════╗');
@@ -141,7 +156,7 @@ async function main() {
   console.log('5. Then deploy via Easypanel UI');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });

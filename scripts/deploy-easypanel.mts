@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 import { loadPortableConfig } from './lib/easypanel.mjs';
 
@@ -201,7 +201,9 @@ async function handleDeployment(): Promise<void> {
     execSync('cd next && yarn build', { stdio: 'inherit' });
     success('Next.js build complete');
   } else {
-    info('\nSkipping Next.js build in deploy:ep because frontend deploys on Vercel');
+    info(
+      '\nSkipping Next.js build in deploy:ep because frontend deploys on Vercel'
+    );
   }
 
   info('\nBuilding Strapi...');
@@ -209,9 +211,12 @@ async function handleDeployment(): Promise<void> {
   success('Strapi build complete');
 
   info('\nSyncing Easypanel source and triggering deploy...');
-  execSync('node --loader ts-node/esm ./scripts/easypanel-ops.mts bootstrap-deploy', {
-    stdio: 'inherit',
-  });
+  execSync(
+    'node --loader ts-node/esm ./scripts/easypanel-ops.mts bootstrap-deploy',
+    {
+      stdio: 'inherit',
+    }
+  );
   success('Easypanel bootstrap and deploy trigger completed');
 
   log('\n' + '='.repeat(60), blueColor);

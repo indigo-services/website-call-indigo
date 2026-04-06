@@ -1,9 +1,7 @@
 #!/usr/bin/env node
-
 /**
  * Verify and test docker-compose.yml content
  */
-
 import fs from 'fs';
 
 const composeContent = fs.readFileSync('docker-compose.yml', 'utf-8');
@@ -59,5 +57,7 @@ console.log('strapi/package.json exists:', strapiPackageJson ? '✓' : '✗');
 
 console.log('\n=== Recommendation ===');
 console.log('The docker-compose.yml looks correct.');
-console.log('The issue might be that Easypanel is not reading the file correctly');
+console.log(
+  'The issue might be that Easypanel is not reading the file correctly'
+);
 console.log('or there is a cached/override file on the server.');

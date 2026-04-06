@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-
 /**
  * Force Easypanel Configuration Refresh
  * Forces Easypanel to pull latest docker-compose.yml from GitHub
  */
-
 import { execSync } from 'child_process';
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const SERVICE_NAME = 'indigo-studio';
 
@@ -19,13 +18,17 @@ async function forceConfigRefresh() {
   console.log('docker-compose.yml:');
   console.log('  build:');
   console.log('    context: .        # Build from /code/ (root of repository)');
-  console.log('    dockerfile: strapi/Dockerfile  # Dockerfile in strapi subdirectory');
+  console.log(
+    '    dockerfile: strapi/Dockerfile  # Dockerfile in strapi subdirectory'
+  );
 
   console.log('\n✅ ENVIRONMENT VARIABLE (CORRECT):');
   console.log('EASYPANEL_STRAPI_PATH=/  # Service at root level');
 
   console.log('\n❌ OLD CONFIGURATION (WRONG - CAUSING ERROR):');
-  console.log('  context: ./strapi     # Build from /code/strapi (directory doesn\'t exist)');
+  console.log(
+    "  context: ./strapi     # Build from /code/strapi (directory doesn't exist)"
+  );
   console.log('  dockerfile: Dockerfile');
 
   console.log('\n🔧 FORCING CONFIGURATION REFRESH...\n');
@@ -46,7 +49,7 @@ async function forceConfigRefresh() {
 
   // Wait for cache to clear
   console.log('\nStep 2: Waiting 5 seconds for cache to clear...');
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise((resolve) => setTimeout(resolve, 5000));
 
   // Step 2: Re-enable service
   console.log('\nStep 3: Re-enabling service to force config reload...');
@@ -64,7 +67,7 @@ async function forceConfigRefresh() {
 
   // Wait for enable to process
   console.log('\nStep 4: Waiting 5 seconds for enable to process...');
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise((resolve) => setTimeout(resolve, 5000));
 
   // Step 3: Trigger deployment
   console.log('\nStep 5: Triggering deployment with fresh configuration...');
@@ -105,7 +108,7 @@ async function forceConfigRefresh() {
   console.log('='.repeat(60));
 }
 
-forceConfigRefresh().catch(err => {
+forceConfigRefresh().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

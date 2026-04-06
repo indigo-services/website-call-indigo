@@ -10,8 +10,12 @@ async function finalEasypanelFix() {
   console.log('='.repeat(60));
 
   console.log('\n❌ THE ACTUAL PROBLEM:');
-  console.log('Easypanel needs to properly SAVE its GitHub connection settings');
-  console.log('The SSH key alone isn\'t enough - Easypanel needs the right config');
+  console.log(
+    'Easypanel needs to properly SAVE its GitHub connection settings'
+  );
+  console.log(
+    "The SSH key alone isn't enough - Easypanel needs the right config"
+  );
 
   console.log('\n✅ THE SOLUTION:');
   console.log('1. Easypanel needs correct GitHub repository URL (SSH format)');
@@ -32,10 +36,18 @@ async function finalEasypanelFix() {
   console.log('SSH KEY:');
   console.log('  Paste this complete key:');
   console.log('  -----BEGIN OPENSSH PRIVATE KEY-----');
-  console.log('  b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW');
-  console.log('  QyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9QwAAAJjKCPLfygjy');
-  console.log('  3wAAAAtzc2gtZWQyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9Qw');
-  console.log('  AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe');
+  console.log(
+    '  b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW'
+  );
+  console.log(
+    '  QyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9QwAAAJjKCPLfygjy'
+  );
+  console.log(
+    '  3wAAAAtzc2gtZWQyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9Qw'
+  );
+  console.log(
+    '  AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe'
+  );
   console.log('  vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==');
   console.log('  -----END OPENSSH PRIVATE KEY-----');
   console.log('');
@@ -43,9 +55,9 @@ async function finalEasypanelFix() {
   console.log('Then click DEPLOY button');
 
   console.log('\n🔍 WHY PREVIOUS ATTEMPTS FAILED:');
-  console.log('• API calls weren\'t actually saving the configuration');
+  console.log("• API calls weren't actually saving the configuration");
   console.log('• Easypanel was using cached UI settings');
-  console.log('• Configuration wasn\'t being properly persisted');
+  console.log("• Configuration wasn't being properly persisted");
 
   console.log('\n🎯 WHAT WILL WORK:');
   console.log('• Manual configuration in Easypanel UI');
@@ -65,7 +77,7 @@ async function finalEasypanelFix() {
   console.log('\n' + '='.repeat(60));
 }
 
-finalEasypanelFix().catch(err => {
+finalEasypanelFix().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

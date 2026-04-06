@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-
 /**
  * Final SSH Configuration Fix via Easypanel API
  * Direct API calls to fix the SSH configuration
  */
-
 import { execSync } from 'child_process';
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const SERVICE_NAME = 'indigo-studio';
 
@@ -23,7 +22,7 @@ async function callApi(endpoint, method = 'GET', body = null) {
   const curlCmd = [
     `curl -s -X ${method}`,
     `-H "Authorization: Bearer ${API_TOKEN}"`,
-    `-H "Content-Type: application/json"`
+    `-H "Content-Type: application/json"`,
   ];
 
   if (body) {
@@ -33,7 +32,10 @@ async function callApi(endpoint, method = 'GET', body = null) {
   curlCmd.push(`"${API_BASE}${endpoint}"`);
 
   try {
-    const output = execSync(curlCmd.join(' '), { encoding: 'utf-8', stdio: 'pipe' });
+    const output = execSync(curlCmd.join(' '), {
+      encoding: 'utf-8',
+      stdio: 'pipe',
+    });
     return output;
   } catch (error) {
     console.error(`API Error: ${error.message}`);
@@ -64,7 +66,8 @@ async function fixConfiguration() {
 
   // Step 2: Add deploy key to GitHub
   console.log('\n🔑 Step 2: Adding deploy key to GitHub...');
-  const deployKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
+  const deployKey =
+    'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
 
   try {
     const addKeyCmd = `echo "${deployKey}" | gh repo deploy-key add indigo-services/indigo-studio --title "Easypanel-Production-Server" --allow-write`;
@@ -80,7 +83,9 @@ async function fixConfiguration() {
 
   // Step 3: Update Easypanel configuration
   console.log('\n⚙️  Step 3: Updating Easypanel SSH configuration...');
-  console.log('   Repository URL: git@github.com:indigo-services/indigo-studio.git');
+  console.log(
+    '   Repository URL: git@github.com:indigo-services/indigo-studio.git'
+  );
   console.log('   SSH Key: Complete (replacing truncated key)');
   console.log('   Branch: main');
 
@@ -92,12 +97,16 @@ async function fixConfiguration() {
         branch: 'main',
         buildPath: '/',
         composeFile: 'docker-compose.yml',
-        sshKey: COMPLETE_SSH_KEY
-      }
-    }
+        sshKey: COMPLETE_SSH_KEY,
+      },
+    },
   };
 
-  const updateResult = await callApi(`/services/${SERVICE_NAME}`, 'PATCH', updatePayload);
+  const updateResult = await callApi(
+    `/services/${SERVICE_NAME}`,
+    'PATCH',
+    updatePayload
+  );
 
   if (updateResult) {
     console.log('✅ Configuration update sent to Easypanel');
@@ -107,7 +116,11 @@ async function fixConfiguration() {
 
   // Step 4: Trigger deployment
   console.log('\n🚀 Step 4: Triggering deployment...');
-  const deployResult = await callApi(`/services/${SERVICE_NAME}/deploy`, 'POST', {});
+  const deployResult = await callApi(
+    `/services/${SERVICE_NAME}/deploy`,
+    'POST',
+    {}
+  );
 
   if (deployResult) {
     console.log('✅ Deployment triggered successfully!');
@@ -118,7 +131,9 @@ async function fixConfiguration() {
   console.log('\n' + '='.repeat(60));
   console.log('📋 CONFIGURATION CHANGES APPLIED:\n');
   console.log('✅ GitHub Deploy Key: Added/Verified');
-  console.log('✅ Repository URL: git@github.com:indigo-services/indigo-studio.git');
+  console.log(
+    '✅ Repository URL: git@github.com:indigo-services/indigo-studio.git'
+  );
   console.log('✅ SSH Key: Complete (replaced truncated key)');
   console.log('✅ Branch: main');
   console.log('✅ Build Path: /');
@@ -145,7 +160,7 @@ async function fixConfiguration() {
   console.log('\n' + '='.repeat(60));
 }
 
-fixConfiguration().catch(err => {
+fixConfiguration().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

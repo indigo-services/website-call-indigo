@@ -3,7 +3,6 @@
  * Direct Easypanel Fix Script
  * Uses direct API calls to fix SSH configuration
  */
-
 import { execSync } from 'child_process';
 
 const COMPLETE_SSH_KEY = `-----BEGIN OPENSSH PRIVATE KEY-----
@@ -14,7 +13,8 @@ AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe
 vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==
 -----END OPENSSH PRIVATE KEY-----`;
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 
 async function fixEasypanelConfig() {
@@ -31,7 +31,9 @@ async function fixEasypanelConfig() {
       serviceConfig = JSON.parse(serviceOutput);
       console.log('✅ Service configuration retrieved');
     } catch (error) {
-      console.log('⚠️  Could not retrieve service config, will use direct update');
+      console.log(
+        '⚠️  Could not retrieve service config, will use direct update'
+      );
     }
 
     // Step 2: Update the configuration with correct SSH settings
@@ -45,9 +47,9 @@ async function fixEasypanelConfig() {
           branch: 'main',
           buildPath: '/',
           composeFile: 'docker-compose.yml',
-          sshKey: COMPLETE_SSH_KEY
-        }
-      }
+          sshKey: COMPLETE_SSH_KEY,
+        },
+      },
     };
 
     const updateCmd = `curl -s -X PATCH \\
@@ -58,7 +60,10 @@ async function fixEasypanelConfig() {
 
     console.log('📝 Sending configuration update...');
     try {
-      const updateOutput = execSync(updateCmd, { encoding: 'utf-8', stdio: 'pipe' });
+      const updateOutput = execSync(updateCmd, {
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
       console.log('✅ Configuration update sent');
 
       if (updateOutput) {
@@ -76,7 +81,10 @@ async function fixEasypanelConfig() {
       "${API_BASE}/services/indigo-studio/deploy"`;
 
     try {
-      const deployOutput = execSync(deployCmd, { encoding: 'utf-8', stdio: 'pipe' });
+      const deployOutput = execSync(deployCmd, {
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
       console.log('✅ Deployment triggered successfully!');
 
       if (deployOutput) {
@@ -87,7 +95,9 @@ async function fixEasypanelConfig() {
     }
 
     console.log('\n📋 Configuration Changes Applied:');
-    console.log('✅ Repository URL: git@github.com:indigo-services/indigo-studio.git');
+    console.log(
+      '✅ Repository URL: git@github.com:indigo-services/indigo-studio.git'
+    );
     console.log('✅ SSH Key: Complete (replaced truncated key)');
     console.log('✅ Branch: main');
     console.log('✅ Build Path: /');
@@ -99,8 +109,9 @@ async function fixEasypanelConfig() {
     console.log('3. Service should become available at:');
     console.log('   https://riostack-indigo-studio.ck87nu.easypanel.host/');
 
-    console.log('\n⏳ Monitoring will continue until service is fully operational...');
-
+    console.log(
+      '\n⏳ Monitoring will continue until service is fully operational...'
+    );
   } catch (error) {
     console.error('❌ Error:', error.message);
 
@@ -108,7 +119,9 @@ async function fixEasypanelConfig() {
     console.log('1. Open Easypanel dashboard: https://vps10.riolabs.ai');
     console.log('2. Navigate to indigo-studio service');
     console.log('3. Click "Edit" on the Compose Service');
-    console.log('4. Change Repository URL to: git@github.com:indigo-services/indigo-studio.git');
+    console.log(
+      '4. Change Repository URL to: git@github.com:indigo-services/indigo-studio.git'
+    );
     console.log('5. Replace SSH Key with the complete key from this script');
     console.log('6. Save and Deploy');
 

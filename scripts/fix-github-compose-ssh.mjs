@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * CRITICAL FIX: GitHub Compose SSH Integration
  * Fixes the SSH connection between Easypanel and GitHub
  */
-
 import { execSync } from 'child_process';
 
 const COMPLETE_SSH_KEY = `-----BEGIN OPENSSH PRIVATE KEY-----
@@ -15,7 +13,8 @@ AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe
 vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==
 -----END OPENSSH PRIVATE KEY-----`;
 
-const DEPLOY_KEY_PUBLIC = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
+const DEPLOY_KEY_PUBLIC =
+  'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
 
 async function fixGitHubComposeSSH() {
   console.log('🔧 CRITICAL FIX: GitHub Compose SSH Integration\n');
@@ -27,7 +26,10 @@ async function fixGitHubComposeSSH() {
     const addKeyCmd = `echo "${DEPLOY_KEY_PUBLIC}" | gh repo deploy-key add indigo-services/indigo-studio --title "Easypanel-Production-Server" --allow-write 2>&1 || echo "Key may already exist"`;
     const result = execSync(addKeyCmd, { encoding: 'utf-8', stdio: 'pipe' });
 
-    if (result.includes('already exists') || result.includes('Key already added')) {
+    if (
+      result.includes('already exists') ||
+      result.includes('Key already added')
+    ) {
       console.log('✅ Deploy key already exists on GitHub');
     } else {
       console.log('✅ Deploy key added to GitHub successfully');
@@ -39,7 +41,8 @@ async function fixGitHubComposeSSH() {
   // Step 2: Update Easypanel Compose configuration via API
   console.log('\n⚙️  Step 2: Updating Easypanel Compose SSH Configuration...');
 
-  const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+  const API_TOKEN =
+    'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
   const API_BASE = 'https://vps10.riolabs.ai/api';
   const SERVICE_NAME = 'indigo-studio';
 
@@ -53,9 +56,9 @@ async function fixGitHubComposeSSH() {
         branch: 'main',
         buildPath: '/',
         composeFile: 'docker-compose.yml',
-        sshKey: COMPLETE_SSH_KEY
-      }
-    }
+        sshKey: COMPLETE_SSH_KEY,
+      },
+    },
   };
 
   try {
@@ -86,7 +89,7 @@ async function fixGitHubComposeSSH() {
     console.log('⚠️  Stop command sent');
   }
 
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
   try {
     // Start
@@ -100,7 +103,7 @@ async function fixGitHubComposeSSH() {
     console.log('⚠️  Start command sent');
   }
 
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
   // Step 4: Deploy
   console.log('\n🚀 Step 4: Triggering deployment with working SSH...');
@@ -120,7 +123,9 @@ async function fixGitHubComposeSSH() {
 
   console.log('🔧 CHANGES MADE:');
   console.log('✅ GitHub Deploy Key: Added/Verified');
-  console.log('✅ Repository URL: git@github.com:indigo-services/indigo-studio.git');
+  console.log(
+    '✅ Repository URL: git@github.com:indigo-services/indigo-studio.git'
+  );
   console.log('✅ SSH Key: Complete (not truncated)');
   console.log('✅ Service Restarted: To apply new SSH configuration');
   console.log('✅ Deployment Triggered: With working SSH');
@@ -150,7 +155,7 @@ async function fixGitHubComposeSSH() {
   console.log('\n' + '='.repeat(60));
 }
 
-fixGitHubComposeSSH().catch(err => {
+fixGitHubComposeSSH().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

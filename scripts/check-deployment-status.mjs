@@ -1,20 +1,27 @@
 #!/usr/bin/env node
-
 /**
  * Comprehensive Deployment Status Check
  * Tests multiple aspects of the deployment to diagnose issues
  */
-
 import { execSync } from 'child_process';
 
 const BASE_URL = 'https://riostack-indigo-studio.ck87nu.easypanel.host';
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 
 async function testEndpoint(name, url) {
   try {
-    const response = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
-    return { name, url, status: response.status, success: response.status === 200 };
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: AbortSignal.timeout(5000),
+    });
+    return {
+      name,
+      url,
+      status: response.status,
+      success: response.status === 200,
+    };
   } catch (error) {
     return { name, url, status: 'ERROR', error: error.message, success: false };
   }
@@ -23,7 +30,10 @@ async function testEndpoint(name, url) {
 async function checkEasypanelService() {
   console.log('🔍 Checking Easypanel service status...');
   try {
-    const result = execSync(`curl -s -H "Authorization: Bearer ${API_TOKEN}" "${API_BASE}/services/indigo-studio"`, { encoding: 'utf-8' });
+    const result = execSync(
+      `curl -s -H "Authorization: Bearer ${API_TOKEN}" "${API_BASE}/services/indigo-studio"`,
+      { encoding: 'utf-8' }
+    );
 
     if (result.includes('<!doctype')) {
       console.log('⚠️  API returned HTML (might be serving frontend)');
@@ -68,14 +78,14 @@ async function main() {
   const endpoints = [
     { name: 'Main Page', url: BASE_URL },
     { name: 'Admin Panel', url: `${BASE_URL}/manage/admin` },
-    { name: 'API Articles', url: `${BASE_URL}/api/articles` }
+    { name: 'API Articles', url: `${BASE_URL}/api/articles` },
   ];
 
   const results = await Promise.all(
-    endpoints.map(ep => testEndpoint(ep.name, ep.url))
+    endpoints.map((ep) => testEndpoint(ep.name, ep.url))
   );
 
-  results.forEach(result => {
+  results.forEach((result) => {
     if (result.success) {
       console.log(`✅ ${result.name}: ${result.status} OK`);
     } else if (result.status === 503) {
@@ -90,8 +100,8 @@ async function main() {
   console.log('\n' + '='.repeat(60));
   console.log('🎯 DIAGNOSIS:\n');
 
-  const all503 = results.every(r => r.status === 503);
-  const all502 = results.every(r => r.status === 502);
+  const all503 = results.every((r) => r.status === 503);
+  const all502 = results.every((r) => r.status === 502);
 
   if (all503) {
     console.log('❌ All endpoints returning 503 - Containers not running');
@@ -104,7 +114,7 @@ async function main() {
     console.log('⚠️  All endpoints returning 502 - Containers starting');
     console.log('   This is normal during initial deployment');
     console.log('   Wait 2-3 minutes for containers to fully start');
-  } else if (results.some(r => r.success)) {
+  } else if (results.some((r) => r.success)) {
     console.log('✅ Some endpoints working - Partial deployment success');
     console.log('   Service is becoming available');
   } else {
@@ -124,7 +134,7 @@ async function main() {
   console.log('\n' + '='.repeat(60));
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

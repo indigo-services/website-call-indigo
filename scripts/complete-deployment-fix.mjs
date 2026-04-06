@@ -1,11 +1,9 @@
 #!/usr/bin/env node
-
 /**
  * Complete Deployment Fix and Validation Script
  * Addresses all issues: SSH, build context, Docker configuration
  * Continues monitoring until service is fully functional
  */
-
 import { execSync } from 'child_process';
 
 const COMPLETE_SSH_KEY = `-----BEGIN OPENSSH PRIVATE KEY-----
@@ -17,7 +15,8 @@ vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==
 -----END OPENSSH PRIVATE KEY-----`;
 
 const CORRECT_REPO_URL = 'git@github.com:indigo-services/indigo-studio.git';
-const DEPLOY_KEY_PUBLIC = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
+const DEPLOY_KEY_PUBLIC =
+  'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
 
 console.log('🚀 COMPLETE DEPLOYMENT FIX AND VALIDATION');
 console.log('='.repeat(60));
@@ -30,12 +29,18 @@ async function main() {
   try {
     // Add deploy key to GitHub
     console.log('Adding deploy key to GitHub...');
-    const result = execSync(`echo "${DEPLOY_KEY_PUBLIC}" | gh repo deploy-key add indigo-services/indigo-studio --title "Easypanel-Production-Server" --allow-write`, {
-      encoding: 'utf-8',
-      stdio: 'pipe'
-    });
+    const result = execSync(
+      `echo "${DEPLOY_KEY_PUBLIC}" | gh repo deploy-key add indigo-services/indigo-studio --title "Easypanel-Production-Server" --allow-write`,
+      {
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      }
+    );
 
-    if (result.includes('already exists') || result.includes('Key already added')) {
+    if (
+      result.includes('already exists') ||
+      result.includes('Key already added')
+    ) {
       console.log('✅ Deploy key already exists on GitHub');
     } else {
       console.log('✅ Deploy key added to GitHub');
@@ -56,7 +61,9 @@ async function main() {
   console.log('-'.repeat(60));
   console.log('REQUIRED CONFIGURATION CHANGES:');
   console.log('\n1. Repository URL:');
-  console.log('   Current (WRONG): https://github.com/indigo-services/indigo-studio');
+  console.log(
+    '   Current (WRONG): https://github.com/indigo-services/indigo-studio'
+  );
   console.log(`   Change to (CORRECT): ${CORRECT_REPO_URL}`);
 
   console.log('\n2. SSH Key:');
@@ -107,7 +114,7 @@ async function main() {
   console.log('4. Will alert immediately when service is live and functional');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });

@@ -4,7 +4,8 @@
  * Check Docker containers for the service
  */
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const PROJECT_NAME = 'riostack';
 const SERVICE_NAME = 'indigo-studio';
@@ -22,7 +23,7 @@ async function trpcGetRequest(operation, input = {}) {
   const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${API_TOKEN}`,
     },
   });
 
@@ -71,12 +72,16 @@ async function main() {
   }
 
   console.log('\n=== Analysis ===');
-  console.log('If there are running containers, they might be causing the exit code 17');
-  console.log('because docker compose up fails when containers with conflicting names');
+  console.log(
+    'If there are running containers, they might be causing the exit code 17'
+  );
+  console.log(
+    'because docker compose up fails when containers with conflicting names'
+  );
   console.log('already exist.');
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });

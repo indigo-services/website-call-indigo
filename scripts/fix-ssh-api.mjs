@@ -31,9 +31,9 @@ async function fixEasypanelSSH() {
     const response = await fetch(`${API_BASE}/services/${SERVICE_NAME}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${API_TOKEN}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
     });
 
     if (!response.ok) {
@@ -55,18 +55,18 @@ async function fixEasypanelSSH() {
           branch: 'main',
           buildPath: '/',
           composeFile: 'docker-compose.yml',
-          sshKey: COMPLETE_SSH_KEY
-        }
-      }
+          sshKey: COMPLETE_SSH_KEY,
+        },
+      },
     };
 
     const updateResponse = await fetch(`${API_BASE}/services/${SERVICE_NAME}`, {
       method: 'PATCH',
       headers: {
-        'Authorization': `Bearer ${API_TOKEN}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${API_TOKEN}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updateData)
+      body: JSON.stringify(updateData),
     });
 
     if (!updateResponse.ok) {
@@ -77,21 +77,28 @@ async function fixEasypanelSSH() {
 
     // Trigger deployment
     console.log('\n🚀 Triggering deployment...');
-    const deployResponse = await fetch(`${API_BASE}/services/${SERVICE_NAME}/deploy`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_TOKEN}`,
-        'Content-Type': 'application/json'
+    const deployResponse = await fetch(
+      `${API_BASE}/services/${SERVICE_NAME}/deploy`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
       }
-    });
+    );
 
     if (!deployResponse.ok) {
-      throw new Error(`Failed to trigger deployment: ${deployResponse.statusText}`);
+      throw new Error(
+        `Failed to trigger deployment: ${deployResponse.statusText}`
+      );
     }
 
     console.log('✅ Deployment triggered successfully!');
     console.log('\n📋 Configuration Changes Applied:');
-    console.log('• Repository URL: git@github.com:indigo-services/indigo-studio.git');
+    console.log(
+      '• Repository URL: git@github.com:indigo-services/indigo-studio.git'
+    );
     console.log('• SSH Key: Complete (replaced truncated key)');
     console.log('• Branch: main');
     console.log('• Build Path: /');
@@ -102,7 +109,6 @@ async function fixEasypanelSSH() {
 
     console.log('\n✅ SSH connection should now work!');
     console.log('✅ Containers should build and start successfully!');
-
   } catch (error) {
     console.error('❌ Error:', error.message);
 
@@ -110,7 +116,9 @@ async function fixEasypanelSSH() {
     console.log('\n📝 Manual Configuration Steps:');
     console.log('1. Go to Easypanel dashboard');
     console.log('2. Open indigo-studio service');
-    console.log('3. Change Repository URL to: git@github.com:indigo-services/indigo-studio.git');
+    console.log(
+      '3. Change Repository URL to: git@github.com:indigo-services/indigo-studio.git'
+    );
     console.log('4. Replace SSH Key with complete key above');
     console.log('5. Save and Deploy');
 

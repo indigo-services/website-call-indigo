@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * PRODUCTION EASYPANEL DEPLOYMENT
  * Uses Easypanel's internal method: inline compose content (not GitHub)
  */
-
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
@@ -30,15 +28,16 @@ async function productionDeploy() {
   // Build the production payload using Easypanel's internal method
   console.log('\n📋 Step 2: Building production payload...');
 
-  const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+  const API_TOKEN =
+    'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
   const EASYPANEL_API = 'https://vps10.riolabs.ai/api';
 
   const payload = {
     projectName: 'riostack',
     serviceName: 'indigo-studio',
     source: {
-      type: 'inline',  // THIS IS THE KEY - not 'github'
-      content: composeContent  // Direct content, not GitHub reference
+      type: 'inline', // THIS IS THE KEY - not 'github'
+      content: composeContent, // Direct content, not GitHub reference
     },
     env: [
       { key: 'HOST', value: '0.0.0.0' },
@@ -46,17 +45,36 @@ async function productionDeploy() {
       { key: 'NODE_ENV', value: 'production' },
       { key: 'DATABASE_CLIENT', value: 'sqlite' },
       { key: 'DATABASE_FILENAME', value: '.tmp/data.db' },
-      { key: 'APP_KEYS', value: 'd3800189_ad55_41bf_a330_0e326d6873781,ae374b7b_2d06_4c99_9be0_08d6c0ed34622' },
+      {
+        key: 'APP_KEYS',
+        value:
+          'd3800189_ad55_41bf_a330_0e326d6873781,ae374b7b_2d06_4c99_9be0_08d6c0ed34622',
+      },
       { key: 'API_TOKEN_SALT', value: '63a1c48c_c951_4bfe_831a_f34009a317c3' },
-      { key: 'ADMIN_JWT_SECRET', value: '05130689_2be1_46cc_ad3b_ae1d02798660' },
-      { key: 'TRANSFER_TOKEN_SALT', value: '00df0dde_c4b6_412a_a239_c65963c7e02a' },
+      {
+        key: 'ADMIN_JWT_SECRET',
+        value: '05130689_2be1_46cc_ad3b_ae1d02798660',
+      },
+      {
+        key: 'TRANSFER_TOKEN_SALT',
+        value: '00df0dde_c4b6_412a_a239_c65963c7e02a',
+      },
       { key: 'JWT_SECRET', value: '300f6f44_f604_4fa0_8e9c_4110412dd41e' },
-      { key: 'ADMIN_AUTH_SECRET', value: '05130689_2be1_46cc_ad3b_ae1d02798660' },
+      {
+        key: 'ADMIN_AUTH_SECRET',
+        value: '05130689_2be1_46cc_ad3b_ae1d02798660',
+      },
       { key: 'ADMIN_PATH', value: '/admin' },
       { key: 'CLIENT_URL', value: 'https://indigo-website-cms.vercel.app' },
       { key: 'PREVIEW_SECRET', value: '300f6f44_f604_4fa0_8e9c_4110412dd41e' },
-      { key: 'URL', value: 'https://riostack-indigo-studio.ck87nu.easypanel.host' },
-      { key: 'PUBLIC_URL', value: 'https://riostack-indigo-studio.ck87nu.easypanel.host' }
+      {
+        key: 'URL',
+        value: 'https://riostack-indigo-studio.ck87nu.easypanel.host',
+      },
+      {
+        key: 'PUBLIC_URL',
+        value: 'https://riostack-indigo-studio.ck87nu.easypanel.host',
+      },
     ],
     createDotEnv: false,
     domains: [
@@ -66,9 +84,9 @@ async function productionDeploy() {
         path: '/',
         port: 1337,
         internalProtocol: 'http',
-        service: 'indigo-strapi'
-      }
-    ]
+        service: 'indigo-strapi',
+      },
+    ],
   };
 
   console.log('✅ Payload built with inline compose content');
@@ -88,7 +106,7 @@ async function productionDeploy() {
   }
 
   // Wait for deletion to process
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
   // Step 4: Create service with fresh inline configuration
   console.log('\n📋 Step 4: Creating service with inline compose content...');
@@ -111,7 +129,7 @@ async function productionDeploy() {
   }
 
   // Wait for creation to process
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
   // Step 5: Deploy the service
   console.log('\n📋 Step 5: Deploying service...');
@@ -150,7 +168,7 @@ async function productionDeploy() {
   console.log('\n' + '='.repeat(60));
 }
 
-productionDeploy().catch(err => {
+productionDeploy().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

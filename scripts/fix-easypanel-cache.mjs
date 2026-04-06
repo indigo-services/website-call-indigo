@@ -4,8 +4,17 @@
  * Fix Easypanel Cache Issue
  * Clears stale docker-compose.yml cache and recreates service with correct configuration
  */
+// Read docker-compose.yml
+import { execSync } from 'child_process';
+import fs from 'fs';
 
-const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+/**
+ * Fix Easypanel Cache Issue
+ * Clears stale docker-compose.yml cache and recreates service with correct configuration
+ */
+
+const API_TOKEN =
+  'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
 const API_BASE = 'https://vps10.riolabs.ai/api';
 const PROJECT_NAME = 'riostack';
 const SERVICE_NAME = 'indigo-studio';
@@ -17,10 +26,6 @@ QyNTUxOQAAACBSvofbs7+sTstKRVZ9nnCYXr2+4/GmevbADcVg31h9QwAAAJjKCPLfygjy
 AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe
 vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==
 -----END OPENSSH PRIVATE KEY-----`;
-
-// Read docker-compose.yml
-import fs from 'fs';
-import { execSync } from 'child_process';
 
 const composeContent = fs.readFileSync('docker-compose.yml', 'utf-8');
 
@@ -57,7 +62,7 @@ async function trpcGetRequest(operation, input = {}) {
   const response = await fetch(url, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${API_TOKEN}`,
     },
   });
 
@@ -86,7 +91,7 @@ async function trpcPostRequest(operation, input = {}) {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
+      Authorization: `Bearer ${API_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ json: input }),
@@ -116,18 +121,22 @@ async function step1_checkCurrentStatus() {
   try {
     const services = await trpcGetRequest('projects.listProjectsAndServices');
     const targetService = services.services.find(
-      s => s.projectName === PROJECT_NAME && s.name === SERVICE_NAME
+      (s) => s.projectName === PROJECT_NAME && s.name === SERVICE_NAME
     );
 
     if (targetService) {
       console.log(`✓ Service found: ${SERVICE_NAME} (${targetService.type})`);
       console.log(`  Enabled: ${targetService.enabled}`);
-      console.log(`  Domains: ${targetService.domains?.map(d => d.host).join(', ') || 'none'}`);
+      console.log(
+        `  Domains: ${targetService.domains?.map((d) => d.host).join(', ') || 'none'}`
+      );
 
       if (targetService.source) {
         console.log(`  Source type: ${targetService.source.type}`);
         if (targetService.source.type === 'github') {
-          console.log(`    Repository: ${targetService.source.owner || 'N/A'}/${targetService.source.repo || 'N/A'}`);
+          console.log(
+            `    Repository: ${targetService.source.owner || 'N/A'}/${targetService.source.repo || 'N/A'}`
+          );
           console.log(`    Branch: ${targetService.source.ref || 'N/A'}`);
           console.log(`    Path: ${targetService.source.path || 'N/A'}`);
         }
@@ -172,7 +181,9 @@ async function step2_deleteExistingService() {
 }
 
 async function step3_createFreshService(action = 'create') {
-  console.log('\n=== Step 3: Creating/Updating Service with Correct Configuration ===');
+  console.log(
+    '\n=== Step 3: Creating/Updating Service with Correct Configuration ==='
+  );
 
   try {
     const basePayload = {
@@ -180,14 +191,16 @@ async function step3_createFreshService(action = 'create') {
       serviceName: SERVICE_NAME,
       env: envVars,
       createDotEnv: false,
-      domains: [{
-        host: 'riostack-indigo-studio.ck87nu.easypanel.host',
-        https: true,
-        path: '/',
-        port: 1337,
-        internalProtocol: 'http',
-        service: 'indigo-strapi',
-      }],
+      domains: [
+        {
+          host: 'riostack-indigo-studio.ck87nu.easypanel.host',
+          https: true,
+          path: '/',
+          port: 1337,
+          internalProtocol: 'http',
+          service: 'indigo-strapi',
+        },
+      ],
     };
 
     if (action === 'update') {
@@ -226,7 +239,10 @@ async function step3_createFreshService(action = 'create') {
         },
       };
 
-      const result = await trpcPostRequest('services.compose.createService', createPayload);
+      const result = await trpcPostRequest(
+        'services.compose.createService',
+        createPayload
+      );
 
       console.log(`✓ Service created successfully`);
       console.log(`  Name: ${result.name}`);
@@ -236,7 +252,10 @@ async function step3_createFreshService(action = 'create') {
       return true;
     }
   } catch (error) {
-    console.error(`✗ Error ${action === 'update' ? 'updating' : 'creating'} service:`, error.message);
+    console.error(
+      `✗ Error ${action === 'update' ? 'updating' : 'creating'} service:`,
+      error.message
+    );
     return false;
   }
 }
@@ -263,7 +282,7 @@ async function step5_monitorDeployment() {
   console.log('\n=== Step 5: Monitoring Deployment ===');
   console.log(`⏳ Waiting 30 seconds before checking deployment status...`);
 
-  await new Promise(resolve => setTimeout(resolve, 30000));
+  await new Promise((resolve) => setTimeout(resolve, 30000));
 
   // Check service status
   try {
@@ -306,7 +325,9 @@ async function main() {
   const created = await step3_createFreshService(action);
 
   if (!created) {
-    console.error('\n❌ Failed to create/update service. Please check the error messages above.');
+    console.error(
+      '\n❌ Failed to create/update service. Please check the error messages above.'
+    );
     process.exit(1);
   }
 
@@ -314,7 +335,9 @@ async function main() {
   const deployed = await step4_deployService();
 
   if (!deployed) {
-    console.error('\n❌ Failed to deploy service. Please check the error messages above.');
+    console.error(
+      '\n❌ Failed to deploy service. Please check the error messages above.'
+    );
     process.exit(1);
   }
 
@@ -331,11 +354,15 @@ async function main() {
   console.log('3. Monitor the deployment logs');
   console.log('4. Once deployed, test the endpoints:');
   console.log(`   - https://riostack-indigo-studio.ck87nu.easypanel.host/`);
-  console.log(`   - https://riostack-indigo-studio.ck87nu.easypanel.host/admin`);
-  console.log(`   - https://riostack-indigo-studio.ck87nu.easypanel.host/api/articles`);
+  console.log(
+    `   - https://riostack-indigo-studio.ck87nu.easypanel.host/admin`
+  );
+  console.log(
+    `   - https://riostack-indigo-studio.ck87nu.easypanel.host/api/articles`
+  );
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Fatal error:', err);
   process.exit(1);
 });

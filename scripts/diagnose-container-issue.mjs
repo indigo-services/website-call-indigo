@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * Diagnose Container Issues
  * Check what's happening with the Easypanel deployment
  */
-
 import { execSync } from 'child_process';
 
 const BASE_URL = 'https://riostack-indigo-studio.ck87nu.easypanel.host';
@@ -28,7 +26,9 @@ async function diagnoseDeployment() {
   console.log('\n📡 Test 2: Admin Panel');
   console.log('-'.repeat(60));
   try {
-    const response = await fetch(`${BASE_URL}/manage/admin`, { method: 'HEAD' });
+    const response = await fetch(`${BASE_URL}/manage/admin`, {
+      method: 'HEAD',
+    });
     console.log(`Status: ${response.status} ${response.statusText}`);
   } catch (error) {
     console.log(`Error: ${error.message}`);
@@ -38,7 +38,9 @@ async function diagnoseDeployment() {
   console.log('\n📡 Test 3: API Endpoint');
   console.log('-'.repeat(60));
   try {
-    const response = await fetch(`${BASE_URL}/api/articles`, { method: 'HEAD' });
+    const response = await fetch(`${BASE_URL}/api/articles`, {
+      method: 'HEAD',
+    });
     console.log(`Status: ${response.status} ${response.statusText}`);
   } catch (error) {
     console.log(`Error: ${error.message}`);
@@ -60,7 +62,9 @@ async function diagnoseDeployment() {
 
   console.log('\n🔧 Required Actions:');
   console.log('1. Fix SSH configuration in Easypanel dashboard:');
-  console.log('   - Repository URL: git@github.com:indigo-services/indigo-studio.git');
+  console.log(
+    '   - Repository URL: git@github.com:indigo-services/indigo-studio.git'
+  );
   console.log('   - SSH Key: Complete (not truncated)');
   console.log('   - Branch: main');
 

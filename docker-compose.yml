@@ -1,16 +1,16 @@
 services:
-  indigo-strapi:
+  indigo-studio:
     build:
       context: ./strapi
       dockerfile: Dockerfile
     # Adding an image name helps Easypanel track the build
     image: indigo-strapi:latest
     restart: unless-stopped
-    
+
     # CRITICAL: Expose the port so Easypanel's proxy can route your domain to it
     expose:
-      - "1337"
-      
+      - '1337'
+
     environment:
       # Basic Configuration
       HOST: ${HOST:-0.0.0.0}

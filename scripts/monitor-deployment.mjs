@@ -9,7 +9,7 @@ const BASE_URL = 'https://riostack-indigo-studio.ck87nu.easypanel.host';
 const ENDPOINTS = [
   { path: '/', expected: 200, name: 'Main Page' },
   { path: '/manage/admin', expected: 200, name: 'Admin Panel' },
-  { path: '/api/articles', expected: 200, name: 'API Articles' }
+  { path: '/api/articles', expected: 200, name: 'API Articles' },
 ];
 
 const COLORS = {
@@ -53,20 +53,38 @@ async function testEndpoint(endpoint) {
   try {
     const response = await fetch(url, {
       method: 'HEAD',
-      signal: AbortSignal.timeout(10000)
+      signal: AbortSignal.timeout(10000),
     });
 
     if (response.status === endpoint.expected) {
-      success(`${endpoint.name}: ${url} - ${response.status} ${response.statusText}`);
+      success(
+        `${endpoint.name}: ${url} - ${response.status} ${response.statusText}`
+      );
       return { success: true, status: response.status, url };
     } else if (response.status === 503) {
-      warning(`${endpoint.name}: ${url} - ${response.status} Service Unavailable (Containers building)`);
-      return { success: false, status: response.status, url, issue: '503 Service Unavailable' };
+      warning(
+        `${endpoint.name}: ${url} - ${response.status} Service Unavailable (Containers building)`
+      );
+      return {
+        success: false,
+        status: response.status,
+        url,
+        issue: '503 Service Unavailable',
+      };
     } else if (response.status === 502) {
-      warning(`${endpoint.name}: ${url} - ${response.status} Bad Gateway (Container not ready)`);
-      return { success: false, status: response.status, url, issue: '502 Bad Gateway' };
+      warning(
+        `${endpoint.name}: ${url} - ${response.status} Bad Gateway (Container not ready)`
+      );
+      return {
+        success: false,
+        status: response.status,
+        url,
+        issue: '502 Bad Gateway',
+      };
     } else {
-      error(`${endpoint.name}: ${url} - ${response.status} ${response.statusText}`);
+      error(
+        `${endpoint.name}: ${url} - ${response.status} ${response.statusText}`
+      );
       return { success: false, status: response.status, url };
     }
   } catch (err) {
@@ -77,7 +95,10 @@ async function testEndpoint(endpoint) {
 
 async function monitorDeployment() {
   header('🚀 Indigo Studio Deployment Monitor');
-  log('Target: https://riostack-indigo-studio.ck87nu.easypanel.host/', COLORS.cyan);
+  log(
+    'Target: https://riostack-indigo-studio.ck87nu.easypanel.host/',
+    COLORS.cyan
+  );
 
   let allPassed = false;
   let attempt = 0;
@@ -87,16 +108,16 @@ async function monitorDeployment() {
     log(`\n🔄 Monitoring Attempt #${attempt}...`, COLORS.cyan);
 
     const results = await Promise.all(
-      ENDPOINTS.map(endpoint => testEndpoint(endpoint))
+      ENDPOINTS.map((endpoint) => testEndpoint(endpoint))
     );
 
-    allPassed = results.every(result => result.success);
+    allPassed = results.every((result) => result.success);
 
     if (allPassed) {
       header('🎉 DEPLOYMENT SUCCESSFUL - ALL SYSTEMS OPERATIONAL!');
       log('✨ All endpoints are functional and validated!\n', COLORS.green);
 
-      results.forEach(result => {
+      results.forEach((result) => {
         success(`✓ ${result.url} - Fully Operational`);
       });
 
@@ -106,17 +127,21 @@ async function monitorDeployment() {
       success(`• API endpoint: ${BASE_URL}/api/articles`);
 
       log('\n🔐 Admin Access:', COLORS.yellow);
-      info('• URL: https://riostack-indigo-studio.ck87nu.easypanel.host/manage/admin');
+      info(
+        '• URL: https://riostack-indigo-studio.ck87nu.easypanel.host/manage/admin'
+      );
       info('• Default admin: admin@example.com');
 
       log('\n✅ Ready for team approval and production use!\n', COLORS.green);
       return true;
-
     } else {
-      const failedResults = results.filter(r => !r.success);
-      log(`\n❌ ${failedResults.length} endpoint(s) still checking...`, COLORS.red);
+      const failedResults = results.filter((r) => !r.success);
+      log(
+        `\n❌ ${failedResults.length} endpoint(s) still checking...`,
+        COLORS.red
+      );
 
-      failedResults.forEach(result => {
+      failedResults.forEach((result) => {
         if (result.issue === '503 Service Unavailable') {
           warning(`• ${result.url} - Containers still building`);
         } else if (result.issue === '502 Bad Gateway') {
@@ -130,12 +155,12 @@ async function monitorDeployment() {
 
       const waitTime = Math.min(30, attempt * 2);
       log(`\n⏳ Checking again in ${waitTime} seconds...`, COLORS.cyan);
-      await new Promise(resolve => setTimeout(resolve, waitTime * 1000));
+      await new Promise((resolve) => setTimeout(resolve, waitTime * 1000));
     }
   }
 }
 
-monitorDeployment().catch(err => {
+monitorDeployment().catch((err) => {
   error(`\n❌ Monitoring failed: ${err.message}`);
   process.exit(1);
 });

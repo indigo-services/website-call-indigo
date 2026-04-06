@@ -18,8 +18,6 @@
       "Bash(node scripts/check-docker-containers.mjs)",
       "Bash(node scripts/verify-compose-content.mjs)"
     ],
-    "additionalDirectories": [
-      "\\tmp"
-    ]
+    "additionalDirectories": ["\\tmp"]
   }
 }

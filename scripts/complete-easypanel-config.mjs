@@ -1,16 +1,15 @@
 #!/usr/bin/env node
-
 /**
  * Complete Easypanel Configuration Script
  * Fixes SSH, enables service, configures domain, and triggers deployment
  */
-
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 
 const EASYPANEL_API_URL = 'https://vps10.riolabs.ai/api';
-const EASYPANEL_API_TOKEN = 'e590310e008a56861e12e9c27d0bde3f172548036e7e0d5199e2671870fd3172'; // From environment
+const EASYPANEL_API_TOKEN =
+  'e590310e008a56861e12e9c27d0bde3f172548036e7e0d5199e2671870fd3172'; // From environment
 
 const COMPLETE_SSH_KEY = `-----BEGIN OPENSSH PRIVATE KEY-----
 b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
@@ -26,7 +25,7 @@ const DOMAIN_CONFIG = {
   port: 1337,
   path: '',
   internalProtocol: 'http',
-  containerName: 'indigo-strapi'
+  containerName: 'indigo-strapi',
 };
 
 async function easypanelAPI(endpoint, method, body) {
@@ -36,8 +35,8 @@ async function easypanelAPI(endpoint, method, body) {
     method,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${EASYPANEL_API_TOKEN}`
-    }
+      Authorization: `Bearer ${EASYPANEL_API_TOKEN}`,
+    },
   };
 
   if (body) {
@@ -47,7 +46,9 @@ async function easypanelAPI(endpoint, method, body) {
   const response = await fetch(url, options);
 
   if (!response.ok) {
-    throw new Error(`API call failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API call failed: ${response.status} ${response.statusText}`
+    );
   }
 
   return response.json();
@@ -69,8 +70,8 @@ async function main() {
         repo: 'git@github.com:indigo-services/indigo-studio.git',
         branch: 'main',
         path: '/',
-        composePath: 'docker-compose.yml'
-      }
+        composePath: 'docker-compose.yml',
+      },
     });
 
     console.log('✅ Service configuration updated\n');
@@ -82,7 +83,7 @@ async function main() {
       projectName: 'riostack',
       serviceName: 'indigo-studio',
       sshKey: COMPLETE_SSH_KEY,
-      createDotEnv: false
+      createDotEnv: false,
     });
 
     console.log('✅ SSH key updated\n');
@@ -93,7 +94,7 @@ async function main() {
     await easypanelAPI('/trpc/services.compose.updateDomains', 'POST', {
       projectName: 'riostack',
       serviceName: 'indigo-studio',
-      domains: [DOMAIN_CONFIG]
+      domains: [DOMAIN_CONFIG],
     });
 
     console.log('✅ Domain configured\n');
@@ -104,7 +105,7 @@ async function main() {
     await easypanelAPI('/trpc/services.compose.deployService', 'POST', {
       projectName: 'riostack',
       serviceName: 'indigo-studio',
-      forceRebuild: true
+      forceRebuild: true,
     });
 
     console.log('✅ Deployment triggered\n');
@@ -112,20 +113,21 @@ async function main() {
     console.log('🎉 Configuration Complete!');
     console.log('\n📋 Summary:');
     console.log('• SSH Key: Updated');
-    console.log('• Repository URL: git@github.com:indigo-services/indigo-studio.git');
+    console.log(
+      '• Repository URL: git@github.com:indigo-services/indigo-studio.git'
+    );
     console.log('• Domain: riostack-indigo-studio.ck87nu.easypanel.host');
     console.log('• Service Status: Enabled');
     console.log('• Deployment: In Progress');
     console.log('\n⏳ The service should be available in 2-3 minutes at:');
     console.log('   https://riostack-indigo-studio.ck87nu.easypanel.host/');
-
   } catch (error) {
     console.error('❌ Configuration failed:', error.message);
     process.exit(1);
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Script failed:', err);
   process.exit(1);
 });

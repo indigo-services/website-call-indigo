@@ -22,8 +22,6 @@ COPY scripts ./scripts
 RUN corepack enable && corepack prepare yarn@4.13.0 --activate
 RUN yarn install --immutable
 
-COPY . .
-
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=1337

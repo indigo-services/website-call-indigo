@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-
 /**
  * Fix SSH Connection Between Easypanel and GitHub
  * Addresses the core issue: Easypanel cannot access GitHub repository
  */
-
 import { execSync } from 'child_process';
 
 const COMPLETE_SSH_KEY = `-----BEGIN OPENSSH PRIVATE KEY-----
@@ -15,7 +13,8 @@ AAAEBkD0kLTT90KjR2copz2nUAYWzOCiQMS6E1EMzZrtQ6rVK+h9uzv6xOy0pFVn2ecJhe
 vb7j8aZ69sANxWDfWH1DAAAAEmVhc3lwYW5lbEByaW9zdGFjawECAw==
 -----END OPENSSH PRIVATE KEY-----`;
 
-const DEPLOY_KEY_PUBLIC = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
+const DEPLOY_KEY_PUBLIC =
+  'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFK+h9uzv6xOy0pFVn2ecJhevb7j8aZ69sANxWDfWH1D easypanel@riostack';
 
 async function fixSSHConnection() {
   console.log('🔧 FIXING SSH CONNECTION BETWEEN EASYPANEL AND GITHUB\n');
@@ -23,7 +22,9 @@ async function fixSSHConnection() {
 
   console.log('\n❌ THE ROOT CAUSE:');
   console.log('Easypanel cannot access GitHub repository');
-  console.log('This is why it uses cached UI settings instead of GitHub compose.yml');
+  console.log(
+    'This is why it uses cached UI settings instead of GitHub compose.yml'
+  );
   console.log('SSH connection is failing → repository cannot be accessed');
 
   console.log('\n✅ THE SOLUTION:');
@@ -37,7 +38,10 @@ async function fixSSHConnection() {
     const addKeyCmd = `echo "${DEPLOY_KEY_PUBLIC}" | gh repo deploy-key add indigo-services/indigo-studio --title "Easypanel-Production-Server" --allow-write 2>&1`;
     const result = execSync(addKeyCmd, { encoding: 'utf-8', stdio: 'pipe' });
 
-    if (result.includes('already exists') || result.includes('Key already added')) {
+    if (
+      result.includes('already exists') ||
+      result.includes('Key already added')
+    ) {
       console.log('✅ Deploy key already exists on GitHub');
     } else {
       console.log('✅ Deploy key added to GitHub');
@@ -54,7 +58,8 @@ async function fixSSHConnection() {
   // Step 2: Update Easypanel service configuration via the correct API
   console.log('\n📋 Step 2: Updating Easypanel SSH configuration...');
 
-  const API_TOKEN = 'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
+  const API_TOKEN =
+    'e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172';
   const API_BASE = 'https://vps10.riolabs.ai/api';
 
   // First, let's try to get the current service to understand its structure
@@ -63,7 +68,10 @@ async function fixSSHConnection() {
     const getServiceCmd = `curl -s "${API_BASE}/projects/riostack/services?search=indigo-studio" \\
       -H "Authorization: Bearer ${API_TOKEN}"`;
 
-    const serviceResult = execSync(getServiceCmd, { encoding: 'utf-8', stdio: 'pipe' });
+    const serviceResult = execSync(getServiceCmd, {
+      encoding: 'utf-8',
+      stdio: 'pipe',
+    });
     console.log('✅ Service data retrieved');
 
     if (serviceResult && !serviceResult.includes('<!doctype')) {
@@ -83,8 +91,8 @@ async function fixSSHConnection() {
       branch: 'main',
       buildPath: '/',
       composeFile: 'docker-compose.yml',
-      sshKey: COMPLETE_SSH_KEY
-    }
+      sshKey: COMPLETE_SSH_KEY,
+    },
   };
 
   try {
@@ -94,7 +102,10 @@ async function fixSSHConnection() {
       -d '${JSON.stringify(updatePayload)}' \\
       "${API_BASE}/projects/riostack/compose-services/indigo-studio/source"`;
 
-    const updateResult = execSync(updateCmd, { encoding: 'utf-8', stdio: 'pipe' });
+    const updateResult = execSync(updateCmd, {
+      encoding: 'utf-8',
+      stdio: 'pipe',
+    });
     console.log('✅ SSH configuration updated');
 
     if (updateResult) {
@@ -122,7 +133,9 @@ async function fixSSHConnection() {
 
   console.log('✅ CHANGES MADE:');
   console.log('• GitHub deploy key: Added/Verified');
-  console.log('• Repository URL: git@github.com:indigo-services/indigo-studio.git');
+  console.log(
+    '• Repository URL: git@github.com:indigo-services/indigo-studio.git'
+  );
   console.log('• SSH key: Complete (not truncated)');
   console.log('• Service restarted to apply changes');
 
@@ -143,7 +156,7 @@ async function fixSSHConnection() {
   console.log('\n' + '='.repeat(60));
 }
 
-fixSSHConnection().catch(err => {
+fixSSHConnection().catch((err) => {
   console.error('❌ Error:', err.message);
   process.exit(1);
 });

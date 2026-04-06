@@ -1,9 +1,7 @@
 #!/usr/bin/env node
-
 /**
  * Explore Easypanel UI structure
  */
-
 import { chromium } from 'playwright';
 
 const EASYPANEL_URL = 'https://vps10.riolabs.ai';
@@ -24,7 +22,10 @@ async function main() {
 
   try {
     console.log('Loading homepage...');
-    await page.goto(EASYPANEL_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto(EASYPANEL_URL, {
+      waitUntil: 'domcontentloaded',
+      timeout: 30000,
+    });
     console.log('✓ Loaded');
 
     // Take screenshot
@@ -45,7 +46,13 @@ async function main() {
       try {
         const text = await link.textContent();
         const href = await link.getAttribute('href');
-        if (text && (text.includes('riostack') || text.includes('indigo') || text.includes('Compose') || text.includes('Project'))) {
+        if (
+          text &&
+          (text.includes('riostack') ||
+            text.includes('indigo') ||
+            text.includes('Compose') ||
+            text.includes('Project'))
+        ) {
           interestingLinks.push({ text: text.trim(), href });
         }
       } catch (e) {
@@ -54,7 +61,7 @@ async function main() {
     }
 
     console.log('\nInteresting links:');
-    interestingLinks.forEach(l => console.log(`  ${l.text} -> ${l.href}`));
+    interestingLinks.forEach((l) => console.log(`  ${l.text} -> ${l.href}`));
 
     // Look for buttons
     console.log('\n=== Looking for buttons ===');
@@ -76,7 +83,6 @@ async function main() {
     // Wait for user interaction
     console.log('\nPress Ctrl+C to close browser...');
     await page.waitForTimeout(60000);
-
   } catch (error) {
     console.error('Error:', error.message);
   } finally {
@@ -84,7 +90,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Error:', err);
   process.exit(1);
 });
