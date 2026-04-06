@@ -13,8 +13,8 @@ WORKDIR /app
 
 FROM base AS deps
 
-COPY package.json yarn.lock .yarnrc.yml ./
-COPY scripts ./scripts
+COPY strapi/package.json strapi/yarn.lock strapi/.yarnrc.yml ./
+COPY strapi/scripts ./scripts
 
 RUN corepack enable \
   && corepack prepare yarn@4.13.0 --activate \
@@ -22,7 +22,7 @@ RUN corepack enable \
 
 FROM deps AS build
 
-COPY . .
+COPY strapi/. .
 
 RUN yarn build
 

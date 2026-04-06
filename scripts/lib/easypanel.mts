@@ -86,7 +86,7 @@ export interface EasypanelCreateServicePayload {
 
 const DEFAULT_API_URL = 'https://vps10.riolabs.ai/api';
 const DEFAULT_SERVICE = 'indigo-studio';
-const DEFAULT_STRAPI_CONTAINER = 'indigo-studio';
+const DEFAULT_STRAPI_CONTAINER = 'indigo-strapi';
 const DEFAULT_ADMIN_PATH = '/manage/admin';
 
 function stripWrappingQuotes(value: string): string {
