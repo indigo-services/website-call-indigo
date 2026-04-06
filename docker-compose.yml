@@ -3,8 +3,9 @@ services:
     build:
       context: .
       dockerfile: strapi/Dockerfile
+      args:
+        BUILD_CONTEXT: /code
     restart: unless-stopped
-    # Force Easypanel to re-read configuration
     environment:
       # Basic Configuration
       HOST: ${HOST:-0.0.0.0}

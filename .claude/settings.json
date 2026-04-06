@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/recreate-service.mjs)",
+      "Bash(node scripts/fix-ssh-connection.mjs)",
+      "Bash(node add-github-key.mjs)",
+      "Bash(node scripts/final-easypanel-fix.mjs)",
+      "Bash(node scripts/production-validation.mjs)",
+      "Bash(gh auth:*)",
+      "mcp__browsermcp__browser_snapshot",
+      "Bash(curl -s -X DELETE \"https://vps10.riolabs.ai/api/compose-services/indigo-studio\" -H \"Authorization: Bearer e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172\")",
+      "Bash(curl -s -X POST \"https://vps10.riolabs.ai/api/projects/riostack/services/indigo-studio/stop\" -H \"Authorization: Bearer e590a9387b6628af8d14744eeb527e71ad394d7d66451b61bd046a7d17333172\")",
+      "Bash(node scripts/fix-easypanel-cache.mjs)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
+    ]
+  }
+}
