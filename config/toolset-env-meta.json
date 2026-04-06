@@ -150,7 +150,7 @@
       "required": true,
       "sensitive": false,
       "targetFile": ".env.easypanel.local",
-      "default": "indigo-strapi"
+      "default": "indigo-studio"
     },
     {
       "key": "EASYPANEL_ADMIN_PATH",
@@ -318,7 +318,7 @@
       "required": true,
       "sensitive": false,
       "targetFile": ".env.production.local",
-      "placeholder": "https://your-strapi-domain.example.com"
+      "placeholder": "https://backend.domain.example.com"
     }
   ]
 }
