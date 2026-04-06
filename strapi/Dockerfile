@@ -13,11 +13,12 @@ WORKDIR /app
 
 FROM base AS deps
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY scripts ./scripts
 
 RUN corepack enable \
-  && corepack prepare yarn@1.22.22 --activate \
-  && yarn install --frozen-lockfile
+  && corepack prepare yarn@4.13.0 --activate \
+  && yarn install --immutable
 
 FROM deps AS build
 
