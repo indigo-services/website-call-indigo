@@ -25,7 +25,7 @@ const DOMAIN_CONFIG = {
   port: 1337,
   path: '',
   internalProtocol: 'http',
-  containerName: 'indigo-strapi',
+  containerName: 'indigo-studio',
 };
 
 async function easypanelAPI(endpoint, method, body) {

@@ -52,7 +52,7 @@ async function main() {
   log(`Project: riostack`, COLORS.cyan);
   log(`Service: indigo-studio`, COLORS.cyan);
   log(`Domain: ${domainToAdd}`, COLORS.cyan);
-  log(`Container: indigo-strapi`, COLORS.cyan);
+  log(`Container: indigo-studio`, COLORS.cyan);
   log(`Internal Port: 1337`, COLORS.cyan);
 
   log('\n🔧 Attempting to add domain configuration...', COLORS.yellow);
@@ -102,7 +102,7 @@ async function main() {
     );
     log(`3. Add domain: ${domainToAdd}`, COLORS.cyan);
     log(
-      '4. Configure reverse proxy to container: indigo-strapi:1337',
+      '4. Configure reverse proxy to container: indigo-studio:1337',
       COLORS.cyan
     );
     log('5. Enable HTTPS and save configuration', COLORS.cyan);

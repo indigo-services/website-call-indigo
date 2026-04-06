@@ -84,7 +84,7 @@ async function productionDeploy() {
         path: '/',
         port: 1337,
         internalProtocol: 'http',
-        service: 'indigo-strapi',
+        service: 'indigo-studio',
       },
     ],
   };
