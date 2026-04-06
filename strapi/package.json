@@ -17,6 +17,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "esbuild": "^0.25.9",
     "typescript": "^5"
   },
   "dependencies": {
