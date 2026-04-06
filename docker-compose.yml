@@ -21,7 +21,7 @@ services:
       TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:-changeMeToRandomString}
       JWT_SECRET: ${JWT_SECRET:-changeMeToRandomString}
       ADMIN_AUTH_SECRET: ${ADMIN_AUTH_SECRET:-changeMeToRandomString}
-      ADMIN_PATH: ${ADMIN_PATH:-/admin}
+      ADMIN_PATH: ${ADMIN_PATH:-/manage/admin}
 
       # Client Configuration
       CLIENT_URL: ${CLIENT_URL:-https://indigo-website-cms.vercel.app}
