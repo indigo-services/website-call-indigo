@@ -135,7 +135,21 @@ function validateComposeBuildPaths(): ComposeBuildPaths {
   };
 }
 
-async function checkValidation(): Promise<boolean> {
+async function checkValidation(serviceType: string): Promise<boolean> {
+  if (serviceType === 'compose') {
+    info('Running Easypanel doctor before compose deployment...');
+    try {
+      execSync('node --loader ts-node/esm ./scripts/easypanel-ops.mts doctor', {
+        stdio: 'inherit',
+      });
+      success('Easypanel doctor passed');
+      return true;
+    } catch {
+      error('Easypanel doctor failed. Deployment aborted.');
+      return false;
+    }
+  }
+
   info('Running production validation before deployment...');
   try {
     execSync('yarn validate:prod', { stdio: 'inherit' });
@@ -160,7 +174,7 @@ async function handleDeployment(): Promise<void> {
     blueColor
   );
 
-  const validationPassed = await checkValidation();
+  const validationPassed = await checkValidation(config.serviceType);
   if (!validationPassed) {
     process.exit(1);
   }
@@ -182,9 +196,13 @@ async function handleDeployment(): Promise<void> {
     );
   }
 
-  info('\nBuilding Next.js...');
-  execSync('cd next && yarn build', { stdio: 'inherit' });
-  success('Next.js build complete');
+  if (config.serviceType !== 'compose') {
+    info('\nBuilding Next.js...');
+    execSync('cd next && yarn build', { stdio: 'inherit' });
+    success('Next.js build complete');
+  } else {
+    info('\nSkipping Next.js build in deploy:ep because frontend deploys on Vercel');
+  }
 
   info('\nBuilding Strapi...');
   execSync('cd strapi && yarn build', { stdio: 'inherit' });

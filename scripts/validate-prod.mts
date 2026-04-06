@@ -121,7 +121,10 @@ function checkFiles(): void {
     { path: 'next/package.json', critical: true },
     { path: 'strapi/package.json', critical: true },
     { path: 'package.json', critical: true },
-    { path: 'DEPLOYMENT_CHECKLIST.md', critical: false },
+    {
+      path: 'docs/deployment/DEPLOYMENT_CHECKLIST.md',
+      critical: false,
+    },
   ];
 
   requiredFiles.forEach(({ path: filePath, critical }) => {
