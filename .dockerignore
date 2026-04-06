@@ -14,3 +14,15 @@ logs
 debug-*.log
 run-*.log
 public/uploads
+
+# Ignore Node/Yarn dependencies
+node_modules/
+.pnp.*
+.yarn/cache/
+.yarn/install-state.gz
+
+# Optional but recommended to ignore
+build/
+dist/
+.env
+.git/
