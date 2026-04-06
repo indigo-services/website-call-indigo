@@ -1,10 +1,8 @@
 services:
   indigo-strapi:
     build:
-      context: .
-      dockerfile: strapi/Dockerfile
-      args:
-        BUILD_CONTEXT: /code
+      context: ./strapi
+      dockerfile: Dockerfile
     restart: unless-stopped
     environment:
       # Basic Configuration
