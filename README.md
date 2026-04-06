@@ -46,15 +46,16 @@ yarn --cwd strapi develop
 
 ## Release Baseline
 
-| Area             | Reference                                                                        |
-| ---------------- | -------------------------------------------------------------------------------- |
-| Agent rules      | [AGENTS.md](./AGENTS.md)                                                         |
-| Claude rules     | [CLAUDE.md](./CLAUDE.md)                                                         |
-| Codex status     | [docs/codex-configuration-status.md](./docs/codex-configuration-status.md)       |
-| Home migration   | [docs/home-landing-migration/README.md](./docs/home-landing-migration/README.md) |
-| Dev dashboard    | [next/app/dev/page.tsx](./next/app/dev/page.tsx)                                 |
-| Public preview   | [next/app/page.tsx](./next/app/page.tsx)                                         |
-| Launch demo copy | [next/app/home-demo-01/page.tsx](./next/app/home-demo-01/page.tsx)               |
+| Area                  | Reference                                                                        |
+| --------------------- | -------------------------------------------------------------------------------- |
+| Agent rules           | [AGENTS.md](./AGENTS.md)                                                         |
+| Claude rules          | [CLAUDE.md](./CLAUDE.md)                                                         |
+| Codex status          | [docs/codex-configuration-status.md](./docs/codex-configuration-status.md)       |
+| Home migration        | [docs/home-landing-migration/README.md](./docs/home-landing-migration/README.md) |
+| Storybook development | [docs/STORYBOOK_DEVELOPMENT_GUIDE.md](./docs/STORYBOOK_DEVELOPMENT_GUIDE.md)     |
+| Dev dashboard         | [next/app/dev/page.tsx](./next/app/dev/page.tsx)                                 |
+| Public preview        | [next/app/page.tsx](./next/app/page.tsx)                                         |
+| Launch demo copy      | [next/app/home-demo-01/page.tsx](./next/app/home-demo-01/page.tsx)               |
 
 ## Operating Notes
 
@@ -62,7 +63,28 @@ yarn --cwd strapi develop
 - Strapi runs on `http://localhost:1000` in development.
 - The canonical Strapi admin path is `/manage/admin`.
 - `/build/superadmin` redirects to the canonical admin path for compatibility.
-- The Storybook harness is not committed in this repo yet, but the UI blocks are being structured to be story-ready.
+- **Storybook** runs on `http://localhost:6006` for component development following Strapi standards.
+- **Yalc** is installed for rapid component iteration between Strapi, Storybook, and Next.js.
+
+## Component Development with Storybook
+
+This project follows **Strapi Storybook standards** for component development:
+
+```powershell
+# Start Storybook for component development
+yarn --cwd strapi storybook
+
+# Publish components to yalc for rapid iteration
+yarn --cwd strapi yalc publish
+
+# Link components in Next.js
+yarn --cwd next yalc link @your-org/strapi-components
+
+# Remove yalc links when done
+yarn --cwd next yalc remove --all
+```
+
+📖 **Complete Guide:** [Storybook Development Guide](./docs/STORYBOOK_DEVELOPMENT_GUIDE.md)
 
 ## What Ships In This Baseline
 
