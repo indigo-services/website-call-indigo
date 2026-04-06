@@ -144,7 +144,7 @@ async function step1_checkCurrentStatus() {
 }
 
 async function step2_deleteExistingService() {
-  console.log('\n=== Step 2: Deleting Existing Service to Clear Cache ===');
+  console.log('\n=== Step 2: Checking If Service Needs Recreation ===');
 
   try {
     // First try to get compose service details
@@ -153,61 +153,31 @@ async function step2_deleteExistingService() {
         projectName: PROJECT_NAME,
         serviceName: SERVICE_NAME,
       });
-      console.log(`✓ Found compose service, will delete`);
+      console.log(`✓ Found compose service`);
+      console.log(`  Enabled: ${details.enabled}`);
+      console.log(`  Has deployment URL: ${!!details.deploymentUrl}`);
+
+      // Instead of deleting, we'll update it
+      console.log(`⚠ Service exists - will UPDATE instead of DELETE+CREATE`);
+      return 'update';
     } catch (error) {
       console.log(`⚠ Service inspection failed: ${error.message}`);
-      console.log(`  Continuing with deletion attempt...`);
+      console.log(`  Will try to create fresh service...`);
+      return 'create';
     }
-
-    // Delete using the service deletion endpoint
-    // This is a direct API call to delete the service
-    const deleteUrl = `${API_BASE.replace('/api', '')}/api/projects/${PROJECT_NAME}/services/${SERVICE_NAME}`;
-
-    try {
-      const response = await fetch(deleteUrl, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${API_TOKEN}`,
-        },
-      });
-
-      if (response.ok) {
-        console.log(`✓ Service deletion command sent`);
-      } else {
-        const text = await response.text();
-        console.log(`⚠ Deletion response: ${response.status} - ${text}`);
-      }
-    } catch (error) {
-      console.log(`⚠ Deletion failed: ${error.message}`);
-    }
-
-    // Wait for deletion to process
-    console.log(`⏳ Waiting 5 seconds for deletion to process...`);
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
-    return true;
   } catch (error) {
-    console.error(`✗ Error during deletion:`, error.message);
-    return false;
+    console.error(`✗ Error during check:`, error.message);
+    return 'create';
   }
 }
 
-async function step3_createFreshService() {
-  console.log('\n=== Step 3: Creating Fresh Service with Correct Configuration ===');
+async function step3_createFreshService(action = 'create') {
+  console.log('\n=== Step 3: Creating/Updating Service with Correct Configuration ===');
 
   try {
-    const payload = {
+    const basePayload = {
       projectName: PROJECT_NAME,
       serviceName: SERVICE_NAME,
-      source: {
-        type: 'github',
-        owner: 'indigo-services',
-        repo: 'indigo-studio',
-        ref: 'main',
-        path: '/',
-        composeFile: 'docker-compose.yml',
-        sshKey: SSH_KEY,
-      },
       env: envVars,
       createDotEnv: false,
       domains: [{
@@ -220,54 +190,54 @@ async function step3_createFreshService() {
       }],
     };
 
-    console.log(`Creating service with GitHub source:`);
-    console.log(`  Repository: ${payload.source.owner}/${payload.source.repo}`);
-    console.log(`  Branch: ${payload.source.ref}`);
-    console.log(`  Path: ${payload.source.path}`);
-    console.log(`  Compose File: ${payload.source.composeFile}`);
+    if (action === 'update') {
+      console.log(`Updating existing service with inline docker-compose.yml:`);
 
-    const result = await trpcRequest('services.compose.createService', payload);
-
-    console.log(`✓ Service created successfully`);
-    console.log(`  Name: ${result.name}`);
-    console.log(`  Type: ${result.type}`);
-
-    return true;
-  } catch (error) {
-    console.error(`✗ Error creating service:`, error.message);
-    console.log(`\nTrying fallback method with inline content...`);
-
-    // Fallback: Try with inline content
-    try {
-      const inlinePayload = {
+      // Update source with inline content
+      await trpcPostRequest('services.compose.updateSourceInline', {
         projectName: PROJECT_NAME,
         serviceName: SERVICE_NAME,
+        content: composeContent,
+      });
+      console.log(`✓ Updated docker-compose.yml content`);
+
+      // Update environment
+      await trpcPostRequest('services.compose.updateEnv', {
+        projectName: PROJECT_NAME,
+        serviceName: SERVICE_NAME,
+        env: envVars,
+        createDotEnv: false,
+      });
+      console.log(`✓ Updated environment variables`);
+
+      console.log(`✓ Service updated successfully`);
+      return true;
+    } else {
+      console.log(`Creating new service with inline docker-compose.yml:`);
+      console.log(`  Context: . (repository root)`);
+      console.log(`  Dockerfile: strapi/Dockerfile`);
+      console.log(`  Service: indigo-strapi`);
+
+      const createPayload = {
+        ...basePayload,
         source: {
           type: 'inline',
           content: composeContent,
         },
-        env: envVars,
-        createDotEnv: false,
-        domains: [{
-          host: 'riostack-indigo-studio.ck87nu.easypanel.host',
-          https: true,
-          path: '/',
-          port: 1337,
-          internalProtocol: 'http',
-          service: 'indigo-strapi',
-        }],
       };
 
-      const result = await trpcRequest('services.compose.createService', inlinePayload);
-      console.log(`✓ Service created with inline content`);
+      const result = await trpcPostRequest('services.compose.createService', createPayload);
+
+      console.log(`✓ Service created successfully`);
       console.log(`  Name: ${result.name}`);
       console.log(`  Type: ${result.type}`);
+      console.log(`  Deployment URL: ${result.deploymentUrl || 'pending'}`);
 
       return true;
-    } catch (fallbackError) {
-      console.error(`✗ Fallback also failed:`, fallbackError.message);
-      return false;
     }
+  } catch (error) {
+    console.error(`✗ Error ${action === 'update' ? 'updating' : 'creating'} service:`, error.message);
+    return false;
   }
 }
 
@@ -275,7 +245,7 @@ async function step4_deployService() {
   console.log('\n=== Step 4: Deploying Service ===');
 
   try {
-    await trpcRequest('services.compose.deployService', {
+    await trpcPostRequest('services.compose.deployService', {
       projectName: PROJECT_NAME,
       serviceName: SERVICE_NAME,
       forceRebuild: true,
@@ -297,7 +267,7 @@ async function step5_monitorDeployment() {
 
   // Check service status
   try {
-    const service = await trpcRequest('services.compose.inspectService', {
+    const service = await trpcGetRequest('services.compose.inspectService', {
       projectName: PROJECT_NAME,
       serviceName: SERVICE_NAME,
     });
@@ -326,18 +296,17 @@ async function main() {
   // Step 1: Check current status
   const serviceExists = await step1_checkCurrentStatus();
 
-  if (!serviceExists) {
-    console.log('\n⚠ Service does not exist yet, will create fresh service');
-  } else {
-    // Step 2: Delete existing service
-    await step2_deleteExistingService();
+  let action = 'create';
+  if (serviceExists) {
+    // Step 2: Determine if we should update or create
+    action = await step2_deleteExistingService();
   }
 
-  // Step 3: Create fresh service
-  const created = await step3_createFreshService();
+  // Step 3: Create or update service
+  const created = await step3_createFreshService(action);
 
   if (!created) {
-    console.error('\n❌ Failed to create service. Please check the error messages above.');
+    console.error('\n❌ Failed to create/update service. Please check the error messages above.');
     process.exit(1);
   }
 
