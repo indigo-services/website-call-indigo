@@ -2,6 +2,8 @@
 
 Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministic local tooling and a release-oriented URL map.
 
+
+
 ## Local Surfaces
 
 | Surface        | URL                                                                              | Purpose                                   |
@@ -20,6 +22,8 @@ Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministi
 # Indigo Studio Platform
 
 Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministic local tooling and a release-oriented URL map.
+
+\indigo-workbench\app-indigo-design\.indigo\readme-design-system-banner.png
 
 ## Local Surfaces
 

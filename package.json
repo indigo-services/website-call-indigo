@@ -82,9 +82,9 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "prettier": "^3.5.3",
-    "yalc": "^1.0.0-pre.53",
     "ts-node": "^10.9.2",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "yalc": "^1.0.0-pre.53"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md,yml,yaml}": [
