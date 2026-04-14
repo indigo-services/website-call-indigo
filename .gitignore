@@ -21,16 +21,39 @@ docs/deployment/*
 !.vscode/extensions.json
 !.vscode/tasks.json
 
-.env*
+# Environment files - comprehensive protection
+.env
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.production
+.env.production.local
+.env.staging
+.env.staging.local
+.env.test
+.env.test.local
+
+# Example files are safe to commit
 !.env.example
 !.env.*.example
+
+# Additional sensitive file types
+*.pem
+*.key
+*.cert
+*.crt
+credentials
+secrets
+passwords
+*.credentials
+*.secrets
+*.passwords
 
 .playwright-mcp
 visual-reports
 .claude/settings.local.json
 
-.env.local
-.env.*.local
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -51,7 +74,6 @@ skills/next-upgrade
 skills/strapi-expert
 skills/vercel-cli-with-tokens
 skills/vercel-composition-patterns
-skills/vercel-react-best-practices
 skills/vercel-react-native-skills
 skills/vercel-sandbox
 skills/web-design-guidelines
