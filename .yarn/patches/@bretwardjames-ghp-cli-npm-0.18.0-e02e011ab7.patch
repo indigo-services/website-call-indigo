@@ -1,0 +1,22 @@
+diff --git a/dist/config.js b/dist/config.js
+index 90e539d00215c1e8ce90d6d0527a9b735cb17ee9..ead14e633ec59128dc76350efc30557527c5c79e 100644
+--- a/dist/config.js
++++ b/dist/config.js
+@@ -253,6 +253,17 @@ export function setConfigByPath(path, value, scope = 'user') {
+  * Get a section of config (e.g., "mcp" returns the whole mcp object)
+  */
+ export function getConfigSection(section, scope) {
++    if (!section) {
++        if (scope === 'workspace') {
++            return loadWorkspaceConfig();
++        }
++        else if (scope === 'user') {
++            return loadUserConfig();
++        }
++        else {
++            return loadConfig();
++        }
++    }
+     if (scope === 'workspace') {
+         const config = loadWorkspaceConfig();
+         return getByPath(config, section);

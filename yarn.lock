@@ -133,6 +133,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bretwardjames/ghp-cli@patch:@bretwardjames/ghp-cli@npm%3A0.18.0#./.yarn/patches/@bretwardjames-ghp-cli-npm-0.18.0-e02e011ab7.patch::locator=indigo-studio-platform%40workspace%3A.":
+  version: 0.18.0
+  resolution: "@bretwardjames/ghp-cli@patch:@bretwardjames/ghp-cli@npm%3A0.18.0#./.yarn/patches/@bretwardjames-ghp-cli-npm-0.18.0-e02e011ab7.patch::version=0.18.0&hash=be9fcc&locator=indigo-studio-platform%40workspace%3A."
+  dependencies:
+    "@bretwardjames/ghp-core": "npm:0.12.0"
+    chalk: "npm:^5.3.0"
+    commander: "npm:^12.0.0"
+  bin:
+    ghp: dist/index.js
+  checksum: 10c0/06f0cecbc0138df382bab3f39fcc7275f1383f086e04cd3d7fc10a1495174099220c09da2ca1ffadbedd13bf5d74a1a942db9e2cac351511bea1fc9aaec8656b
+  languageName: node
+  linkType: hard
+
 "@bretwardjames/ghp-core@npm:0.12.0":
   version: 0.12.0
   resolution: "@bretwardjames/ghp-core@npm:0.12.0"
@@ -1231,7 +1244,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "indigo-studio-platform@workspace:."
   dependencies:
-    "@bretwardjames/ghp-cli": "npm:0.18.0"
+    "@bretwardjames/ghp-cli": "patch:@bretwardjames/ghp-cli@npm%3A0.18.0#./.yarn/patches/@bretwardjames-ghp-cli-npm-0.18.0-e02e011ab7.patch"
     "@playwright/test": "npm:^1.59.1"
     "@trivago/prettier-plugin-sort-imports": "npm:^5.2.2"
     "@types/node": "npm:^22.5.2"

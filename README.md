@@ -11,9 +11,9 @@ Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministi
 | Public Preview | [http://localhost:3000/](http://localhost:3000/)                                 | Indigo residential conversion landing     |
 | DX Dashboard   | [http://localhost:3000/dev](http://localhost:3000/dev)                           | Local start page for the stack            |
 | Launch Demo    | [http://localhost:3000/home-demo-01](http://localhost:3000/home-demo-01)         | Archived LaunchPad demo for comparison    |
-| CMS Admin      | [http://localhost:1000/manage/admin](http://localhost:1000/manage/admin)         | Canonical Strapi admin                    |
-| CMS Alias      | [http://localhost:1000/build/superadmin](http://localhost:1000/build/superadmin) | Compatibility redirect to canonical admin |
-| API            | [http://localhost:1000/api](http://localhost:1000/api)                           | Strapi REST API                           |
+| CMS Admin      | [http://localhost:1337/manage/admin](http://localhost:1337/manage/admin)         | Canonical Strapi admin                    |
+| CMS Alias      | [http://localhost:1337/build/superadmin](http://localhost:1337/build/superadmin) | Compatibility redirect to canonical admin |
+| API            | [http://localhost:1337/api](http://localhost:1337/api)                           | Strapi REST API                           |
 | Storybook      | [http://localhost:6006/](http://localhost:6006/)                                 | Visual registry and component review      |
 
 ## Core Commands
@@ -32,9 +32,9 @@ Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministi
 | Public Preview | [http://localhost:3000/](http://localhost:3000/)                                 | Indigo residential conversion landing     |
 | DX Dashboard   | [http://localhost:3000/dev](http://localhost:3000/dev)                           | Local start page for the stack            |
 | Launch Demo    | [http://localhost:3000/home-demo-01](http://localhost:3000/home-demo-01)         | Archived LaunchPad demo for comparison    |
-| CMS Admin      | [http://localhost:1000/manage/admin](http://localhost:1000/manage/admin)         | Canonical Strapi admin                    |
-| CMS Alias      | [http://localhost:1000/build/superadmin](http://localhost:1000/build/superadmin) | Compatibility redirect to canonical admin |
-| API            | [http://localhost:1000/api](http://localhost:1000/api)                           | Strapi REST API                           |
+| CMS Admin      | [http://localhost:1337/manage/admin](http://localhost:1337/manage/admin)         | Canonical Strapi admin                    |
+| CMS Alias      | [http://localhost:1337/build/superadmin](http://localhost:1337/build/superadmin) | Compatibility redirect to canonical admin |
+| API            | [http://localhost:1337/api](http://localhost:1337/api)                           | Strapi REST API                           |
 | Storybook      | [http://localhost:6006/](http://localhost:6006/)                                 | Visual registry and component review      |
 
 ## Core Commands
@@ -64,7 +64,7 @@ yarn --cwd strapi develop
 ## Operating Notes
 
 - Next uses `http://localhost:3000` for the public preview and DX dashboard.
-- Strapi runs on `http://localhost:1000` in development.
+- Strapi runs on `http://localhost:1337` in development.
 - The canonical Strapi admin path is `/manage/admin`.
 - `/build/superadmin` redirects to the canonical admin path for compatibility.
 - **Storybook** runs on `http://localhost:6006` for component development following Strapi standards.

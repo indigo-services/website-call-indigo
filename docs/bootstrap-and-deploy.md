@@ -16,7 +16,7 @@ yarn setup
 yarn dev
 ```
 
-`yarn setup` now:
+`yarn setup`:
 
 - completes the guided repo bootstrap after the initial install
 - creates `next/.env` and `strapi/.env` from examples if missing
@@ -82,19 +82,25 @@ These secrets support the deployment contract:
 - `VERCEL_PROJECT_ID`
 - `EASYPANEL_STRAPI_DEPLOY_WEBHOOK`
 
-The EasyPanel webhook secret is optional until the Strapi staging service exists.
+The EasyPanel webhook secret is optional until the Strapi production service exists.
 
-## Next To Vercel
+## Frontend To Vercel
 
-The Vercel deployment lane is driven by GitHub Actions and the Vercel CLI.
+`call-indigo.com` is owned by the separate frontend repo:
+
+- repo: `indigo-services/website-call-indigo`
+- platform: Vercel
+- domain: `https://call-indigo.com`
+
+This repo's `next/` app is a local/workbench surface unless it is intentionally linked for preview or manual validation. Do not assume a merge in `indigo-studio` will update the public website.
 
 Expected local checks:
 
 - `vercel --version` or `npx vercel --version`
 - `vercel whoami`
-- Vercel project linked at repo root or under `next/`
+- Vercel project linked at repo root or under `next/` only when using this repo for preview/manual deploys
 
-Expected GitHub secrets:
+Expected GitHub secrets for repo-owned Vercel automation:
 
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
@@ -102,14 +108,17 @@ Expected GitHub secrets:
 
 ## Strapi To EasyPanel
 
-Strapi staging is intended for EasyPanel App Service using GitHub source.
+`studio.call-indigo.com` is owned by this repo through EasyPanel.
 
-Recommended service contract:
+Recommended production contract:
 
 - source repo: `indigo-services/indigo-studio`
+- source mode: Git-backed, not inline YAML
 - branch: `main`
-- build path: `strapi`
-- database: SQLite for staging
+- service type: EasyPanel compose app
+- compose root path: `/`
+- compose file: `docker-compose.yml`
+- public domain: `https://studio.call-indigo.com`
 - persistent storage:
   - `.tmp`
   - `public/uploads`
@@ -120,7 +129,9 @@ Recommended runtime envs:
 NODE_ENV=production
 HOST=0.0.0.0
 PORT=1337
-CLIENT_URL=https://your-next-site.example.com
+CLIENT_URL=https://call-indigo.com
+URL=https://studio.call-indigo.com
+PUBLIC_URL=https://studio.call-indigo.com
 DATABASE_CLIENT=sqlite
 DATABASE_FILENAME=.tmp/data.db
 ```
@@ -130,5 +141,6 @@ Keep Strapi secrets in EasyPanel service env, not in committed files.
 ## Automation Contract
 
 - PRs validate setup and Strapi build
-- `main` can deploy Next to Vercel when Vercel secrets exist
-- `main` can trigger Strapi staging deployment through the EasyPanel deploy webhook when that secret exists
+- this repo should not auto-own production deployment for `call-indigo.com`
+- this repo can trigger Strapi deployment to EasyPanel when the deploy webhook exists
+- website production deploys should happen in `website-call-indigo`, not through hidden coupling here

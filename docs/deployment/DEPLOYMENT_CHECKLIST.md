@@ -10,196 +10,107 @@
 - [ ] Git ref is `main`
 - [ ] Compose root path is `/`
 - [ ] Compose file is `docker-compose.yml`
-- [ ] Strapi public URL is `https://riostack-indigo-studio.ck87nu.easypanel.host`
-- [ ] Next public URL is `https://indigo-website-cms.vercel.app`
+- [ ] Strapi public URL is `https://studio.call-indigo.com`
+- [ ] Website public URL is `https://call-indigo.com`
+- [ ] Website production repo is `indigo-services/website-call-indigo`
+- [ ] `indigo-studio` is not treated as the canonical Vercel production source for `call-indigo.com`
 
 ## Pre-Deployment Verification (Local)
 
 ### Environment & Build
-- [ ] All environment variables defined in `.env.production`
-- [ ] Build succeeds locally: `yarn build`
-- [ ] No build warnings or errors in Next.js
+
+- [ ] All environment variables defined in the correct local env files
+- [ ] Dependencies resolve cleanly: `yarn install`
 - [ ] Strapi build passes: `yarn build --prefix strapi`
-- [ ] All dependencies resolved: `yarn install`
-- [ ] Lock files committed (yarn.lock)
 - [ ] `docker-compose.yml` exists at repo root
-- [ ] `services.indigo-strapi.build.context` resolves to `./strapi`
+- [ ] `services.indigo-strapi.build.context` resolves to repo root for the current compose contract
 - [ ] `services.indigo-strapi.build.dockerfile` resolves to `strapi/Dockerfile`
-- [ ] Do not treat `EASYPANEL_STRAPI_PATH` as a compose build path. It is for app-source deployments, not compose builds.
+- [ ] Do not treat local SQLite content as a production publish source
 
 ### Code Quality
-- [ ] Linting passes: `yarn lint`
-- [ ] Code formatting correct: `yarn fix:format`
-- [ ] No TypeScript errors: `tsc --noEmit`
-- [ ] All tests passing (if applicable)
-- [ ] No console warnings in production mode
-- [ ] No hardcoded secrets or credentials
 
-### Performance
-- [ ] Next.js build size acceptable (<500KB gzipped)
-- [ ] Core Web Vitals targets met (LCP<2.5s, FID<100ms, CLS<0.1)
-- [ ] Images optimized (using Next.js Image component)
-- [ ] No missing image optimization configs
-- [ ] Caching headers properly configured
+- [ ] Linting/typecheck or equivalent targeted validation passes for the changed surface
+- [ ] Formatting is clean
+- [ ] No hardcoded secrets or credentials
+- [ ] Release risk and follow-up are stated in the PR
 
 ### Security
-- [ ] HTTPS enabled and SSL valid
-- [ ] Security headers configured (CSP, X-Frame-Options, etc.)
-- [ ] JWT secrets rotated
-- [ ] API key rotation scheduled
-- [ ] Environment variables properly scoped
+
+- [ ] HTTPS enabled and SSL valid on both production domains
+- [ ] JWT and API secrets are scoped to the owning platform
 - [ ] No exposed sensitive data in commits
+- [ ] Environment variables are split correctly between EasyPanel and Vercel
 
 ### Strapi Configuration
-- [ ] Database migrations completed
-- [ ] Strapi build passes: `cd strapi && yarn build`
-- [ ] Content types validated
-- [ ] API permissions configured
-- [ ] Authentication settings validated
-- [ ] Plugin versions compatible
+
+- [ ] Admin path is `/manage/admin`
+- [ ] `CLIENT_URL` points to `https://call-indigo.com`
+- [ ] `URL` and `PUBLIC_URL` point to `https://studio.call-indigo.com`
+- [ ] Upload persistence is configured
+- [ ] Content types and permissions are validated
 
 ## Vercel Deployment
 
-### Configuration
-- [ ] `vercel.json` configured correctly
-- [ ] Build command verified: `cd next && yarn build`
-- [ ] Environment variables set in Vercel console
-- [ ] Regions configured (iad1, sfo1)
-- [ ] Domains configured with SSL
-- [ ] Git integration active (GitHub/GitLab)
+### Ownership
 
-### Pre-Deployment
-- [ ] Preview URL tested on staging
-- [ ] All features tested on preview deployment
-- [ ] Performance benchmarks recorded
-- [ ] Rollback plan in place
-- [ ] Communication sent to team
+- [ ] Production website changes live in `indigo-services/website-call-indigo`
+- [ ] Vercel project is linked to the intended frontend repo and branch
+- [ ] `indigo-studio` does not have an accidental auto-deploy path to the public website
 
 ### Deployment
-- [ ] Feature branch merged to main
-- [ ] GitHub Actions workflows passing
-- [ ] Vercel build logs reviewed
-- [ ] Deployment completed successfully
-- [ ] Production URL accessible
-- [ ] Health check endpoint responding
 
-## Easypanel Deployment
+- [ ] Feature branch merged in the frontend repo
+- [ ] Vercel build logs reviewed
+- [ ] `https://call-indigo.com` responds successfully
+- [ ] Website health check endpoint responds successfully
+
+## EasyPanel Deployment
 
 ### Source Of Truth
+
 - [ ] `yarn easypanel:doctor` passes config and API auth checks
 - [ ] Easypanel compose source is Git-backed, not inline YAML
 - [ ] GitHub deploy key is attached to `indigo-services/indigo-studio`
 - [ ] `deploy:ep` preflight confirms the resolved build context and Dockerfile paths
 
 ### Deployment
+
 - [ ] Run `yarn deploy:ep`
 - [ ] Confirm bootstrap keeps `indigo-strapi` as the internal compose service
 - [ ] Confirm deployment logs show the latest commit from `origin/main`
 - [ ] Confirm the deploy reaches container start, not just source sync
 
 ### Post-Deploy
+
 - [ ] `yarn easypanel:status` shows the expected compose service
 - [ ] `yarn easypanel:health` reports the Strapi public URL and admin path
-- [ ] `https://riostack-indigo-studio.ck87nu.easypanel.host` returns successfully
-- [ ] `https://riostack-indigo-studio.ck87nu.easypanel.host/manage/admin` responds successfully
+- [ ] `https://studio.call-indigo.com` returns successfully
+- [ ] `https://studio.call-indigo.com/manage/admin` responds successfully
 
-## Post-Deployment Verification
+## Content Publish Contract
 
-### Functionality
-- [ ] Website loads and renders correctly
-- [ ] API endpoints responding (200 status)
-- [ ] Database queries executing properly
-- [ ] Authentication working end-to-end
-- [ ] User sessions functioning
-- [ ] File uploads working
-- [ ] All pages render without errors
+- [ ] Local SQLite changes are not assumed to deploy automatically
+- [ ] Production content is created directly in production or migrated intentionally
+- [ ] Export/import or manual migration steps are recorded when content changes are part of the release
+- [ ] File uploads are migrated deliberately when required
 
-### Performance
-- [ ] Core Web Vitals checked (Web Vitals report)
-- [ ] Page load times acceptable
-- [ ] API response times normal
-- [ ] No memory leaks detected
-- [ ] Bundle analysis reviewed
-- [ ] Lighthouse score > 90
+## Release Qualification
 
-### Monitoring
-- [ ] Analytics tracking active
-- [ ] Error tracking configured (Sentry, etc.)
-- [ ] Performance monitoring enabled
-- [ ] Uptime monitoring active
-- [ ] Alerting configured
-- [ ] Logs accessible and readable
-
-### External Services
-- [ ] Mail service operational
-- [ ] CDN cache invalidated
-- [ ] Database backups running
-- [ ] Storage service accessible
-- [ ] Third-party integrations working
-- [ ] Webhooks configured
-
-## Maintenance
-
-### Post-Deployment (Next 24 Hours)
-- [ ] Monitor error logs for issues
-- [ ] Check analytics for anomalies
-- [ ] Verify no spike in failed requests
-- [ ] Confirm email delivery working
-- [ ] Check database stability
-- [ ] Monitor resource usage
-
-### Weekly
-- [ ] Review error logs
-- [ ] Check performance metrics
-- [ ] Verify backup integrity
-- [ ] Update dependencies (patch/minor)
-- [ ] Review security patches
-- [ ] Check cost usage
-
-### Monthly
-- [ ] Security audit
-- [ ] Dependency update review
-- [ ] Performance optimization review
-- [ ] Database optimization
-- [ ] Cost analysis
-- [ ] Capacity planning
-
-## Rollback Procedure
-
-If critical issues occur:
-
-```bash
-# Rollback to previous deployment
-vercel rollback [deployment-url]
-
-# Or use Vercel CLI
-vercel --prod --force
-
-# Immediate steps
-1. Notify team on Slack
-2. Check error logs for root cause
-3. Determine rollback vs. fix-forward
-4. Execute rollback if needed
-5. Verify previous version stable
-6. Post-incident review
-```
-
-## Emergency Contacts
-
-- **DevOps Lead**: [Contact]
-- **Senior Dev**: [Contact]
-- **On-Call**: [Schedule link]
+- [ ] Linked issue or tracked release task exists
+- [ ] Narrow PR scope is preserved
+- [ ] Validation command output is recorded
+- [ ] Production ownership boundaries are called out in release notes
+- [ ] Version bump occurs only in repos that changed
+- [ ] Git tags are created after verified production deploy
+- [ ] Rollback note exists for each repo involved
 
 ## Deployment History
 
-| Date | Version | Changes | Status |
-|------|---------|---------|--------|
-| | | | |
+| Date | Version | Repos | Domains | Status |
+|------|---------|-------|---------|--------|
+| | | | | |
 
 ## Notes
 
-- Always deploy during business hours for first deployment
-- Have team available for the first 2 hours post-deployment
-- Maintain version tags in git
-- Document all environment-specific configurations
-- Keep this checklist updated as infrastructure evolves
+- Keep this checklist aligned with the real owning repos and domains.
+- Do not call a release complete until both domains are verified on their owning platforms.
