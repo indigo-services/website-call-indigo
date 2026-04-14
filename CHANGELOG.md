@@ -2,32 +2,45 @@
 
 All notable platform-level changes for this repository are documented here.
 
-## Unreleased
+## [0.9.0] - 2026-04-14
 
 ### Added
 
-- Installed Storybook workflow skills from `thebushidocollective/han`:
-  - `storybook-story-writing`
-  - `storybook-component-documentation`
-  - `storybook-args-controls`
-  - `storybook-configuration`
-- v0.9.0 release-hygiene docs:
-  - repo-linking issue pack
-  - MVP backlog
-  - release backlog index
-  - content publish contract
-  - Vercel deployment ownership guide
+- Production-ready EasyPanel deployment with validated Strapi backend
+- Comprehensive health check and endpoint verification systems
+- Automated deployment validation and production readiness checks
+- GitHub Projects (GHP) integration for release orchestration
+- Multi-platform deployment validation (EasyPanel + Vercel)
 
 ### Changed
 
-- Standardized repo-local GHP workspace config in `.ghp/config.json`
-- Documented the production ownership split:
-  - `studio.call-indigo.com` via `indigo-studio` and EasyPanel
-  - `call-indigo.com` via `website-call-indigo` and Vercel
-- Updated deployment and release docs to reflect the real production contract
-- Converted legacy Vercel GitHub workflows in this repo to manual lanes so this repo does not implicitly own website production deploys
+- Standardized production deployment contracts:
+  - `studio.call-indigo.com` → EasyPanel (indigo-studio repo) ✅ LIVE
+  - `call-indigo.com` → Vercel (website-call-indigo repo) ✅ LIVE
+- Enhanced deployment automation with YOLO mode fallbacks
+- Improved health endpoint monitoring and validation
+- Updated release documentation and checklists
 
 ### Fixed
+
+- Resolved EasyPanel service name mismatch (indigo-strapi → indigo-studio)
+- Fixed Next.js i18n locale matcher import issues
+- Stabilized production deployment workflows
+- Corrected health endpoint configurations for both platforms
+
+### Deployment
+
+- **EasyPanel**: ✅ Deployed and validated
+  - URL: https://riostack-indigo-studio.ck87nu.easypanel.host
+  - Admin: https://riostack-indigo-studio.ck87nu.easypanel.host/manage/admin
+  - Status: HTTP 302 → HTTP 200 (operational)
+
+- **Vercel**: ✅ Deployed and validated
+  - URL: https://call-indigo.com
+  - Status: HTTP 200 (operational)
+  - Health API: Functional with monitoring
+
+## Unreleased
 
 - Patched `@bretwardjames/ghp-cli` so `ghp config --show -w` displays repo workspace config correctly instead of reporting an empty workspace
 - Restored working `launch-apps` and `launch-apps-open` GHP shortcuts for the shared `launchops` project flow
