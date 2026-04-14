@@ -1,8 +1,12 @@
 # Indigo Studio Platform
 
-Forked Indigo MVP baseline built on standard Strapi + Next.js, with deterministic local tooling and a release-oriented URL map.
+Forked Indigo MVP baseline built on Strapi Launch Demo starter with Strapi + Next.js, and deterministic local tooling and a release-oriented URL map.
 
+## Build Stack and Upstream Starter
 
+| Surface        | URL                                                                              | Purpose                                   |
+| -------------- | -------------------------------------------------------------------------------- | ----------------------------------------- |
+| Indigo Studio BuildOps | [Strapi LaunchPad Starter](https://github.com/strapi/LaunchPad)                                 | Indigo Strapi Stack Turbo Repo     |
 
 ## Local Surfaces
 
