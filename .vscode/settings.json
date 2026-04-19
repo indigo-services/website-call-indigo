@@ -1,0 +1,199 @@
+{
+  // ========================================
+  // Workspace & Environment Setup
+  // ========================================
+  // Terminal & Tasks
+  "task.allowAutomaticTasks": "on",
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.enablePersistentSessions": true,
+  // Browser & Preview
+  "workbench.browser.openLocalhostLinks": "always",
+  "simpleBrowser.useIntegratedBrowser": true,
+  // ========================================
+  // Project Management
+  // ========================================
+  // GitHub Projects Integration
+  "ghProjects.mainBranch": "develop",
+  "ghProjects.branchNamePattern": "{user}/{number}-{title}",
+  "ghProjects.startWorkingStatus": "WIP",
+  "ghProjects.doneStatus": "Done",
+  "ghProjects.prOpenedStatus": "WIP",
+  "ghProjects.prMergedStatus": "MERGED",
+  "ghProjects.defaultProjectOwner": "indigo-services",
+  "ghProjects.defaultProjectNumber": 1,
+  // ========================================
+  // Code Quality & Security
+  // ========================================
+  // Security Files (exclude from indexing for performance & security)
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.env": true,
+    "**/.env.local": true,
+    "**/.env.*.local": true,
+    "**/.vercel": true,
+    "**/.claude/settings.local.json": true
+  },
+  // Files to Watch (exclude sensitive files)
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.env*": true,
+    "**/dist/**": true,
+    "**/.next/**": true
+  },
+  // Security: Secret scanning suggestions
+  "secrets.exclude": [
+    "**/*.env",
+    "**/*.env.local",
+    "**/*.key",
+    "**/*.pem",
+    "**/credentials*"
+  ],
+  // ========================================
+  // Development Tools
+  // ========================================
+  // TODO Tree Configuration
+  "todo-tree.general.tags": [
+    "TODO",
+    "GH-ISSUE",
+    "DECISION",
+    "APPROVAL",
+    "BLOCKER",
+    "RECOMMENDATION",
+    "FOLLOW-UP",
+    "SECURITY",
+    "PERFORMANCE"
+  ],
+  "todo-tree.tree.showScanModeButton": true,
+  "todo-tree.regex.regex": "(//|#|<!--|/\\*|\\*)\\s*($TAGS)(:|\\b)",
+  "todo-tree.highlights.customHighlight": {
+    "DECISION": {
+      "icon": "git-commit",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#0969da"
+    },
+    "APPROVAL": {
+      "icon": "pass",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#1a7f37"
+    },
+    "BLOCKER": {
+      "icon": "error",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#cf222e"
+    },
+    "RECOMMENDATION": {
+      "icon": "lightbulb",
+      "type": "line",
+      "foreground": "#24292f",
+      "background": "#fb8500"
+    },
+    "FOLLOW-UP": {
+      "icon": "history",
+      "type": "line",
+      "foreground": "#24292f",
+      "background": "#f2cc60"
+    },
+    "GH-ISSUE": {
+      "icon": "link-external",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#6f42c1"
+    },
+    "SECURITY": {
+      "icon": "shield",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#da3633"
+    },
+    "PERFORMANCE": {
+      "icon": "rocket",
+      "type": "line",
+      "foreground": "#ffffff",
+      "background": "#8957e5"
+    }
+  },
+  // ========================================
+  // Next.js & TypeScript
+  // ========================================
+  // TypeScript & JavaScript
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  // ESLint & Prettier
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "next"
+  ],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Next.js specific
+  "nextjs.addScreenOnSave": false,
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
+  },
+  // ========================================
+  // Git & Version Control
+  // ========================================
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.postCommitCommand": "none",
+  // ========================================
+  // Editor Performance
+  // ========================================
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "editor.suggest.showStatusBar": true,
+  // ========================================
+  // Testing & Debug
+  // ========================================
+  "testing.automaticallyOpenPeekViewDuringFocus": true,
+  "debug.openDebug": "openOnDebugBreak",
+  // ========================================
+  // Claude Code Integration
+  // ========================================
+  // Improve Claude Code experience
+  "conventionalCommits.autoCommit": false,
+  "github.pullRequests.pushMarkdown": true,
+  "files.associations": {
+    "*.mdx": "markdown",
+    "*.env.*": "properties"
+  },
+  "vercel-project-manager.vercelToken": "${env:VERCEL_PROJECT_MANAGER_TOKEN}",
+  "frontMatter.dashboard.openOnStart": true,
+  "ghProjects.parallelWork.claudeCommand": "build",
+  "ghProjects.showEmptyColumns": true,
+  "ghProjects.worktree.defaultBaseBranch": "main",
+  "ghProjects.worktreeCopyFiles": [
+    ".env",
+    ".env.local",
+    ".env.config"
+  ],
+  "ghProjects.worktreePath": "apps/work/worktrees"
+}
