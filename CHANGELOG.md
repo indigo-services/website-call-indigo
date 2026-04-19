@@ -27,6 +27,7 @@ All notable platform-level changes for this repository are documented here.
 - Fixed Next.js i18n locale matcher import issues
 - Stabilized production deployment workflows
 - Corrected health endpoint configurations for both platforms
+- Removed the Vercel cron scheduler so scheduled work stays on the Strapi/EasyPanel side
 
 ### Deployment
 
