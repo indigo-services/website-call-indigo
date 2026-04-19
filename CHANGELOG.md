@@ -2,7 +2,7 @@
 
 All notable platform-level changes for this repository are documented here.
 
-## [0.9.0] - 2026-04-14
+## \[0.9.0\] - 2026-04-14
 
 ### Added
 
@@ -31,18 +31,20 @@ All notable platform-level changes for this repository are documented here.
 ### Deployment
 
 - **EasyPanel**: ✅ Deployed and validated
-  - URL: https://riostack-indigo-studio.ck87nu.easypanel.host
-  - Admin: https://riostack-indigo-studio.ck87nu.easypanel.host/manage/admin
+
+  - URL: <https://riostack-indigo-studio.ck87nu.easypanel.host>
+  - Admin: <https://riostack-indigo-studio.ck87nu.easypanel.host/manage/admin>
   - Status: HTTP 302 → HTTP 200 (operational)
 
 - **Vercel**: ✅ Deployed and validated
-  - URL: https://call-indigo.com
+
+  - URL: <https://call-indigo.com>
   - Status: HTTP 200 (operational)
   - Health API: Functional with monitoring
 
 ## Unreleased
 
-- Patched `@bretwardjames/ghp-cli` so `ghp config --show -w` displays repo workspace config correctly instead of reporting an empty workspace
+- Patched `@bretwardjames/ghp-cli` so  displays repo workspace config correctly instead of reporting an empty workspace
 - Restored working `launch-apps` and `launch-apps-open` GHP shortcuts for the shared `launchops` project flow
 
 ## 0.0.1

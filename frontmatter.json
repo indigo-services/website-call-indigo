@@ -51,10 +51,16 @@
   "frontMatter.preview.host": "http://localhost:3000",
   "frontMatter.content.pageFolders": [
     {
-      "path": "[[workspace]]/next"
+      "path": "[[workspace]]/next",
+      "title": "next"
     },
     {
-      "path": "[[workspace]]/strapi"
+      "path": "[[workspace]]/strapi",
+      "title": "strapi"
+    },
+    {
+      "title": "docs",
+      "path": "[[workspace]]/docs"
     }
   ],
   "frontMatter.git.enabled": false,
