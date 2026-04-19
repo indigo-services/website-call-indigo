@@ -48,6 +48,7 @@ All notable platform-level changes for this repository are documented here.
 - Patched `@bretwardjames/ghp-cli` so  displays repo workspace config correctly instead of reporting an empty workspace
 - Restored working `launch-apps` and `launch-apps-open` GHP shortcuts for the shared `launchops` project flow
 - Added the Easypanel/Strapi scheduler contract doc to standardize recurring backend work on the VPS side
+- Collapsed Vercel to a single region so the deployment config stays within Hobby plan limits
 
 ## 0.0.1
 
