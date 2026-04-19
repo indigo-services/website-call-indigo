@@ -12,12 +12,6 @@
     }
   },
   "regions": ["iad1", "sfo1"],
-  "crons": [
-    {
-      "path": "/api/health",
-      "schedule": "0 */6 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",
