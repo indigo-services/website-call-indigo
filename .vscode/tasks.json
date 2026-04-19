@@ -1,0 +1,272 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ========================================
+    // Security & Safety
+    // ========================================
+
+    {
+      "label": "🔒 Security: Run Security Scan",
+      "type": "shell",
+      "command": "./scripts/security-scan.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "🔒 Security: Test Git Hooks",
+      "type": "shell",
+      "command": "echo 'TEST_TOKEN=placeholder' > test-secret.txt && git add test-secret.txt && git commit -m 'Test hook' || true && rm -f test-secret.txt",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+
+    // ========================================
+    // Development Workflow
+    // ========================================
+
+    {
+      "label": "🚀 Dev: Start Development Server",
+      "type": "shell",
+      "command": "yarn dev",
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "🔨 Build: Production Build",
+      "type": "shell",
+      "command": "yarn build",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+
+    // ========================================
+    // Testing & Quality
+    // ========================================
+
+    {
+      "label": "✅ Test: Run All Tests",
+      "type": "shell",
+      "command": "yarn test",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "✅ Test: Run Playwright Tests",
+      "type": "shell",
+      "command": "yarn test:e2e",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "🧹 Lint: Check Code Quality",
+      "type": "shell",
+      "command": "yarn lint",
+      "problemMatcher": "$eslint",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "🔍 Type: TypeScript Type Check",
+      "type": "shell",
+      "command": "yarn typecheck",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "✨ Format: Format Code with Prettier",
+      "type": "shell",
+      "command": "yarn format",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+
+    // ========================================
+    // Deployment & Vercel
+    // ========================================
+
+    {
+      "label": "🌐 Vercel: Deploy to Production",
+      "type": "shell",
+      "command": "vercel --prod",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "🌐 Vercel: Deploy to Preview",
+      "type": "shell",
+      "command": "vercel",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "🌐 Vercel: View Deployment Logs",
+      "type": "shell",
+      "command": "vercel logs",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+
+    // ========================================
+    // GitHub & Project Management
+    // ========================================
+
+    {
+      "label": "📋 Project: Open Launchops Board",
+      "type": "shell",
+      "command": "gh project view 1 --owner indigo-services --web",
+      "problemMatcher": []
+    },
+    {
+      "label": "📋 Project: List Studio Open Work",
+      "type": "shell",
+      "command": "yarn ghp:plan studio-open --list --all",
+      "problemMatcher": []
+    },
+    {
+      "label": "🌳 Project: List Active Worktrees",
+      "type": "shell",
+      "command": "yarn ghp:work --list",
+      "problemMatcher": []
+    },
+    {
+      "label": "🔖 Issue: Open In Browser",
+      "type": "shell",
+      "command": "gh issue view ${input:issueNumber} --repo indigo-services/indigo-studio --web",
+      "problemMatcher": []
+    },
+    {
+      "label": "🔖 Issue: View In Terminal",
+      "type": "shell",
+      "command": "gh issue view ${input:issueNumber} --repo indigo-services/indigo-studio",
+      "problemMatcher": []
+    },
+    {
+      "label": "🔖 Issue: Start Parallel Worktree",
+      "type": "shell",
+      "command": "yarn ghp:start ${input:issueNumber} --parallel --keep-branch",
+      "problemMatcher": []
+    },
+    {
+      "label": "🔀 PR: Open In Browser",
+      "type": "shell",
+      "command": "gh pr view ${input:prNumber} --repo indigo-services/indigo-studio --web",
+      "problemMatcher": []
+    },
+    {
+      "label": "🔀 PR: List Open Queue",
+      "type": "shell",
+      "command": "gh pr list --repo indigo-services/indigo-studio --limit 20",
+      "problemMatcher": []
+    },
+
+    // ========================================
+    // Workflow & Diagnostics
+    // ========================================
+
+    {
+      "label": "🩺 Workflow: Doctor",
+      "type": "shell",
+      "command": "yarn doctor",
+      "problemMatcher": []
+    },
+    {
+      "label": "🩺 Workflow: Strapi Build Check",
+      "type": "shell",
+      "command": "yarn check:strapi",
+      "problemMatcher": []
+    },
+    {
+      "label": "🧹 Workflow: Clean Dependencies",
+      "type": "shell",
+      "command": "yarn clean && yarn install",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+
+    // ========================================
+    // Environment & Setup
+    // ========================================
+
+    {
+      "label": "🔧 Setup: Initialize Environment",
+      "type": "shell",
+      "command": "yarn && yarn setup",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "🔧 Setup: Verify Git Hooks",
+      "type": "shell",
+      "command": "ls -la .git/hooks/ | grep -E '(pre-commit|pre-push)'",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "issueNumber",
+      "type": "promptString",
+      "description": "GitHub issue number",
+      "default": "12"
+    },
+    {
+      "id": "prNumber",
+      "type": "promptString",
+      "description": "GitHub pull request number",
+      "default": "13"
+    }
+  ]
+}

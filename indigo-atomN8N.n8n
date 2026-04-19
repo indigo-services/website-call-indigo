@@ -1,0 +1,43 @@
+{
+  "updatedAt": "2026-04-19T07:13:22.824Z",
+  "createdAt": "2026-04-18T19:09:37.301Z",
+  "id": "opbSsP6hXQc6ZCeo",
+  "name": "Untitled-Workflow",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "2dded96f-ea7d-4552-9578-9336b78a4667",
+  "activeVersionId": null,
+  "versionCounter": 2,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-18T19:09:37.316Z",
+      "createdAt": "2026-04-18T19:09:37.316Z",
+      "role": "workflow:owner",
+      "workflowId": "opbSsP6hXQc6ZCeo",
+      "projectId": "eXkSCYakXRSjBFHr",
+      "project": {
+        "updatedAt": "2026-04-18T19:07:15.581Z",
+        "createdAt": "2025-12-19T21:17:43.606Z",
+        "id": "eXkSCYakXRSjBFHr",
+        "name": "Indigo BuildOps",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "93464d9c-6fd0-4f8e-adf5-99ee504f1dfd"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

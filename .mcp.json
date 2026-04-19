@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "n8n-mcp": {
+      "type": "http",
+      "url": "http://localhost:5678/mcp-server/http",
+      "headers": {
+        "Authorization": "Bearer <MCP_SERVER_TOKEN>"
+      },
+      "browseros-mcp": {
+        "type": "http",
+        "url": "http://localhost:9104/mcp"
+      },
+      "ghp-mcp": {
+          "command": "ghp-mcp"
+      }
+    }
+  }
+}
