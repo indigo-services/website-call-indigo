@@ -1,0 +1,96 @@
+{
+  "recommendations": [
+    // ========================================
+    // Core Development
+    // ========================================
+    // TypeScript & JavaScript
+    "ms-vscode.vscode-typescript-next",
+    "dsznajder.es7-react-js-snippets",
+    "formulahendry.auto-rename-tag",
+    "bradlc.vscode-tailwindcss",
+    // Code Quality & Formatting
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "stylelint.vscode-stylelint",
+    // ========================================
+    // Testing & Quality
+    // ========================================
+    // Testing Frameworks
+    "ms-playwright.playwright",
+    "orta.vscode-jest",
+    // Code Quality Tools
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "wix.vscode-import-cost",
+    "usernamehw.errorlens",
+    // ========================================
+    // Git & GitHub
+    // ========================================
+    // GitHub Integration
+    "github.vscode-pull-request-github",
+    "github.vscode-github-actions",
+    "bretwardjames.gh-projects",
+    // Git Workflow
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    // ========================================
+    // Project Management
+    // ========================================
+    // TODO & Task Management
+    "caspiantools.caspian-taskmaster",
+    "spadin.time-master",
+    // ========================================
+    // Development Tools
+    // ========================================
+    // API & HTTP
+    "humao.rest-client",
+    // Database & Tools
+    "mtxr.sqltools",
+    "ms-azuretools.vscode-docker",
+    // ========================================
+    // Security & Secrets
+    // ========================================
+    // Security Scanning
+    "redhat.vscode-yaml",
+    // ========================================
+    // Editor Enhancements
+    // ========================================
+    // Productivity
+    "visualstudioexptteam.vscodeintellicode",
+    "vscodevim.vim",
+    "streetsidesoftware.code-spell-checker",
+    // Navigation
+    "christian-kohler.npm-intellisense",
+    "wakatime.vscode-wakatime",
+    // ========================================
+    // Next.js & Web Development
+    // ========================================
+    // Framework Support
+    "dsznajder.es7-react-js-snippets",
+    "bradlc.vscode-tailwindcss",
+    "formulahendry.auto-close-tag",
+    // Debugging
+    "msjsdiag.debugger-for-chrome",
+    "wallabyjs.quokka-vscode",
+    // ========================================
+    // Documentation & Collaboration
+    // ========================================
+    // Markdown & Docs
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "bierner.markdown-mermaid",
+    // Code Documentation
+    "joelday.docthis",
+    // ========================================
+    // Vercel & Deployment
+    // ========================================
+    // Vercel Integration (Official)
+    "vercel.vercel",
+    "wallaby.vscode-quokka"
+  ],
+  "unwantedRecommendations": [
+    // Extensions that conflict with our setup
+    "hookyqr.beautify",
+    "ms-vscode.vscode-json"
+  ]
+}

@@ -1,0 +1,43 @@
+services:
+  indigo-strapi:
+    build:
+      context: .
+      dockerfile: strapi/Dockerfile
+    image: indigo-strapi:latest
+    restart: unless-stopped
+    ports:
+      - "1337:1337"
+
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "1337"
+      NODE_ENV: "production"
+      DATABASE_CLIENT: "sqlite"
+      DATABASE_FILENAME: ".tmp/data.db"
+      APP_KEYS: "d3800189_ad55_41bf_a330_0e326d6873781,ae374b7b_2d06_4c99_9be0_08d6c0ed34622"
+      API_TOKEN_SALT: "63a1c48c_c951_4bfe_831a_f34009a317c3"
+      ADMIN_JWT_SECRET: "05130689_2be1_46cc_ad3b_ae1d02798660"
+      TRANSFER_TOKEN_SALT: "00df0dde_c4b6_412a_a239_c65963c7e02a"
+      JWT_SECRET: "300f6f44_f604_4fa0_8e9c_4110412dd41e"
+      ADMIN_AUTH_SECRET: "05130689_2be1_46cc_ad3b_ae1d02798660"
+      ADMIN_PATH: "/admin"
+      CLIENT_URL: "https://call-indigo.com"
+      URL: "https://studio.call-indigo.com"
+      PUBLIC_URL: "https://studio.call-indigo.com"
+
+    volumes:
+      - strapi_data:/app/.tmp
+      - strapi_uploads:/app/public/uploads
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:1337/', (r) => {process.exit(r.statusCode === 200 || r.statusCode === 302 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  strapi_data:
+    driver: local
+  strapi_uploads:
+    driver: local
