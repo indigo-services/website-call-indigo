@@ -4,7 +4,7 @@ const nextConfig = {
   // Enable Next.js 16 cache components
   cacheComponents: true,
   turbopack: {
-    root: process.cwd().replace('/next', ''),
+    root: process.cwd(),
   },
   images: {
     // Disable image optimization for localhost in development

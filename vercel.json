@@ -1,16 +1,9 @@
 {
   "framework": "nextjs",
-  "buildCommand": "cd next && yarn build",
+  "buildCommand": "yarn build",
   "devCommand": "yarn dev",
   "installCommand": "yarn install",
-  "outputDirectory": "next/.next",
-  "functions": {
-    "next/app/**/*.ts": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 60,
-      "memory": 1024
-    }
-  },
+  "outputDirectory": ".next",
   "regions": ["iad1"],
   "headers": [
     {
