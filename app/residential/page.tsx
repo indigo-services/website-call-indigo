@@ -1,5 +1,13 @@
-import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
 
-export default function ResidentialPage() {
-  redirect('/');
+import { ResidentialPage } from '@/components/approval-residential/residential-page';
+import { residentialPage } from '@/content';
+
+export const metadata: Metadata = {
+  title: residentialPage.seo.title,
+  description: residentialPage.seo.description,
+};
+
+export default function ResidentialRoutePage() {
+  return <ResidentialPage />;
 }

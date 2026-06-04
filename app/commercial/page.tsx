@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 
 import { CommercialPage } from '@/components/approval-commercial/commercial-page';
-import { indigoWebsiteContent } from '@/content/indigo-website';
+import { commercialPage } from '@/content';
 
 export const metadata: Metadata = {
-  title: indigoWebsiteContent.commercial.seo.title,
-  description: indigoWebsiteContent.commercial.seo.description,
+  title: commercialPage.seo.title,
+  description: commercialPage.seo.description,
 };
 
 export default function CommercialRoutePage() {

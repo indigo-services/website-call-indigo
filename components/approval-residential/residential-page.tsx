@@ -4,20 +4,20 @@ import { useEffect } from 'react';
 
 import { PageLayout } from '@/components/shared/block-renderer';
 import { site } from '@/content';
-import { commercialPage } from '@/content';
+import { residentialPage } from '@/content';
 import { restoreScrollOnReturn } from '@/lib/lead-form-origin';
 
-export function CommercialPage() {
+export function ResidentialPage() {
   useEffect(() => { restoreScrollOnReturn(); }, []);
 
   const heroPhoneLabel = 'Call for a Consultation';
 
   return (
     <PageLayout
-      navigation={commercialPage.navigation}
-      sections={commercialPage.sections}
+      navigation={residentialPage.navigation}
+      sections={residentialPage.sections}
       site={site}
-      footer={commercialPage.footer}
+      footer={residentialPage.footer}
       heroPhoneLabel={heroPhoneLabel}
     />
   );
